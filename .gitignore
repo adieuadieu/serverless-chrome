@@ -35,3 +35,26 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+
+
+
+*.log
+.DS_Store
+.nyc_output
+.serverless
+.webpack
+coverage
+node_modules
+.idea/
+dist/
+*.iml
+webpack-assets.json
+webpack-stats.json
+npm-debug.log
+awsconfig.json
+npm-debug.log
+dump/
+config.yml
+config.json
+event.json

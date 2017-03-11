@@ -1,0 +1,51 @@
+service: serverless-chrome-pdf
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  stage: dev
+  region: us-west-2
+  iamRoleStatements:
+    -  Effect: "Allow"
+       Action:
+         - "s3:*"
+         - "s3:ListBucket"
+         - "s3:PutObject"
+         - "s3:DeleteObject"
+         - "s3:GetObjectAcl"
+         - "s3:ListBucketMultipartUploads"
+         - "s3:ListMultipartUploadParts"
+         - "s3:PutObject"
+         - "s3:PutObjectAcl"
+         - "s3:PutObjectTagging"
+         - "s3:PutObjectVersionAcl"
+         - "s3:PutObjectVersionTagging"
+       Resource:
+         Fn::Join:
+           - ""
+           - - "arn:aws:s3:::"
+             - Ref: PdfBucket
+custom:
+  webpackIncludeModules: false # disable auto including modules
+
+plugins:
+  - serverless-webpack
+
+functions:
+  generatePdf:
+    description: Generate a PDF of a given URL using headless Chromium
+    memorySize: 1024
+    timeout: 30
+    handler: handler.generatePdf
+
+    events:
+      - http:
+          path: generate/pdf
+          method: get
+
+resources:
+  Resources:
+    PdfBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: chrome-pdf-w7vgnbjtl3ykorcyfdxu5plapsn2da
