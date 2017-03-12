@@ -33,7 +33,10 @@
   "homepage": "https://github.com/adieuadieu/thingamajigs/serverless-chrome-pdf",
   "dependencies": {
     "aws-sdk": "^2.22.0",
-    "babel-runtime": "^6.23.0"
+    "babel-runtime": "^6.23.0",
+    "chrome-remote-interface": "^0.18.0",
+    "uuid": "^3.0.1",
+    "yaml-loader": "^0.4.0"
   },
   "devDependencies": {
     "ava": "^0.18.2",

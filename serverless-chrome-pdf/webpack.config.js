@@ -26,6 +26,10 @@ module.exports = {
         exclude: /node_modules/,
       },
       { test: /\.json$/, loader: 'json-loader' },
+      {
+        test: /\.yaml$/,
+        loader: 'yaml',
+      },
     ],
   },
   output: {
@@ -38,6 +42,6 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({ minimize: true, sourceMap: false, warnings: false }),
-    //new ExtractTarballPlugin(path.join(__dirname, 'lib/chrome-headless-linux-x64.tar.gz'), path.join(__dirname, '.webpack/')),
+    new ExtractTarballPlugin(path.join(__dirname, 'lib/chrome-headless-linux-x64.tar.gz'), path.join(__dirname, '.webpack/')),
   ],
 }

@@ -1,14 +1,38 @@
+import AWS from 'aws-sdk'
+import printToPdf from './printToPdf'
+import { makeKey } from './utils'
+
+export const pdfBucket = new AWS.S3({
+  params: { Bucket: process.env.S3_PDF_BUCKET },
+})
+
 // eslint-disable-next-line import/prefer-default-export
 export async function generatePdf (event, context, callback) {
   const { queryStringParameters: { url } } = event
+  let pdfUrl = ''
 
-  console.log(event)
+  try {
+    const pdf = await printToPdf(url)
+    const objectKey = makeKey()
+
+    await pdfBucket
+      .upload({
+        Key: objectKey,
+        Body: pdf,
+      })
+      .promise()
+
+    pdfUrl = pdfBucket.getSignedUrl('getObject', { Key: objectKey, Expires: 60 * 60 /* expires in 1 hour */ })
+  } catch (error) {
+    console.error(error)
+    return callback(error)
+  }
 
   const response = {
     statusCode: 200,
     body: JSON.stringify({
       url,
-      input: event,
+      pdfUrl,
     }),
   }
 

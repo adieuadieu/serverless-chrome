@@ -5,6 +5,9 @@ provider:
   runtime: nodejs4.3
   stage: dev
   region: us-west-2
+  environment:
+    S3_PDF_BUCKET: ${self:resources.Resources.PdfBucket.Properties.BucketName}
+    CHROME_PATH: ./chrome-headless/headless_shell
   iamRoleStatements:
     -  Effect: "Allow"
        Action:
