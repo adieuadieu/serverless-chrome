@@ -1,4 +1,4 @@
-import './buffer-polyfill'
+// import './buffer-polyfill'
 import AWS from 'aws-sdk'
 import printToPdf from './printToPdf'
 import { makeKey } from './utils'
@@ -27,7 +27,10 @@ export async function generatePdf (event, context, callback) {
       })
       .promise()
 
-    pdfUrl = pdfBucket.getSignedUrl('getObject', { Key: objectKey, Expires: 60 * 60 /* expires in 1 hour */ })
+    pdfUrl = pdfBucket.getSignedUrl('getObject', {
+      Key: objectKey,
+      Expires: 60 * 60, // expires in 1 hour
+    })
   } catch (error) {
     console.error('PDF generation error', error)
     return callback(error)

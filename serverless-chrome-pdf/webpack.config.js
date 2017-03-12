@@ -2,6 +2,9 @@ const path = require('path')
 const decompress = require('decompress')
 const webpack = require('webpack')
 
+const chromeTarball = path.join(__dirname, 'lib/chrome-headless-linux-x64.tar.gz')
+const webpackDir = path.join(__dirname, '.webpack/')
+
 function ExtractTarballPlugin (archive, to) {
   return {
     apply: (compiler) => {
@@ -47,6 +50,6 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     // new webpack.optimize.UglifyJsPlugin({ minimize: true, sourceMap: false, warnings: false }),
-    new ExtractTarballPlugin(path.join(__dirname, 'lib/chrome-headless-linux-x64.tar.gz'), path.join(__dirname, '.webpack/')),
+    new ExtractTarballPlugin(chromeTarball, webpackDir),
   ],
 }
