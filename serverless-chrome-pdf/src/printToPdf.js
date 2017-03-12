@@ -1,38 +1,82 @@
-import { spawn } from 'child_process'
-import fs from 'fs'
-import chrome from 'chrome-remote-interface'
+import path from 'path'
+import { spawn, exec } from 'child_process'
+import Cdp from 'chrome-remote-interface'
+import { sleep } from './utils'
 
-const CHROME_PATH = process.env.CHROME_PATH
+const LOAD_TIMEOUT = 1000 * 60 // Give the page max 60 seconds to load
+const CHROME_PATH = path.resolve(process.env.CHROME_PATH)
 
 export default (async function navigateToPageAndPrintToPDF (url) {
-  if (CHROME_PATH) spawn(CHROME_PATH, ['--no-sandbox', '--remote-debugging-port=9222', '--window-size=1280x1696'])
+  let chromeProcess
 
-  chrome(async (client) => {
-    // extract domains
-    const { Network, Page } = client
-    // setup handlers
-    Network.requestWillBeSent((params) => {
-      console.log(params.request.url)
-    })
-    Page.loadEventFired(() => {
-      client.close()
-    })
-    // enable events then start!
-    try {
-      await Network.enable()
-      await Page.enable()
-      const result = await Page.navigate({ url })
-      console.log(result)
+  if (CHROME_PATH) {
+    console.log('chrome headless bin path', CHROME_PATH)
 
-      Page.captureScreenshot().then((v) => {
-        fs.writeFileSync('test.png', v.data, 'base64')
+    chromeProcess = await new Promise((resolve, reject) => {
+      const child = spawn(CHROME_PATH, ['--no-sandbox', '--remote-debugging-port=9222', '--window-size=1280x1696'])
+
+      child.on('error', (error) => {
+        console.log('Failed to start child process.', error)
+        reject(error)
       })
-    } catch (err) {
-      console.error(err)
-      client.close()
+
+      child.stdout.on('data', (data) => {
+        console.log(`child stdout: ${data}`)
+        resolve()
+      })
+
+      child.stderr.on('data', (data) => {
+        console.log(`child stderr: ${data}`)
+        resolve()
+      })
+
+      child.on('close', (code) => {
+        if (code !== 0) {
+          console.log(`child process exited with code ${code}`)
+        }
+      })
+    })
+  }
+
+  let result
+  let loaded = false
+
+  const loading = async (startTime = Date.now()) => {
+    if (!loaded && Date.now() - startTime < LOAD_TIMEOUT) {
+      await sleep(100)
+      await loading(startTime)
     }
-  }).on('error', (error) => {
-    console.error(error)
-    throw error
+  }
+
+  const tab = await Cdp.New()
+  const client = await Cdp({ tab /* remote: true*/ })
+  const { Network, Page } = client
+
+  Network.requestWillBeSent((params) => {
+    console.log(params.request.url)
   })
+
+  Page.loadEventFired(() => {
+    loaded = true
+  })
+
+  try {
+    await Network.enable()
+    await Page.enable()
+    await Page.navigate({ url })
+    await loading()
+    const { data: screenshot } = await Page.captureScreenshot()
+
+    result = new Buffer(screenshot, 'base64')
+    // const { data: pdf } = await Page.printToPDF()
+
+    await client.close()
+  } catch (err) {
+    console.error(err)
+    client.close()
+  }
+
+  if (chromeProcess) chrome_process.kill()
+
+  return result
 });

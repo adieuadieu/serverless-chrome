@@ -1,6 +1,9 @@
 import uuidV4 from 'uuid/v4'
 
-// eslint-disable-next-line import/prefer-default-export
 export function makeKey () {
-  return uuidV4()
+  return `pdf/${uuidV4()}.pdf`
+}
+
+export function sleep (miliseconds = 1000) {
+  return new Promise(resolve => setTimeout(() => resolve(), miliseconds))
 }

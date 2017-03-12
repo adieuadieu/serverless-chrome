@@ -12,22 +12,13 @@ provider:
     -  Effect: "Allow"
        Action:
          - "s3:*"
-         - "s3:ListBucket"
-         - "s3:PutObject"
-         - "s3:DeleteObject"
-         - "s3:GetObjectAcl"
-         - "s3:ListBucketMultipartUploads"
-         - "s3:ListMultipartUploadParts"
-         - "s3:PutObject"
-         - "s3:PutObjectAcl"
-         - "s3:PutObjectTagging"
-         - "s3:PutObjectVersionAcl"
-         - "s3:PutObjectVersionTagging"
        Resource:
          Fn::Join:
            - ""
            - - "arn:aws:s3:::"
              - Ref: PdfBucket
+             - "/"
+             - "*"
 custom:
   webpackIncludeModules: false # disable auto including modules
 
@@ -45,6 +36,9 @@ functions:
       - http:
           path: generate/pdf
           method: get
+          response:
+            headers:
+              Location: integration.response.headers.location
 
 resources:
   Resources:

@@ -8,4 +8,5 @@ test('printToPdf()', async (t) => {
   t.notThrows(promise)
 
   const result = await promise
+  t.true(result instanceof Buffer, 'expected a buffer')
 })

@@ -34,9 +34,12 @@
   "dependencies": {
     "aws-sdk": "^2.22.0",
     "babel-runtime": "^6.23.0",
+    "buffer": "^5.0.5",
+    "buffer-safe": "^1.0.0",
+    "buffer-v6-polyfill": "^1.0.3",
     "chrome-remote-interface": "^0.18.0",
     "uuid": "^3.0.1",
-    "yaml-loader": "^0.4.0"
+    "ws": "1.1.4"
   },
   "devDependencies": {
     "ava": "^0.18.2",
@@ -59,7 +62,9 @@
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-tap": "^2.0.0",
+    "exports-loader": "^0.6.4",
     "fs-extra": "^2.0.0",
+    "imports-loader": "^0.7.1",
     "json-loader": "0.5.4",
     "nyc": "^10.1.2",
     "serverless": "^1.8.0",
