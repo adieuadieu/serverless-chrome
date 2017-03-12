@@ -42,7 +42,7 @@ export default (async function navigateToPageAndPrintToPDF (url) {
         }
       })
 
-      // child.unref()
+      child.unref()
     })
 
     await sleep(2000) // wait for the headless chrome process to start up... laaaaame
@@ -76,14 +76,23 @@ export default (async function navigateToPageAndPrintToPDF (url) {
 
   console.log('here 3')
 
-  const idunno = await client.Target.createTarget({ url })
-
-  console.log('idduno', idunno)
+  // const idunno = await client.Target.createTarget({ url })
+  // console.log('idduno', idunno)
 
   try {
     console.log('here 4')
+    client.send('Network.enable', true, (error, response) =>
+      console.log('send Network.enable', error, response))
+    console.log('here 4.1')
+    client.send('Page.enable', true, (error, response) =>
+      console.log('send Page.enable', error, response))
+    console.log('here 4.2')
+    client.send('Page.captureScreenshot', true, (error, response) =>
+      console.log('send Page.captureScreenshot', error, response))
+    await sleep(5000)
 
     await Network.enable()
+    console.log('here 4.5')
     await Page.enable()
     console.log('here 5')
     await Page.navigate({ url })

@@ -12,7 +12,7 @@ https://chromium.googlesource.com/chromium/src/+/master/docs/mac_build_instructi
 
 
 
-How to build headless_shell (headless Chrome) for the lambda execution environment:
+How to build headless_shell (headless Chrome) for the lambda execution environment amzn-ami-hvm-2016.03.3.x86_64-gp2 (ami-7172b611):
 
 ```
 sudo printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment

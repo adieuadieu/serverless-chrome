@@ -44,9 +44,9 @@ module.exports = {
   },
   externals: ['aws-sdk', 'child_process', 'fs'],
   plugins: [
-    new webpack.ProvidePlugin({
+    /* new webpack.ProvidePlugin({
       Buffer: `exports?global.Buffer!${path.resolve('./src', 'buffer-polyfill')}`, // https://gist.github.com/Couto/b29676dd1ab8714a818f
-    }),
+    }),*/
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     // new webpack.optimize.UglifyJsPlugin({ minimize: true, sourceMap: false, warnings: false }),

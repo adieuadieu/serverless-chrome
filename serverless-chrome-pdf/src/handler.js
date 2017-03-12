@@ -16,6 +16,8 @@ export async function generatePdf (event, context, callback) {
   const { queryStringParameters: { url } } = event
   let pdfUrl = ''
 
+  console.log('Processing request for URL', url)
+
   try {
     const pdf = await printToPdf(url)
     const objectKey = makeKey()
