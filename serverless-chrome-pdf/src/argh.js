@@ -26,10 +26,6 @@ if (CHROME_PATH) {
 
   console.log('LOL chrome headless bin path', CHROME_PATH)
 
-  execSync('ls && df -h && cat /etc/fstab', (err, out, end) => {
-    console.log('exec', err, out, end)
-  })
-
   const blah1 = spawn('df', ['-h'])
   blah1.stdout.on('data', (data) => {
     console.log(`blah1 stdout: ${data}`)
@@ -47,43 +43,38 @@ if (CHROME_PATH) {
         '--remote-debugging-port=9222',
         '--user-data-dir=/tmp',
         '--hide-scrollbars',
+        '--enable-logging',
+        '--v=99',
+        '--single-process',
         // '--dump-dom', // Dump DOM is disabled when remote debugging is enabled.
         // '--use-gl=""',
         // '--screenshot="/tmp/test.png"', // Capture screenshot is disabled when remote debugging is enabled.
         // '--trace-startup=*,disabled-by-default-memory-infra',
         '--trace-startup=*',
         '--trace=*',
-        'https://google.com/',
+        //'https://google.com/',
       ],
       { cwd: os.tmpdir(), shell: true, detached: true },
     ) // '--window-size=1280x1696'
 
     child.on('error', (error) => {
-      console.log('Failed to start child process.', error)
+      console.log('Failed to start chrome process.', error)
       reject(error)
     })
 
     child.stdout.on('data', (data) => {
-      console.log(`child stdout: ${data}`)
+      console.log(`chrome stdout: ${data}`)
       resolve()
     })
 
     child.stderr.on('data', (data) => {
-      console.log(`child stderr: ${data}`)
-
-      try {
-        console.log('trace?', fs.readFileSync('/tmp/chrometrace.log').toString())
-      } catch (error) {}
-
-      const a = execSync('ls -lhtra /tmp')
-      console.log('a', a.toString())
-
+      console.log(`chrome stderr: ${data}`)
       resolve()
     })
 
     child.on('close', (code) => {
       if (code !== 0) {
-        console.log(`child process exited with code ${code}`)
+        console.log(`chrome process exited with code ${code}`)
       }
     })
   })
