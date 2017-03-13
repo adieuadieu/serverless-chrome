@@ -2,6 +2,16 @@
 
 
 
+npm install serverless -g
+serverless deploy
+
+Be sure to export AWS credentials or export AWS_PROFILE=<profile name> or set creds otherwise
+
+
+
+
+
+
 http://www.zackarychapple.guru/chrome/2016/08/24/chrome-headless.html
 https://chromium.googlesource.com/chromium/src/+/master/docs/linux_build_instructions.md
 http://mirror.centos.org/centos/6/os/x86_64/
@@ -44,5 +54,3 @@ ninja -C out/Headless headless_shell
 mkdir out/headless-chrome && cd out
 cp Headless/headless_shell Headless/libosmesa.so headless-chrome/
 tar -zcvf headless-chrome-linux-x64.tar.gz headless-chrome/
-
-be sure to export AWS_PROFILE=serverless-admin or set creds otherwise

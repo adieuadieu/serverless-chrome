@@ -5,6 +5,7 @@ import { spawn, exec, execSync } from 'child_process'
 import WebSocket from 'ws'
 import got from 'got'
 import AWS from 'aws-sdk'
+import { sleep } from './utils'
 
 export const tracelogBucket = new AWS.S3({
   params: { Bucket: process.env.S3_PDF_BUCKET },
@@ -47,7 +48,7 @@ if (CHROME_PATH) {
         '--user-data-dir=/tmp',
         '--hide-scrollbars',
         // '--dump-dom', // Dump DOM is disabled when remote debugging is enabled.
-        '--use-gl=""',
+        // '--use-gl=""',
         // '--screenshot="/tmp/test.png"', // Capture screenshot is disabled when remote debugging is enabled.
         // '--trace-startup=*,disabled-by-default-memory-infra',
         '--trace-startup=*',
@@ -90,6 +91,8 @@ if (CHROME_PATH) {
 
 export async function generatePdf (event, context, callback) {
   const { queryStringParameters: { url } } = event
+
+  await sleep(1000 * 15)
 
   const headless = '127.0.0.1:9222'
   const headlessUrl = `http://${headless}`
@@ -137,7 +140,7 @@ export async function generatePdf (event, context, callback) {
     })
 
     ws.on('close', () => {
-      console.log('it closes')
+      console.log('ws closed')
     })
 
     ws.on('error', (error) => {
@@ -173,10 +176,12 @@ export async function generatePdf (event, context, callback) {
             })
 
             console.log('chrome trace log', response.tracelog)
+            callback(null, response)
           })
+          .catch(callback)
+      } else {
+        callback(null, response)
       }
-
-      callback(null, response)
     },
     9999,
   )

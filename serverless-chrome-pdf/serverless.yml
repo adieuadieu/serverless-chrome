@@ -29,7 +29,7 @@ functions:
   generatePdf:
     description: Generate a PDF of a given URL using headless Chromium
     memorySize: 1536
-    timeout: 60
+    timeout: 120
     handler: handler.generatePdf
 
     events:
