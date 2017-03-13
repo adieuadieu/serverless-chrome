@@ -29,22 +29,25 @@ export AWS_SECRET_ACCESS_KEY=<your-secret-key-here>
 
 
 
-<hr />
 
 
 
 ## Building Headless Chrome for AWS Lambda
 
-How to build headless_shell (headless Chrome) for the lambda execution environment amzn-ami-hvm-2016.03.3.x86_64-gp2 (us-west-2 ami-7172b611):
+How to build headless_shell (headless Chrome) for the lambda execution environment. These steps are based on [this](http://www.zackarychapple.guru/chrome/2016/08/24/chrome-headless.html) and [this](https://chromium.googlesource.com/chromium/src/+/master/docs/linux_build_instructions.md).
 
-ssh into the instance and then:
+1. Create a new EC2 instance using the community AMI with name amzn-ami-hvm-2016.03.3.x86_64-gp2 (us-west-2 ami-7172b611).
+2. Pick an Instance Type with at least 16 GB of memory. Compile time will take about 4-5 hours on a t2.xlarge, or 2-3ish on a t2.2xlarge or about 45 min on a c4.4xlarge.
+3. Give yourself a Root Volume that's at least 30 GB (40 GB if you want to compile a debug build).
+4. SSH into the new instance and run:
+
 ```bash
 sudo printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
 
 sudo yum install -y git redhat-lsb python bzip2 tar pkgconfig atk-devel alsa-lib-devel bison binutils brlapi-devel bluez-libs-devel bzip2-devel cairo-devel cups-devel dbus-devel dbus-glib-devel expat-devel fontconfig-devel freetype-devel gcc-c++ GConf2-devel glib2-devel glibc.i686 gperf glib2-devel gtk2-devel gtk3-devel java-1.*.0-openjdk-devel libatomic libcap-devel libffi-devel libgcc.i686 libgnome-keyring-devel libjpeg-devel libstdc++.i686 libX11-devel libXScrnSaver-devel libXtst-devel libxkbcommon-x11-devel ncurses-compat-libs nspr-devel nss-devel pam-devel pango-devel pciutils-devel pulseaudio-libs-devel zlib.i686 httpd mod_ssl php php-cli python-psutil wdiff --enablerepo=epel
 ```
 
-It'll complain about some packages not existing. Didn't seem to stop me from building headless_shell, though. Next:
+_Yum_ will complain about some packages not existing. Whatever. I haven't looked into them. Didn't seem to stop me from building headless_shell, though. Ignore whiney little _Yum_ and move on. Next:
 
 ```bash
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
@@ -70,6 +73,14 @@ mkdir out/headless-chrome && cd out
 cp Headless/headless_shell Headless/libosmesa.so headless-chrome/
 tar -zcvf headless-chrome-linux-x64.tar.gz headless-chrome/
 ```
+
+
+
+
+
+<hr />
+
+
 
 
 
