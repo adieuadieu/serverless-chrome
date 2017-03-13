@@ -1,6 +1,6 @@
 # thingamajigs / serverless-chrome-pdf experiment
 
-**Warning**: This is an experiment. This code is a mess. Doesn't actually work yet. Once it does, it might get refactored and split into it's own cleaned-up repository. Maybe.
+**Warning**: This is an experiment. This code is a mess. Doesn't actually work yet. Once it does, it'll get refactored and split off into it's own cleaned-up repository.
 
 **The Goal:** Run headless Chrome in AWS Lambda and generate a PDF of a webpage (e.g. kinda like what you can do with [PhantomJS](http://phantomjs.org/) or [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf)) or [node-webkitgtk](https://github.com/kapouer/node-webkitgtk) or [electron-pdf](https://github.com/Janpot/electron-pdf) but with Chrome.) Yes; I'm aware that headless Chrome is still missing support for [`Page.printToPDF`](https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-printToPDF).
 
