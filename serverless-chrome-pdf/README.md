@@ -1,5 +1,7 @@
 # thingamajigs / serverless-chrome-pdf experiment
 
+**Warning**: This is an experiment. This code is a mess. Doesn't actually work yet. Once it does, it might get refactored and split into it's own cleaned-up repository. Maybe.
+
 
 Run with:
 ```bash
