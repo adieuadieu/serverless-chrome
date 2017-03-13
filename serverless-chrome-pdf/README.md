@@ -6,6 +6,7 @@
 Run with:
 ```bash
 npm install serverless -g
+yarn install
 serverless deploy
 ```
 
