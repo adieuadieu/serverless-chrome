@@ -3,7 +3,7 @@ import printToPdf from './printToPdf'
 
 const testUrl = 'https://github.com/adieuadieu'
 
-test('printToPdf()', async (t) => {
+test.skip('printToPdf()', async (t) => {
   const promise = printToPdf(testUrl)
   t.notThrows(promise)
 

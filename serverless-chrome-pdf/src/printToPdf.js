@@ -1,5 +1,5 @@
 import path from 'path'
-import { spawn } from 'child_process'
+import { spawn, exec } from 'child_process'
 import Cdp from 'chrome-remote-interface'
 import { sleep } from './utils'
 
@@ -12,6 +12,10 @@ export default (async function navigateToPageAndPrintToPDF (url) {
   if (CHROME_PATH) {
     console.log('chrome headless bin path', CHROME_PATH)
 
+    exec('ls && df -h && more /etc/fstab', (err, out, end) => {
+      console.log('exec', err, out, end)
+    })
+    await sleep(1000)
     chromeProcess = await new Promise((resolve, reject) => {
       const child = spawn(
         CHROME_PATH,
@@ -42,7 +46,7 @@ export default (async function navigateToPageAndPrintToPDF (url) {
         }
       })
 
-      child.unref()
+      // child.unref()
     })
 
     await sleep(2000) // wait for the headless chrome process to start up... laaaaame
@@ -59,15 +63,23 @@ export default (async function navigateToPageAndPrintToPDF (url) {
     }
   }
   console.log('here 1')
-  const tab = await Cdp.New()
+  const tab = await Cdp.New({ host: '127.0.0.1' })
   console.log('tab', tab)
-  const client = await Cdp({ tab /* , remote: true*/ })
+  const client = await Cdp({ host: '127.0.0.1', tab /* , remote: true*/ })
   const { Network, Page } = client
 
   console.log('here 2')
 
+  Cdp.Version((err, info) => {
+    console.log('CDP version info', err, info)
+  })
+
+  /* client.on('event', (message) => {
+    console.log('client event', message)
+  })*/
+
   Network.requestWillBeSent((params) => {
-    console.log(params.request.url)
+    // console.log(params.request.url)
   })
 
   Page.loadEventFired(() => {
@@ -87,9 +99,6 @@ export default (async function navigateToPageAndPrintToPDF (url) {
     client.send('Page.enable', true, (error, response) =>
       console.log('send Page.enable', error, response))
     console.log('here 4.2')
-    client.send('Page.captureScreenshot', true, (error, response) =>
-      console.log('send Page.captureScreenshot', error, response))
-    await sleep(5000)
 
     await Network.enable()
     console.log('here 4.5')
@@ -107,7 +116,7 @@ export default (async function navigateToPageAndPrintToPDF (url) {
     console.error(error)
   }
 
-  console.log('got this far with result', result)
+  // console.log('got this far with result', result)
 
   await client.close()
   if (chromeProcess) chromeProcess.kill()

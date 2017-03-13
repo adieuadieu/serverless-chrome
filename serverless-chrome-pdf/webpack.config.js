@@ -18,7 +18,8 @@ function ExtractTarballPlugin (archive, to) {
 }
 
 module.exports = {
-  entry: './src/handler',
+  // entry: './src/handler',
+  entry: './src/argh',
   target: 'node',
   module: {
     loaders: [

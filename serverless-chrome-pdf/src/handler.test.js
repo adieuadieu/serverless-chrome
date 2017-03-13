@@ -5,7 +5,7 @@ const testEvent = {
   queryStringParameters: { url: 'https://github.com/adieuadieu' },
 }
 
-test('generatePdf()', async (t) => {
+test.skip('generatePdf()', async (t) => {
   const promise = generatePdf(testEvent, {}, (error, response) => {
     t.falsy(error)
     console.log(response)

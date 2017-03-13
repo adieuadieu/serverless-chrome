@@ -41,5 +41,9 @@ gn gen out/Headless
 ninja -C out/Headless headless_shell
 ```
 
-then cp headless_shell and libomesa.so
-add here: part to tar -czvf the tarball with headless chrome
+// make the tarball
+mkdir out/headless-chrome && cd out
+cp Headless/headless_shell Headless/libosmesa.so headless-chrome/
+tar -zcvf headless-chrome-linux-x64.tar.gz headless-chrome/
+
+be sure to export AWS_PROFILE=serverless-admin or set creds otherwise
