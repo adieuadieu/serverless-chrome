@@ -2,7 +2,7 @@
 
 **Warning**: This is an experiment. This code is a mess. Doesn't actually work yet. Once it does, it might get refactored and split into it's own cleaned-up repository. Maybe.
 
-**The Goal:** Run headless Chrome in AWS Lambda and generate a PDF of a webpage (e.g. kinda like what you can do with [PhantomJS](http://phantomjs.org/) or [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf)) or [node-webkitgtk](https://github.com/kapouer/node-webkitgtk) or [electron-pdf](https://github.com/Janpot/electron-pdf) but with Chrome.)
+**The Goal:** Run headless Chrome in AWS Lambda and generate a PDF of a webpage (e.g. kinda like what you can do with [PhantomJS](http://phantomjs.org/) or [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf)) or [node-webkitgtk](https://github.com/kapouer/node-webkitgtk) or [electron-pdf](https://github.com/Janpot/electron-pdf) but with Chrome.) Yes; I'm aware that headless Chrome is still missing support for `Page.printToPDF`.
 
 **Why?** Because it's neat. And the PhantomJS guy never updates webkit. And I don't want to hack together Xvbf in Lambda.
 
