@@ -18,6 +18,14 @@ export async function generatePdf (event, context, callback) {
 
   console.log('Processing request for URL', url)
 
+  // TODO: import/use user-provided/custom handler code
+  try {
+    const customHandler = require('./src/custom')
+    return await customHandler(event, context, callback)
+  } catch (error) {
+    console.warn('no custom handler code')
+  }
+
   try {
     const pdf = await printToPdf(url)
     const objectKey = makeKey()
