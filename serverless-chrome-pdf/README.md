@@ -39,7 +39,7 @@ How to build headless_shell (headless Chrome) for the lambda execution environme
 
 1. Create a new EC2 instance using the community AMI with name amzn-ami-hvm-2016.03.3.x86_64-gp2 (us-west-2 ami-7172b611).
 2. Pick an Instance Type with at least 16 GB of memory. Compile time will take about 4-5 hours on a t2.xlarge, or 2-3ish on a t2.2xlarge or about 45 min on a c4.4xlarge.
-3. Give yourself a Root Volume that's at least 30 GB (40 GB if you want to compile a debug build).
+3. Give yourself a Root Volume that's at least 30 GB (40 GB if you want to compile a debug build—which you won't be able to upload to Lambda because it's too big.)
 4. SSH into the new instance and run:
 
 ```bash
