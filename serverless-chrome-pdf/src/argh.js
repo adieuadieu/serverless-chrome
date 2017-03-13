@@ -16,6 +16,8 @@ const CHROME_PATH = process.env.CHROME_PATH && path.resolve(process.env.CHROME_P
 // const mountface = execSync('mount --bind /tmp/ /dev/shm/')
 // console.log('mounted', mountface.toString())
 
+let log = ''
+
 let chromeProcess
 
 if (CHROME_PATH) {
@@ -37,7 +39,7 @@ if (CHROME_PATH) {
       '/tmp/headless-chrome/headless_shell',
       [
         // '--headless',
-        '--disable-gpu',
+        '--disable-gpu', // TODO: should we do this?
 
         '--no-sandbox',
         '--remote-debugging-port=9222',
@@ -64,11 +66,13 @@ if (CHROME_PATH) {
 
     child.stdout.on('data', (data) => {
       console.log(`chrome stdout: ${data}`)
+      log += data
       resolve()
     })
 
     child.stderr.on('data', (data) => {
       console.log(`chrome stderr: ${data}`)
+      log += data
       resolve()
     })
 
@@ -147,6 +151,8 @@ export async function generatePdf (event, context, callback) {
   }
 
   console.log(`Completed processing event for URL ${url}`)
+
+  console.log('full chrome log', log)
 
   return setTimeout(
     () => {
