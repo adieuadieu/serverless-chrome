@@ -33,29 +33,52 @@ if (CHROME_PATH) {
     console.log(`blah1 stdout: ${data}`)
   })
 
+  const CHROME_EXEC = '/tmp/headless-chrome/headless_shell'
+  const CHROME_ARGS = [
+    // http://peter.sh/experiments/chromium-command-line-switches/
+    '--headless', // Redundant?
+    '--disable-gpu', // TODO: should we do this?
+
+    '--no-sandbox',
+    '--remote-debugging-port=9222',
+    '--user-data-dir=/tmp/user-data',
+    '--hide-scrollbars',
+    '--enable-logging',
+    '--log-level=0',
+    '--v=99',
+    '--single-process',
+    '--data-path=/tmp/data-path',
+
+    '--ignore-certificate-errors', // Dangerous?
+
+    '--no-zygote', // Disables the use of a zygote process for forking child processes. Instead, child processes will be forked and exec'd directly. Note that --no-sandbox should also be used together with this flag because the sandbox needs the zygote to work.
+
+    '--homedir=/tmp',
+    '--media-cache-size=0',
+    '--disable-lru-snapshot-cache',
+    '--disable-setuid-sandbox',
+    '--disk-cache-size=0',
+    '--disk-cache-dir=/tmp/cache-dir',
+
+    '--use-simple-cache-backend',
+    '--enable-low-end-device-mode',
+
+    // '--dump-dom', // Dump DOM is disabled when remote debugging is enabled.
+    // '--use-gl=""',
+    // '--screenshot="/tmp/test.png"', // Capture screenshot is disabled when remote debugging is enabled.
+    // '--trace-startup=*,disabled-by-default-memory-infra',
+    '--trace-startup=*',
+    '--trace=*',
+    //'https://google.com/',
+  ]
+
   chromeProcess = new Promise((resolve, reject) => {
+    console.log('Spawning headless_shell:\n $ ', CHROME_EXEC, CHROME_ARGS.join(' '))
+
     const child = spawn(
       // CHROME_PATH,
-      '/tmp/headless-chrome/headless_shell',
-      [
-        // '--headless',
-        '--disable-gpu', // TODO: should we do this?
-
-        '--no-sandbox',
-        '--remote-debugging-port=9222',
-        '--user-data-dir=/tmp',
-        '--hide-scrollbars',
-        '--enable-logging',
-        '--v=99',
-        '--single-process',
-        // '--dump-dom', // Dump DOM is disabled when remote debugging is enabled.
-        // '--use-gl=""',
-        // '--screenshot="/tmp/test.png"', // Capture screenshot is disabled when remote debugging is enabled.
-        // '--trace-startup=*,disabled-by-default-memory-infra',
-        '--trace-startup=*',
-        '--trace=*',
-        //'https://google.com/',
-      ],
+      CHROME_EXEC,
+      CHROME_ARGS,
       { cwd: os.tmpdir(), shell: true, detached: true },
     ) // '--window-size=1280x1696'
 
@@ -157,6 +180,10 @@ export async function generatePdf (event, context, callback) {
   return setTimeout(
     () => {
       console.log('almost..')
+
+      const tmpLs = execSync('ls -lhtra /tmp')
+      console.log('tmp ls', tmpLs.toString())
+
       if (fs.existsSync('/tmp/chrometrace.log')) {
         const key = `argh/blah/chrometrace-${Date.now()}.log`
         console.log('key', key)

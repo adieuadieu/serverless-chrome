@@ -81,6 +81,7 @@ cp Headless/headless_shell Headless/libosmesa.so headless-chrome/
 tar -zcvf headless-chrome-linux-x64.tar.gz headless-chrome/
 ```
 
+TODO: Note, you don't need libosmesa.so if you're not doing GPU rendering (which we probably are not in Lambda)
 
 
 
