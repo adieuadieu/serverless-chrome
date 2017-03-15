@@ -1,6 +1,7 @@
 import captureScreenshotHandler from './handlers/captureScreenshot'
 import userConfig from '../config'
 
+// TODO: clean up the flags we don't need/care about
 const defaultChromeFlags = [
   '--headless', // Redundant?
   '--disable-gpu', // TODO: should we do this?
@@ -37,8 +38,14 @@ const defaultChromeConfig = {
 }
 
 export default {
+  // log some extra stuff. It'll show up in your CloudWatch logs
   logging: false,
+
+  // this is a function which will get executed after chrome has spawned
   handler: captureScreenshotHandler,
+
+  // *** //
+
   ...userConfig,
 
   chromeFlags: [...defaultChromeFlags, ...(userConfig.chromeFlags || [])],
