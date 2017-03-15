@@ -3,7 +3,7 @@ import config from '../config'
 import { log, sleep } from '../utils'
 
 export async function captureScreenshotOfUrl (url) {
-  const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 30
+  const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 60
 
   let result
   let loaded = false
@@ -28,11 +28,18 @@ export async function captureScreenshotOfUrl (url) {
     loaded = true
   })
 
+  if (config.logging) {
+    Cdp.Version((err, info) => {
+      console.log('CDP version info', err, info)
+    })
+  }
+
   try {
     await Network.enable()
     await Page.enable()
     await Page.navigate({ url })
     await loading()
+    // TODO: resize the chrome "window" so we capture the full height of the page
     const screenshot = await Page.captureScreenshot()
     result = screenshot.data
   } catch (error) {
