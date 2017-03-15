@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome",
   "dependencies": {
-    "aws-sdk": "^2.22.0",
+    "aws-sdk": "^2.28.0",
     "babel-runtime": "^6.23.0",
     "buffer": "^5.0.5",
     "buffer-safe": "^1.0.0",
@@ -64,11 +64,11 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-tap": "^2.0.0",
     "exports-loader": "^0.6.4",
-    "fs-extra": "^2.0.0",
+    "fs-extra": "^2.1.0",
     "imports-loader": "^0.7.1",
     "json-loader": "0.5.4",
     "nyc": "^10.1.2",
-    "serverless": "^1.8.0",
+    "serverless": "^1.9.0",
     "serverless-webpack": "^1.0.0-rc.4",
     "tap-xunit": "^1.7.0",
     "webpack": "1.14.0"

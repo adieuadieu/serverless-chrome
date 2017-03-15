@@ -1,6 +1,7 @@
 import captureScreenshotHandler from './handlers/captureScreenshot'
 import userConfig from '../config'
 
+// TODO: clean up the flags we don't need/care about
 const defaultChromeFlags = [
   '--headless', // Redundant?
   '--disable-gpu', // TODO: should we do this?
@@ -33,12 +34,18 @@ const defaultChromeFlags = [
 ]
 
 const defaultChromeConfig = {
-  pageLoadTimeout: 1000 * 15, // Give the page max 15 seconds to load. time is money!
+  pageLoadTimeout: 1000 * 60, // Give the page max 60 seconds to load. time is money!
 }
 
 export default {
+  // log some extra stuff. It'll show up in your CloudWatch logs
   logging: false,
+
+  // this is a function which will get executed after chrome has spawned
   handler: captureScreenshotHandler,
+
+  // *** //
+
   ...userConfig,
 
   chromeFlags: [...defaultChromeFlags, ...(userConfig.chromeFlags || [])],
