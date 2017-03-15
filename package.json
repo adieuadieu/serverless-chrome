@@ -13,7 +13,7 @@
     "lint:eslint": "eslint $npm_package_config_jsSrc",
     "coverage": "nyc report",
     "deploy": "npm test && serverless deploy -v",
-    "postinstall": "if [ ! -f ./config.json ]; then UUID=$(openssl rand -base64 32 | tr -d \"/=+\"); echo \"export default {uuid: \\\"$UUID\\\"}\" > ./config.js; fi"
+    "postinstall": "if [ ! -f ./config.js ]; then UUID=$(openssl rand -base64 32 | tr -d \"/=+\"); echo \"export default {uuid: \\\"$UUID\\\"}\" > ./config.js; fi"
   },
   "repository": {
     "type": "git",
@@ -35,7 +35,6 @@
     "babel-runtime": "^6.23.0",
     "buffer": "^5.0.5",
     "buffer-safe": "^1.0.0",
-    "buffer-v6-polyfill": "^1.0.3",
     "chrome-remote-interface": "^0.18.0",
     "got": "^6.7.1",
     "ps-node": "^0.1.4",

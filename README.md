@@ -4,7 +4,7 @@ Serverless Chrome contains everything you need to get started running headless C
 
 Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome Debugger Protocol](https://developer.chrome.com/devtools/docs/debugger-protocol) in serverless architectures. Maybe.
 
-The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. We'll take care of building and bundling the chrome binaries and making sure Chrome is running, and you figure out something useful to do with it. In addition, this project will provide a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, etc.)
+The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. We'll take care of building and bundling the chrome binaries and making sure Chrome is running, and you figure out something useful to do with it. In addition, this project will provide a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
 
 **Caution**: This project is in it's infancy and evolving quickly. Pull requests and Issues are welcome!
 
