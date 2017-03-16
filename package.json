@@ -12,7 +12,7 @@
     "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint $npm_package_config_jsSrc",
     "coverage": "nyc report",
-    "deploy": "npm test && serverless deploy -v",
+    "deploy": "serverless deploy -v",
     "postinstall": "if [ ! -f ./config.js ]; then UUID=$(openssl rand -base64 32 | tr -d \"/=+\"); echo \"export default {uuid: \\\"$UUID\\\"}\" > ./config.js; fi"
   },
   "repository": {

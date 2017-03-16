@@ -1,6 +1,6 @@
 import os from 'os'
 import path from 'path'
-import sp from 'child_process'
+import sp from 'child_process' // TODO: why is this sp and not cp? (cp is also confusing cuz copy)
 import got from 'got'
 import config from './config'
 import { log, psLookup, psKill } from './utils'
@@ -14,6 +14,7 @@ export async function isChromeRunning () {
 
   console.log('ls /tmp', sp.execSync('ls -lhtra /tmp').toString())
 
+  // TODO: this doesn't work. Also, never seems like headless shell is already running —— why?
   // TODO: we can't rely on ps on lambda? look for /tmp/.chrome.blah file instead?
   try {
     const matches = await psLookup({ command: 'headless_shell' })
@@ -25,7 +26,7 @@ export async function isChromeRunning () {
   return running
 }
 
-// TODO: refactor this cuz there's some dumb dumb in here.
+// TODO: refactor this cuz there's some dumb dumb in here. specifically parentResolve.
 function waitUntilProcessIsReady (startTime = Date.now(), parentResolve = () => {}) {
   return new Promise(async (resolve) => {
     if (Date.now() - startTime < PROCESS_STARTUP_TIMEOUT) {
@@ -83,6 +84,8 @@ export async function spawn () {
       }
     })
   }
+
+  return Promise.resolve()
 }
 
 export async function kill () {

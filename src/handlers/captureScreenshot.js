@@ -35,9 +35,9 @@ export async function captureScreenshotOfUrl (url) {
   }
 
   try {
-    await Network.enable()
-    await Page.enable()
-    await Page.navigate({ url })
+    await Network.enable() // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
+    await Page.enable() // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
+    await Page.navigate({ url }) // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
     await loading()
     // TODO: resize the chrome "window" so we capture the full height of the page
     const screenshot = await Page.captureScreenshot()

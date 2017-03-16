@@ -2,14 +2,9 @@
 
 Serverless Chrome contains everything you need to get started running headless Chrome on AWS Lambda (possibly Azure and GCP Functions soon).
 
-Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome Debugger Protocol](https://developer.chrome.com/devtools/docs/debugger-protocol) in serverless architectures. Maybe.
+The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. Serverless Chrome takes care of building and bundling the Chrome binaries and making sure Chrome is running when your serverless function executes. In addition, this project also provides a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
 
-The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. We'll take care of building and bundling the chrome binaries and making sure Chrome is running, and you figure out something useful to do with it. In addition, this project will provide a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
-
-**Caution**: This project is in it's infancy and evolving quickly. Pull requests and Issues are welcome!
-
-**Apologies**: This README is incomplete & very unpolished.
-
+Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome Debugger Protocol](https://developer.chrome.com/devtools/docs/debugger-protocol) in serverless architectures.
 
 
 ## Contents
@@ -98,15 +93,102 @@ You can provide your own handler via the `config.js` file created when you initi
 _/config.js_
 ```js
 export default {
-  handler: async function(lambdaInvocationEvent, invocationContext) {
-    const { queryStringParameters: { url } } = lambdaInvocationEvent
+  handler: async function(invocationEventData, executionContext) {
+    const { queryStringParameters: { url } } = invocationEventData
     const stuff = await doSomethingWith(url)
     return stuff
   }
 }
 ```
 
-See `src/handlers` for more examples.
+The first parameter, `invocationEventData`, is the event data with which the Lambda function is invoked. It's the first parameter provided by Lambda. The second, `executionContext` is the second parameter provided to the Lambda function which contains useful [runtime information](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html).
+
+`serverless-chrome` calls the [Lambda handlers `callback()`](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html#nodejs-prog-model-handler-callback) for you when your handler function completes. The result of your handler is passed to callback with `callback(null, yourHandlerResult)`. If your handler throws an error, callback is called with `callback(yourHandlerError)`.
+
+For example, to create a handler which returns the version info of the Chrome Debugger Protocol, you could modify _/config.js_ to:
+
+```js
+import Cdp from 'chrome-remote-interface'
+
+export default {
+  async handler (event) {
+
+    const versionInfo = await Cdp.Version()
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        versionInfo,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  },
+}
+```
+
+To capture all of the Network Request events made when loading a URL, you could modify _/config.js_ to something like:
+
+```js
+import Cdp from 'chrome-remote-interface'
+import { sleep } from './src/utils'
+
+const LOAD_TIMEOUT = 1000 * 30
+
+export default {
+  async handler (event) {
+    const requestsMade = []
+    let loaded = false
+
+    const loading = async (startTime = Date.now()) => {
+      if (!loaded && Date.now() - startTime < LOAD_TIMEOUT) {
+        await sleep(100)
+        await loading(startTime)
+      }
+    }
+
+    const tab = await Cdp.New({ host: '127.0.0.1' })
+    const client = await Cdp({ host: '127.0.0.1', tab })
+
+    const { Network, Page } = client
+
+    Network.requestWillBeSent(params => requestsMade.push(params))
+
+    Page.loadEventFired(() => {
+      loaded = true
+    })
+
+    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
+    await Network.enable()
+
+    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
+    await Page.enable()
+
+    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
+    await Page.navigate({ url: 'https://www.chromium.org/' })
+
+    // wait until page is done loading, or timeout
+    await loading()
+
+    // It's important that we close the websocket connection,
+    // or our Lambda function will not exit properly
+    await client.close()
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        requestsMade,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  },
+}
+```
+
+See [`src/handlers`](https://github.com/adieuadieu/serverless-chrome/tree/master/src/handlers) for more examples.
 
 **TODO**: talk about CDP and [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface)
 
