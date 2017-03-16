@@ -2,14 +2,9 @@
 
 Serverless Chrome contains everything you need to get started running headless Chrome on AWS Lambda (possibly Azure and GCP Functions soon).
 
-Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome Debugger Protocol](https://developer.chrome.com/devtools/docs/debugger-protocol) in serverless architectures. Maybe.
+The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. Serverless Chrome takes care of building and bundling the Chrome binaries and making sure Chrome is running when your serverless function executes. In addition, this project also provides a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
 
-The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. We'll take care of building and bundling the chrome binaries and making sure Chrome is running, and you figure out something useful to do with it. In addition, this project will provide a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
-
-**Caution**: This project is in it's infancy and evolving quickly. Pull requests and Issues are welcome!
-
-**Apologies**: This README is incomplete & very unpolished.
-
+Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome Debugger Protocol](https://developer.chrome.com/devtools/docs/debugger-protocol) in serverless architectures.
 
 
 ## Contents
