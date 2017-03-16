@@ -16,11 +16,12 @@ export async function run (event, context, callback, handler = config.handler) {
 
   try {
     handlerResult = await handler(event, context)
-    log('Handler result:', handlerResult)
   } catch (error) {
     console.error('Error in handler:', error)
     handlerError = error
   }
+
+  log('Handler result:', JSON.stringify(handlerResult, null, ' '))
 
   return callback(handlerError, handlerResult)
 }

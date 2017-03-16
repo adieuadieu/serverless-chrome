@@ -106,6 +106,90 @@ export default {
 }
 ```
 
+For example, to create a handler which returns the version info of the Chrome Debugger Protocol, you could modify _/config.js_ to:
+
+```js
+import Cdp from 'chrome-remote-interface'
+
+export default {
+  logging: true,
+  async handler (event) {
+
+    const versionInfo = await Cdp.Version()
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        versionInfo,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  },
+}
+```
+
+To capture all of the Network Request events made when loading a URL, you could modify _/config.js_ to something like:
+
+```js
+import Cdp from 'chrome-remote-interface'
+import { sleep } from './src/utils'
+
+const LOAD_TIMEOUT = 1000 * 30
+
+export default {
+  logging: true,
+  async handler (event) {
+    const requestsMade = []
+    let loaded = false
+
+    const loading = async (startTime = Date.now()) => {
+      if (!loaded && Date.now() - startTime < LOAD_TIMEOUT) {
+        await sleep(100)
+        await loading(startTime)
+      }
+    }
+
+    const tab = await Cdp.New({ host: '127.0.0.1' })
+    const client = await Cdp({ host: '127.0.0.1', tab })
+
+    const { Network, Page, DOM } = client
+
+    Network.requestWillBeSent(params => requestsMade.push(params))
+
+    Page.loadEventFired(() => {
+      loaded = true
+    })
+
+    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
+    await Network.enable()
+
+    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
+    await Page.enable()
+
+    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
+    await Page.navigate({ url: 'https://www.chromium.org/' })
+
+    // wait until page is done loading, or timeout
+    await loading()
+
+    // It's important that we close the websocket connection, or our Lambda function will not exit properly
+    await client.close()
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        requestsMade,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  },
+}
+```
+
 See `src/handlers` for more examples.
 
 **TODO**: talk about CDP and [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface)
