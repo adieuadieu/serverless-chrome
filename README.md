@@ -98,15 +98,15 @@ You can provide your own handler via the `config.js` file created when you initi
 _/config.js_
 ```js
 export default {
-  handler: async function(lambdaInvocationEvent, executionContext) {
-    const { queryStringParameters: { url } } = lambdaInvocationEvent
+  handler: async function(invocationEventData, executionContext) {
+    const { queryStringParameters: { url } } = invocationEventData
     const stuff = await doSomethingWith(url)
     return stuff
   }
 }
 ```
 
-The first parameter, `lambdaInvocationEvent`, is the event data with which the Lambda function is invoked. It's the first parameter provided by Lambda. The second, `executionContext` is the second parameter provided to the Lambda function which contains useful [runtime information](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html).
+The first parameter, `invocationEventData`, is the event data with which the Lambda function is invoked. It's the first parameter provided by Lambda. The second, `executionContext` is the second parameter provided to the Lambda function which contains useful [runtime information](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html).
 
 `serverless-chrome` calls the [Lambda handlers `callback()`](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html#nodejs-prog-model-handler-callback) for you when your handler function completes. The result of your handler is passed to callback with `callback(null, yourHandlerResult)`. If your handler throws an error, callback is called with `callback(yourHandlerError)`.
 
