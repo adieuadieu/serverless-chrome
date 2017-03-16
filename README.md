@@ -176,7 +176,8 @@ export default {
     // wait until page is done loading, or timeout
     await loading()
 
-    // It's important that we close the websocket connection, or our Lambda function will not exit properly
+    // It's important that we close the websocket connection,
+    // or our Lambda function will not exit properly
     await client.close()
 
     return {
