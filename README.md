@@ -192,7 +192,7 @@ export default {
 }
 ```
 
-See `src/handlers` for more examples.
+See [`src/handlers`](https://github.com/adieuadieu/serverless-chrome/tree/master/src/handlers) for more examples.
 
 **TODO**: talk about CDP and [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface)
 
