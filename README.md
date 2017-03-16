@@ -156,7 +156,7 @@ export default {
     const tab = await Cdp.New({ host: '127.0.0.1' })
     const client = await Cdp({ host: '127.0.0.1', tab })
 
-    const { Network, Page, DOM } = client
+    const { Network, Page } = client
 
     Network.requestWillBeSent(params => requestsMade.push(params))
 
