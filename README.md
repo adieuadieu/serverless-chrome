@@ -98,7 +98,7 @@ You can provide your own handler via the `config.js` file created when you initi
 _/config.js_
 ```js
 export default {
-  handler: async function(lambdaInvocationEvent, invocationContext) {
+  handler: async function(lambdaInvocationEvent, executionContext) {
     const { queryStringParameters: { url } } = lambdaInvocationEvent
     const stuff = await doSomethingWith(url)
     return stuff
@@ -106,13 +106,16 @@ export default {
 }
 ```
 
+The first parameter, `lambdaInvocationEvent`, is the event data with which the Lambda function is invoked. It's the first parameter provided by Lambda. The second, `executionContext` is the second parameter provided to the Lambda function which contains useful [runtime information](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html).
+
+`serverless-chrome` calls the [Lambda handlers `callback()`](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html#nodejs-prog-model-handler-callback) for you when your handler function completes. The result of your handler is passed to callback with `callback(null, yourHandlerResult)`. If your handler throws an error, callback is called with `callback(yourHandlerError)`.
+
 For example, to create a handler which returns the version info of the Chrome Debugger Protocol, you could modify _/config.js_ to:
 
 ```js
 import Cdp from 'chrome-remote-interface'
 
 export default {
-  logging: true,
   async handler (event) {
 
     const versionInfo = await Cdp.Version()
@@ -139,7 +142,6 @@ import { sleep } from './src/utils'
 const LOAD_TIMEOUT = 1000 * 30
 
 export default {
-  logging: true,
   async handler (event) {
     const requestsMade = []
     let loaded = false
