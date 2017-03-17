@@ -218,6 +218,7 @@ export AWS_CLIENT_TIMEOUT=3000000
 
 
 ## TODO
+1. refactor into a Serverless plugin. See [Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4)
 1. example handler with [nightmarejs](https://github.com/segmentio/nightmare) (if this is even possible?)
 
 

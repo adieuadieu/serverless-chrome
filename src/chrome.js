@@ -16,6 +16,7 @@ export async function isChromeRunning () {
 
   // TODO: this doesn't work. Also, never seems like headless shell is already running —— why?
   // TODO: we can't rely on ps on lambda? look for /tmp/.chrome.blah file instead?
+  // https://aws.amazon.com/blogs/compute/container-reuse-in-lambda/
   try {
     const matches = await psLookup({ command: 'headless_shell' })
     running = !!matches.length
