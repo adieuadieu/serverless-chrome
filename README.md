@@ -15,7 +15,7 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [Configuration and Deployment](#configuration-and-deployment)
 1. [Known Issues / Limitations](#known-issues-limitations)
 1. [Troubleshooting](#troubleshooting)
-
+1. [Roadmap](#roadmap)
 
 ## Installation
 Installation can be achieved with the following commands
@@ -218,9 +218,26 @@ export AWS_CLIENT_TIMEOUT=3000000
 
 
 ## TODO
+1. refactor into a Serverless plugin. See [Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4)
 1. example handler with [nightmarejs](https://github.com/segmentio/nightmare) (if this is even possible?)
 
 
+## Roadmap
+
+#### For 1.0
+
+- Refactoring into a Serverless plugin and adding a few example lambda functions ([Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4))
+- [Get linting and unit tests up to snuff](https://github.com/adieuadieu/serverless-chrome/issues/5)
+- Sample lambda functions for:
+  - Loading a page and taking a screenshot, with options on viewport size and device settings
+  - DOM manipulation and scraping
+
+#### Future
+- Loading a page and printing to PDF, with device setting options (Chrome does not support this yet.)
+
+
+
+<hr />
 
 You might also be interested in:
 - [PhantomJS](http://phantomjs.org/)
