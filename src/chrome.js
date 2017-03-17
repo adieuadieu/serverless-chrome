@@ -85,8 +85,6 @@ export async function spawn () {
       }
     })
   }
-
-  return Promise.resolve()
 }
 
 export async function kill () {
