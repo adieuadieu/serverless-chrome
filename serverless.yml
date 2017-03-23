@@ -2,7 +2,7 @@ service: serverless-chrome
 
 provider:
   name: aws
-  runtime: nodejs4.3
+  runtime: nodejs6.10
   stage: dev
   region: us-west-2
   environment:

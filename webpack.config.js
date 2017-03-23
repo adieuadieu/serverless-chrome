@@ -34,9 +34,6 @@ module.exports = {
   },
   resolve: {
     root: __dirname,
-    alias: {
-      ws: 'node_modules/ws',
-    },
   },
   output: {
     libraryTarget: 'commonjs',
@@ -45,10 +42,6 @@ module.exports = {
   },
   externals: ['aws-sdk'],
   plugins: [
-    // TODO: figure out how to get this to work so we can use ws@2
-    /* new webpack.ProvidePlugin({
-      Buffer: `exports?global.Buffer!${path.resolve('./src', 'buffer-polyfill')}`, // https://gist.github.com/Couto/b29676dd1ab8714a818f
-    }),*/
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     // new webpack.optimize.UglifyJsPlugin({ minimize: true, sourceMap: false, warnings: false }),

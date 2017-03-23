@@ -194,7 +194,6 @@ See [`src/handlers`](https://github.com/adieuadieu/serverless-chrome/tree/master
 
 
 ## Known Issues / Limitations
-1. ws@2/Buffer.from **TODO:** create, then add link to issue here
 1. hack to chrome code to disable /dev/shm.
 1. /tmp size on Lambda
 1. it might not be the most cost efficient to do this on Lambda vs. EC2
