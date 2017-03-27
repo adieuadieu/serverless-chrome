@@ -32,16 +32,16 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome",
   "dependencies": {
-    "aws-sdk": "^2.31.0",
+    "aws-sdk": "^2.32.0",
     "chrome-remote-interface": "^0.18.0",
     "got": "^6.7.1",
-    "ps-node": "^0.1.4",
+    "ps-node": "^0.1.5",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
     "ava": "^0.18.2",
     "babel-core": "^6.24.0",
-    "babel-eslint": "^7.2.0",
+    "babel-eslint": "^7.2.1",
     "babel-loader": "^6.4.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
@@ -53,7 +53,7 @@
     "coveralls": "^2.11.16",
     "decompress": "^4.0.0",
     "eslint": "^3.18.0",
-    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-config-airbnb-base": "^11.1.2",
     "eslint-plugin-ava": "^4.2.0",
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-promise": "^3.5.0",
@@ -78,9 +78,10 @@
     ],
     "presets": [
       [
-        "env", {
+        "env",
+        {
           "targets": {
-            "node": 6.10
+            "node": 6.1
           }
         }
       ],
