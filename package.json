@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Run headless Chrome, serverless-ly",
   "main": "handler.js",
+  "engines": {
+    "node": ">= 6.10.0"
+  },
   "config": {
     "jsSrc": "src/"
   },
