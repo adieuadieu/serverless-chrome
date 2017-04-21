@@ -88,9 +88,9 @@ We're using API Gateway as our method to execute the function, but of course it'
 
 ### Custom Handlers
 
-You can provide your own handler via the `config.js` file created when you initialize the project with `yarn install`. The config accepts a `handler` property. Pass it a function which returns a Promise when complete. For example:
+You can provide your own handler via the `/config.js` file created when you initialize the project with `yarn install`. The config accepts a `handler` property. Pass it a function which returns a Promise when complete. For example:
 
-_/config.js_
+`/config.js`
 ```js
 export default {
   handler: async function(invocationEventData, executionContext) {
@@ -105,7 +105,7 @@ The first parameter, `invocationEventData`, is the event data with which the Lam
 
 `serverless-chrome` calls the [Lambda handlers `callback()`](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html#nodejs-prog-model-handler-callback) for you when your handler function completes. The result of your handler is passed to callback with `callback(null, yourHandlerResult)`. If your handler throws an error, callback is called with `callback(yourHandlerError)`.
 
-For example, to create a handler which returns the version info of the Chrome Debugger Protocol, you could modify _/config.js_ to:
+For example, to create a handler which returns the version info of the Chrome Debugger Protocol, you could modify `/config.js` to:
 
 ```js
 import Cdp from 'chrome-remote-interface'
@@ -128,7 +128,7 @@ export default {
 }
 ```
 
-To capture all of the Network Request events made when loading a URL, you could modify _/config.js_ to something like:
+To capture all of the Network Request events made when loading a URL, you could modify `/config.js` to something like:
 
 ```js
 import Cdp from 'chrome-remote-interface'
@@ -194,15 +194,16 @@ See [`src/handlers`](https://github.com/adieuadieu/serverless-chrome/tree/master
 
 
 ## Known Issues / Limitations
-1. hack to chrome code to disable /dev/shm.
-1. /tmp size on Lambda
-1. it might not be the most cost efficient to do this on Lambda vs. EC2
+1. hack to chrome code to disable `/dev/shm`.
+2. `/tmp` size on Lambda
+3. it might not be the most cost efficient to do this on Lambda vs. EC2
 
 
 ## Troubleshooting
 
 <details id="ts-aws-client-timeout">
   <summary>I keep getting a timeout error when deploying and it's really annoying.</summary>
+
   Indeed, that is annoying. I've had the same problem, and so that's why it's now here in this troubleshooting section. This may be an issue in the underlying AWS SDK when using a slower Internet connection. Try changing the `AWS_CLIENT_TIMEOUT` environment variable to a higher value. For example, in your command prompt enter the following and try deploying again:
 
 ```bash
@@ -212,6 +213,7 @@ export AWS_CLIENT_TIMEOUT=3000000
 
 <details id="ts-argh">
   <summary>Aaaaaarggghhhhhh!!!</summary>
+
   Uuurrrggghhhhhh! Have you tried [filing an Issue](https://github.com/adieuadieu/serverless-chrome/issues/new)?
 </details>
 
@@ -236,7 +238,7 @@ export AWS_CLIENT_TIMEOUT=3000000
 
 
 
-<hr />
+---
 
 You might also be interested in:
 - [PhantomJS](http://phantomjs.org/)
