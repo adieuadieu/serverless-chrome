@@ -67,10 +67,11 @@ yarn deploy
 
 This package bundles a lambda-execution-environment-ready headless Chrome binary which allows you to deploy from any OS. The current build is:
 
-- **Browser**: HeadlessChrome/59.0.3039.0
-- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/59.0.3039.0 Safari/537.36
-- **V8-Version**: 5.9.35
-- **WebKit-Version**: 537.36 (@85eb0199323407db76feaa192e0d0a0fd9b24f6f)
+- **Browser**: HeadlessChrome/60.0.3089.0
+- **Protocol-Version**: 1.2
+- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/60.0.3089.0 Safari/537.36
+- **V8-Version**: 6.0.137
+- **WebKit-Version**: 537.36 (@cb374e8d7a568886dd2bbf469c67f91de19fa4f3)
 
 
 ## Configuration
@@ -85,6 +86,14 @@ Currently there is only a single, very basic "proof of concept" type function. W
 We're using API Gateway as our method to execute the function, but of course it's possible to use any other available triggers to kick things off be it an event from S3, SNS, DynamoDB, etc.
 **TODO**: explain how --^
 
+`/config.js`
+```js
+import captureScreenshot from './src/handlers/captureScreenshot'
+
+export default {
+  handler: captureScreenshot
+}
+```
 
 ### Custom Handlers
 
@@ -195,8 +204,8 @@ See [`src/handlers`](https://github.com/adieuadieu/serverless-chrome/tree/master
 
 ## Known Issues / Limitations
 1. hack to chrome code to disable `/dev/shm`.
-2. `/tmp` size on Lambda
-3. it might not be the most cost efficient to do this on Lambda vs. EC2
+1. `/tmp` size on Lambda
+1. it might not be the most cost efficient to do this on Lambda vs. EC2
 
 
 ## Troubleshooting
