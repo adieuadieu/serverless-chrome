@@ -15,8 +15,8 @@ export async function captureScreenshotOfUrl (url) {
     }
   }
 
-  const tab = await Cdp.New({ host: '127.0.0.1' })
-  const client = await Cdp({ host: '127.0.0.1', tab })
+  const [tab] = await Cdp.List()
+  const client = await Cdp({ host: '127.0.0.1', target: tab })
 
   const { Network, Page } = client
 
@@ -35,16 +35,27 @@ export async function captureScreenshotOfUrl (url) {
   }
 
   try {
-    await Network.enable() // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
-    await Page.enable() // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
+    await Promise.all([
+      Network.enable(), // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
+      Page.enable(), // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
+    ])
+
     await Page.navigate({ url }) // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
     await loading()
+
     // TODO: resize the chrome "window" so we capture the full height of the page
     const screenshot = await Page.captureScreenshot()
     result = screenshot.data
   } catch (error) {
     console.error(error)
   }
+
+  /* try {
+    log('trying to close tab', tab)
+    await Cdp.Close({ id: tab })
+  } catch (error) {
+    log('unable to close tab', tab, error)
+  }*/
 
   await client.close()
 
@@ -72,4 +83,4 @@ export default (async function captureScreenshotHandler (event) {
       'Content-Type': 'text/html',
     },
   }
-});
+})

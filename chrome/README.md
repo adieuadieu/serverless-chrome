@@ -51,4 +51,18 @@ cp Headless/headless_shell Headless/libosmesa.so headless-chrome/
 tar -zcvf chrome-headless-lambda-linux-x64.tar.gz headless-chrome/
 ```
 
+```
+scp -i path/to/your/key-pair.pem ec2-user@<the-instance-public-ip>:/home/ec2-user/Chromium/src/out/chrome-headless-lambda-linux-x64.tar.gz ./
+```
+
+
 **TODO:** We don't need `libosmesa.so` cuz we're not using the GPU? See here: https://groups.google.com/a/chromium.org/d/msg/headless-dev/qqbZVZ2IwEw/XMKlEMP3EQAJ
+
+
+## Updating
+
+```bash
+git fetch --tags
+```
+
+https://omahaproxy.appspot.com/

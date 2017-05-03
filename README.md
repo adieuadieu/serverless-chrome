@@ -14,8 +14,8 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [Testing](#testing)
 1. [Configuration and Deployment](#configuration-and-deployment)
 1. [Known Issues / Limitations](#known-issues-limitations)
-1. [Troubleshooting](#troubleshooting)
 1. [Roadmap](#roadmap)
+1. [Troubleshooting](#troubleshooting)
 
 ## Installation
 Installation can be achieved with the following commands
@@ -67,10 +67,11 @@ yarn deploy
 
 This package bundles a lambda-execution-environment-ready headless Chrome binary which allows you to deploy from any OS. The current build is:
 
-- **Browser**: HeadlessChrome/59.0.3039.0
-- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/59.0.3039.0 Safari/537.36
-- **V8-Version**: 5.9.35
-- **WebKit-Version**: 537.36 (@85eb0199323407db76feaa192e0d0a0fd9b24f6f)
+- **Browser**: HeadlessChrome/60.0.3089.0
+- **Protocol-Version**: 1.2
+- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/60.0.3089.0 Safari/537.36
+- **V8-Version**: 6.0.137
+- **WebKit-Version**: 537.36 (@cb374e8d7a568886dd2bbf469c67f91de19fa4f3)
 
 
 ## Configuration
@@ -79,12 +80,39 @@ You can override default configuration in the `/config.js` file generated at the
 
 ### Example Handlers
 
+Currently there are only two, very basic "proof of concept" type functions:
+
 ###### captureScreenshot: Capture Screenshot of a given URL
-Currently there is only a single, very basic "proof of concept" type function. When you the serverless function, it creates a Lambda function which will take a screenshot of a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/`
+ When you the serverless function, it creates a Lambda function which will take a screenshot of a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/`
 
 We're using API Gateway as our method to execute the function, but of course it's possible to use any other available triggers to kick things off be it an event from S3, SNS, DynamoDB, etc.
 **TODO**: explain how --^
 
+`/config.js`
+```js
+import captureScreenshot from './src/handlers/captureScreenshot'
+
+export default {
+  handler: captureScreenshot
+}
+```
+
+###### printToPdf: Print a given URL to PDF
+The printToPdf handler will create a PDF from a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/`
+
+*Note*: Headless Chrome currently doesn't expose any configuration options (paper size, orientation, margins, etc) for printing to PDF. You can follow Chromium's progress on this [here](https://bugs.chromium.org/p/chromium/issues/detail?id=603559) and [here](https://codereview.chromium.org/2829973002/). You can get some sense of the upcoming configuration options from the modifications to the Chrome Debugging Protocol [here](https://codereview.chromium.org/2829973002/patch/200001/210021).
+
+We're using API Gateway as our method to execute the function, but of course it's possible to use any other available triggers to kick things off be it an event from S3, SNS, DynamoDB, etc.
+**TODO**: explain how --^
+
+`/config.js`
+```js
+import printToPdf from './src/handlers/printToPdf'
+
+export default {
+  handler: printToPdf
+}
+```
 
 ### Custom Handlers
 
@@ -148,8 +176,8 @@ export default {
       }
     }
 
-    const tab = await Cdp.New({ host: '127.0.0.1' })
-    const client = await Cdp({ host: '127.0.0.1', tab })
+    const [tab] = await Cdp.List()
+    const client = await Cdp({ host: '127.0.0.1', target: tab })
 
     const { Network, Page } = client
 
@@ -195,8 +223,28 @@ See [`src/handlers`](https://github.com/adieuadieu/serverless-chrome/tree/master
 
 ## Known Issues / Limitations
 1. hack to chrome code to disable `/dev/shm`.
-2. `/tmp` size on Lambda
-3. it might not be the most cost efficient to do this on Lambda vs. EC2
+1. `/tmp` size on Lambda
+1. it might not be the most cost efficient to do this on Lambda vs. EC2
+
+
+## Roadmap
+
+*1.0*
+
+1. Don't force the use of Serverless-framework. See [Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4)
+    1. Refactor the headless Chrome bundle and Chrome spawning code into an npm package
+    1. Create a Serverless plugin, using above npm package
+1. OMG OMG [Get unit tests up to snuff!](https://github.com/adieuadieu/serverless-chrome/issues/5)
+1. Example serverless services using headless-chrome
+    1. Printing a URL to a PDF
+    1. Loading a page and taking a screenshot, with options on viewport size and device settings
+    1. DOM manipulation and scraping
+
+*Future*
+
+1. Support for Google Cloud Functions
+1. Support for Azure Functions?
+1. Example handler with [nightmarejs](https://github.com/segmentio/nightmare) (if this is even possible?)
 
 
 ## Troubleshooting
@@ -216,26 +264,6 @@ export AWS_CLIENT_TIMEOUT=3000000
 
   Uuurrrggghhhhhh! Have you tried [filing an Issue](https://github.com/adieuadieu/serverless-chrome/issues/new)?
 </details>
-
-
-## TODO
-1. refactor into a Serverless plugin. See [Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4)
-1. example handler with [nightmarejs](https://github.com/segmentio/nightmare) (if this is even possible?)
-
-
-## Roadmap
-
-#### For 1.0
-
-- Refactoring into a Serverless plugin and adding a few example lambda functions ([Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4))
-- [Get linting and unit tests up to snuff](https://github.com/adieuadieu/serverless-chrome/issues/5)
-- Sample lambda functions for:
-  - Loading a page and taking a screenshot, with options on viewport size and device settings
-  - DOM manipulation and scraping
-
-#### Future
-- Loading a page and printing to PDF, with device setting options (Chrome does not support this yet.)
-
 
 
 ---

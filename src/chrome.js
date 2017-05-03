@@ -1,6 +1,7 @@
 import os from 'os'
 import path from 'path'
 import sp from 'child_process' // TODO: why is this sp and not cp? (cp is also confusing cuz copy)
+import Cdp from 'chrome-remote-interface'
 import got from 'got'
 import config from './config'
 import { log, psLookup, psKill } from './utils'
@@ -12,17 +13,32 @@ const PROCESS_STARTUP_TIMEOUT = 1000 * 5
 export async function isChromeRunning () {
   let running = false
 
-  console.log('ls /tmp', sp.execSync('ls -lhtra /tmp').toString())
+  if (config.logging) {
+    log('\n$ ls /tmp\n', sp.execSync('ls -lhtra /tmp').toString())
+    log('\n$ ps lx\n', sp.execSync('ps lx').toString())
 
-  // TODO: this doesn't work. Also, never seems like headless shell is already running —— why?
-  // TODO: we can't rely on ps on lambda? look for /tmp/.chrome.blah file instead?
-  // https://aws.amazon.com/blogs/compute/container-reuse-in-lambda/
+    try {
+      log('CDP List:', await Cdp.List())
+    } catch (error) {
+      log('no running chrome yet?')
+    }
+  }
+
   try {
-    const matches = await psLookup({ command: 'headless_shell' })
+    await got(`${HEADLESS_URL}/json`, { retries: 0, timeout: 50 })
+    running = true
+  } catch (error) {
+    running = false
+  }
+
+  /* this seems to be unreliable, especially if the process has zombied
+  try {
+    const matches = await psLookup({ psargs: ['lx'], command: 'headless_shell' })
     running = !!matches.length
   } catch (error) {
     running = false
   }
+  */
 
   return running
 }
@@ -53,19 +69,22 @@ export async function spawn () {
       const isRunning = await isChromeRunning()
       log('Is Chrome already running?', isRunning)
 
-      if (!isRunning) {
-        const chrome = sp.spawn(
-          CHROME_PATH,
-          [...config.chromeFlags, '--remote-debugging-port=9222'],
-          {
-            cwd: os.tmpdir(),
-            shell: true,
-            detached: true,
-            stdio: 'ignore',
-          },
-        )
+      if (isRunning) {
+        return resolve()
+      }
 
-        /*
+      const chrome = sp.spawn(
+        CHROME_PATH,
+        [...config.chromeFlags, '--remote-debugging-port=9222'],
+        {
+          cwd: os.tmpdir(),
+          shell: true,
+          detached: true,
+          stdio: 'ignore',
+        }
+      )
+
+      /*
         chrome.on('error', (error) => {
           log('Failed to start chrome process.', error)
           reject()
@@ -79,10 +98,9 @@ export async function spawn () {
           log(`chrome stderr: ${data}`)
         }) */
 
-        chrome.unref()
+      chrome.unref()
 
-        waitUntilProcessIsReady(Date.now(), resolve)
-      }
+      return waitUntilProcessIsReady(Date.now(), resolve)
     })
   }
 }
