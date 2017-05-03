@@ -8,7 +8,8 @@ export function log (...stuffToLog) {
 export function psLookup (options = { command: '' }) {
   return new Promise((resolve, reject) => {
     ps.lookup(options, (error, result) => {
-      console.log('2', error, result)
+      log('ps.lookup result:', error, result)
+
       if (error) {
         return reject(error)
       }

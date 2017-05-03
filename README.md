@@ -80,8 +80,10 @@ You can override default configuration in the `/config.js` file generated at the
 
 ### Example Handlers
 
+Currently there are only two, very basic "proof of concept" type functions:
+
 ###### captureScreenshot: Capture Screenshot of a given URL
-Currently there is only a single, very basic "proof of concept" type function. When you the serverless function, it creates a Lambda function which will take a screenshot of a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/`
+ When you the serverless function, it creates a Lambda function which will take a screenshot of a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/`
 
 We're using API Gateway as our method to execute the function, but of course it's possible to use any other available triggers to kick things off be it an event from S3, SNS, DynamoDB, etc.
 **TODO**: explain how --^
@@ -92,6 +94,23 @@ import captureScreenshot from './src/handlers/captureScreenshot'
 
 export default {
   handler: captureScreenshot
+}
+```
+
+###### printToPdf: Print a given URL to PDF
+The printToPdf handler will create a PDF from a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/`
+
+*Note*: Headless Chrome currently doesn't expose any configuration options (paper size, orientation, margins, etc) for printing to PDF. You can follow Chromium's progress on this [here](https://bugs.chromium.org/p/chromium/issues/detail?id=603559) and [here](https://codereview.chromium.org/2829973002/). You can get some sense of the upcoming configuration options from the modifications to the Chrome Debugging Protocol [here](https://codereview.chromium.org/2829973002/patch/200001/210021).
+
+We're using API Gateway as our method to execute the function, but of course it's possible to use any other available triggers to kick things off be it an event from S3, SNS, DynamoDB, etc.
+**TODO**: explain how --^
+
+`/config.js`
+```js
+import printToPdf from './src/handlers/printToPdf'
+
+export default {
+  handler: printToPdf
 }
 ```
 
@@ -157,8 +176,8 @@ export default {
       }
     }
 
-    const tab = await Cdp.New({ host: '127.0.0.1' })
-    const client = await Cdp({ host: '127.0.0.1', tab })
+    const [tab] = await Cdp.List()
+    const client = await Cdp({ host: '127.0.0.1', target: tab })
 
     const { Network, Page } = client
 
