@@ -14,8 +14,8 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [Testing](#testing)
 1. [Configuration and Deployment](#configuration-and-deployment)
 1. [Known Issues / Limitations](#known-issues-limitations)
-1. [Troubleshooting](#troubleshooting)
 1. [Roadmap](#roadmap)
+1. [Troubleshooting](#troubleshooting)
 
 ## Installation
 Installation can be achieved with the following commands
@@ -227,26 +227,7 @@ See [`src/handlers`](https://github.com/adieuadieu/serverless-chrome/tree/master
 1. it might not be the most cost efficient to do this on Lambda vs. EC2
 
 
-## Troubleshooting
-
-<details id="ts-aws-client-timeout">
-  <summary>I keep getting a timeout error when deploying and it's really annoying.</summary>
-
-  Indeed, that is annoying. I've had the same problem, and so that's why it's now here in this troubleshooting section. This may be an issue in the underlying AWS SDK when using a slower Internet connection. Try changing the `AWS_CLIENT_TIMEOUT` environment variable to a higher value. For example, in your command prompt enter the following and try deploying again:
-
-```bash
-export AWS_CLIENT_TIMEOUT=3000000
-```
-</details>
-
-<details id="ts-argh">
-  <summary>Aaaaaarggghhhhhh!!!</summary>
-
-  Uuurrrggghhhhhh! Have you tried [filing an Issue](https://github.com/adieuadieu/serverless-chrome/issues/new)?
-</details>
-
-
-## TODO / Roadmap
+## Roadmap
 
 *1.0*
 
@@ -264,6 +245,25 @@ export AWS_CLIENT_TIMEOUT=3000000
 1. Support for Google Cloud Functions
 1. Support for Azure Functions?
 1. Example handler with [nightmarejs](https://github.com/segmentio/nightmare) (if this is even possible?)
+
+
+## Troubleshooting
+
+<details id="ts-aws-client-timeout">
+  <summary>I keep getting a timeout error when deploying and it's really annoying.</summary>
+
+  Indeed, that is annoying. I've had the same problem, and so that's why it's now here in this troubleshooting section. This may be an issue in the underlying AWS SDK when using a slower Internet connection. Try changing the `AWS_CLIENT_TIMEOUT` environment variable to a higher value. For example, in your command prompt enter the following and try deploying again:
+
+```bash
+export AWS_CLIENT_TIMEOUT=3000000
+```
+</details>
+
+<details id="ts-argh">
+  <summary>Aaaaaarggghhhhhh!!!</summary>
+
+  Uuurrrggghhhhhh! Have you tried [filing an Issue](https://github.com/adieuadieu/serverless-chrome/issues/new)?
+</details>
 
 
 ---
