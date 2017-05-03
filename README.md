@@ -232,13 +232,13 @@ See [`src/handlers`](https://github.com/adieuadieu/serverless-chrome/tree/master
 *1.0*
 
 1. Don't force the use of Serverless-framework. See [Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4)
-  1. Refactor the headless Chrome bundle and Chrome spawning code into an npm package
-  1. Create a Serverless plugin, using above npm package
+    1. Refactor the headless Chrome bundle and Chrome spawning code into an npm package
+    1. Create a Serverless plugin, using above npm package
 1. OMG OMG [Get unit tests up to snuff!](https://github.com/adieuadieu/serverless-chrome/issues/5)
 1. Example serverless services using headless-chrome
-  1. Printing a URL to a PDF
-  1. Loading a page and taking a screenshot, with options on viewport size and device settings
-  1. DOM manipulation and scraping
+    1. Printing a URL to a PDF
+    1. Loading a page and taking a screenshot, with options on viewport size and device settings
+    1. DOM manipulation and scraping
 
 *Future*
 
