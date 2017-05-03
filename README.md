@@ -246,24 +246,24 @@ export AWS_CLIENT_TIMEOUT=3000000
 </details>
 
 
-## TODO
-1. refactor into a Serverless plugin. See [Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4)
-1. example handler with [nightmarejs](https://github.com/segmentio/nightmare) (if this is even possible?)
+## TODO / Roadmap
 
+*1.0*
 
-## Roadmap
+1. Don't force the use of Serverless-framework. See [Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4)
+  1. Refactor the headless Chrome bundle and Chrome spawning code into an npm package
+  1. Create a Serverless plugin, using above npm package
+1. OMG OMG [Get unit tests up to snuff!](https://github.com/adieuadieu/serverless-chrome/issues/5)
+1. Example serverless services using headless-chrome
+  1. Printing a URL to a PDF
+  1. Loading a page and taking a screenshot, with options on viewport size and device settings
+  1. DOM manipulation and scraping
 
-#### For 1.0
+*Future*
 
-- Refactoring into a Serverless plugin and adding a few example lambda functions ([Issue #4](https://github.com/adieuadieu/serverless-chrome/issues/4))
-- [Get linting and unit tests up to snuff](https://github.com/adieuadieu/serverless-chrome/issues/5)
-- Sample lambda functions for:
-  - Loading a page and taking a screenshot, with options on viewport size and device settings
-  - DOM manipulation and scraping
-
-#### Future
-- Loading a page and printing to PDF, with device setting options (Chrome does not support this yet.)
-
+1. Support for Google Cloud Functions
+1. Support for Azure Functions?
+1. Example handler with [nightmarejs](https://github.com/segmentio/nightmare) (if this is even possible?)
 
 
 ---
