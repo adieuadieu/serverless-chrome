@@ -103,8 +103,7 @@ The printToPdf handler will create a PDF from a URL it's provided. You can provi
 We're using API Gateway as our method to execute the function, but of course it's possible to use any other available triggers to kick things off be it an event from S3, SNS, DynamoDB, etc.
 **TODO**: explain how --^
 
-This handler also supports configuring the "paper" size, orientation, etc. You can pass any of the DevTools Protocol's Page.printToPdf() method's parameters. For example, for landscape oriented pdf add `&landscape=true` to the end of the URL. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/&landscape=true`
-
+This handler also supports configuring the "paper" size, orientation, etc. You can pass any of the DevTools Protocol's Page.printToPdf() method's parameters. For example, for landscape oriented PDF add `&landscape=true` to the end of the URL. Be sure to remember to escape the value of `url` if it contains query parameters. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/&landscape=true`
 
 `/config.js`
 ```js
