@@ -67,11 +67,11 @@ yarn deploy
 
 This package bundles a lambda-execution-environment-ready headless Chrome binary which allows you to deploy from any OS. The current build is:
 
-- **Browser**: HeadlessChrome/60.0.3089.0
+- **Browser**: HeadlessChrome/60.0.3095.0
 - **Protocol-Version**: 1.2
-- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/60.0.3089.0 Safari/537.36
-- **V8-Version**: 6.0.137
-- **WebKit-Version**: 537.36 (@cb374e8d7a568886dd2bbf469c67f91de19fa4f3)
+- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/60.0.3095.0 Safari/537.36
+- **V8-Version**: 6.0.184
+- **WebKit-Version**: 537.36 (@947514553066c623a85712d05c3a01bd1bcbbffc)
 
 
 ## Configuration
@@ -100,10 +100,11 @@ export default {
 ###### printToPdf: Print a given URL to PDF
 The printToPdf handler will create a PDF from a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/`
 
-*Note*: Headless Chrome currently doesn't expose any configuration options (paper size, orientation, margins, etc) for printing to PDF. You can follow Chromium's progress on this [here](https://bugs.chromium.org/p/chromium/issues/detail?id=603559) and [here](https://codereview.chromium.org/2829973002/). You can get some sense of the upcoming configuration options from the modifications to the Chrome Debugging Protocol [here](https://codereview.chromium.org/2829973002/patch/200001/210021).
-
 We're using API Gateway as our method to execute the function, but of course it's possible to use any other available triggers to kick things off be it an event from S3, SNS, DynamoDB, etc.
 **TODO**: explain how --^
+
+This handler also supports configuring the "paper" size, orientation, etc. You can pass any of the DevTools Protocol's Page.printToPdf() method's parameters. For example, for landscape oriented pdf add `&landscape=true` to the end of the URL. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/&landscape=true`
+
 
 `/config.js`
 ```js
