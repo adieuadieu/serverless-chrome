@@ -4,7 +4,7 @@ Serverless Chrome contains everything you need to get started running headless C
 
 The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. Serverless Chrome takes care of building and bundling the Chrome binaries and making sure Chrome is running when your serverless function executes. In addition, this project also provides a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
 
-Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome Debugger Protocol](https://developer.chrome.com/devtools/docs/debugger-protocol) in serverless architectures.
+Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/) in serverless architectures.
 
 
 ## Contents
@@ -133,7 +133,7 @@ The first parameter, `invocationEventData`, is the event data with which the Lam
 
 `serverless-chrome` calls the [Lambda handlers `callback()`](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html#nodejs-prog-model-handler-callback) for you when your handler function completes. The result of your handler is passed to callback with `callback(null, yourHandlerResult)`. If your handler throws an error, callback is called with `callback(yourHandlerError)`.
 
-For example, to create a handler which returns the version info of the Chrome Debugger Protocol, you could modify `/config.js` to:
+For example, to create a handler which returns the version info of the Chrome DevTools Protocol, you could modify `/config.js` to:
 
 ```js
 import Cdp from 'chrome-remote-interface'
@@ -187,13 +187,13 @@ export default {
       loaded = true
     })
 
-    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
+    // https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-enable
     await Network.enable()
 
-    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
+    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-enable
     await Page.enable()
 
-    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
+    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigate
     await Page.navigate({ url: 'https://www.chromium.org/' })
 
     // wait until page is done loading, or timeout
