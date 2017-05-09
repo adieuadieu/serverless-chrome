@@ -4,7 +4,7 @@ Serverless Chrome contains everything you need to get started running headless C
 
 The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. Serverless Chrome takes care of building and bundling the Chrome binaries and making sure Chrome is running when your serverless function executes. In addition, this project also provides a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
 
-Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome Debugger Protocol](https://developer.chrome.com/devtools/docs/debugger-protocol) in serverless architectures.
+Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/) in serverless architectures.
 
 
 ## Contents
@@ -67,11 +67,11 @@ yarn deploy
 
 This package bundles a lambda-execution-environment-ready headless Chrome binary which allows you to deploy from any OS. The current build is:
 
-- **Browser**: HeadlessChrome/60.0.3089.0
+- **Browser**: HeadlessChrome/60.0.3095.0
 - **Protocol-Version**: 1.2
-- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/60.0.3089.0 Safari/537.36
-- **V8-Version**: 6.0.137
-- **WebKit-Version**: 537.36 (@cb374e8d7a568886dd2bbf469c67f91de19fa4f3)
+- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/60.0.3095.0 Safari/537.36
+- **V8-Version**: 6.0.184
+- **WebKit-Version**: 537.36 (@947514553066c623a85712d05c3a01bd1bcbbffc)
 
 
 ## Configuration
@@ -100,10 +100,10 @@ export default {
 ###### printToPdf: Print a given URL to PDF
 The printToPdf handler will create a PDF from a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/`
 
-*Note*: Headless Chrome currently doesn't expose any configuration options (paper size, orientation, margins, etc) for printing to PDF. You can follow Chromium's progress on this [here](https://bugs.chromium.org/p/chromium/issues/detail?id=603559) and [here](https://codereview.chromium.org/2829973002/). You can get some sense of the upcoming configuration options from the modifications to the Chrome Debugging Protocol [here](https://codereview.chromium.org/2829973002/patch/200001/210021).
-
 We're using API Gateway as our method to execute the function, but of course it's possible to use any other available triggers to kick things off be it an event from S3, SNS, DynamoDB, etc.
 **TODO**: explain how --^
+
+This handler also supports configuring the "paper" size, orientation, etc. You can pass any of the DevTools Protocol's Page.printToPdf() method's parameters. For example, for landscape oriented PDF add `&landscape=true` to the end of the URL. Be sure to remember to escape the value of `url` if it contains query parameters. E.g. `https://XXXXXXX.execute-api.us-west-2.amazonaws.com/dev/chrome?url=https://google.com/&landscape=true`
 
 `/config.js`
 ```js
@@ -133,7 +133,7 @@ The first parameter, `invocationEventData`, is the event data with which the Lam
 
 `serverless-chrome` calls the [Lambda handlers `callback()`](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html#nodejs-prog-model-handler-callback) for you when your handler function completes. The result of your handler is passed to callback with `callback(null, yourHandlerResult)`. If your handler throws an error, callback is called with `callback(yourHandlerError)`.
 
-For example, to create a handler which returns the version info of the Chrome Debugger Protocol, you could modify `/config.js` to:
+For example, to create a handler which returns the version info of the Chrome DevTools Protocol, you could modify `/config.js` to:
 
 ```js
 import Cdp from 'chrome-remote-interface'
@@ -187,13 +187,13 @@ export default {
       loaded = true
     })
 
-    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
+    // https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-enable
     await Network.enable()
 
-    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
+    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-enable
     await Page.enable()
 
-    // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
+    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigate
     await Page.navigate({ url: 'https://www.chromium.org/' })
 
     // wait until page is done loading, or timeout
