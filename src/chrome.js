@@ -10,6 +10,8 @@ const CHROME_PATH = process.env.CHROME_PATH && path.resolve(process.env.CHROME_P
 const HEADLESS_URL = 'http://127.0.0.1:9222'
 const PROCESS_STARTUP_TIMEOUT = 1000 * 5
 
+const LOGGING_FLAGS = config.logging ? ['--enable-logging', '--log-level=0', '--v=99'] : []
+
 export async function isChromeRunning () {
   let running = false
 
@@ -62,7 +64,8 @@ function waitUntilProcessIsReady (startTime = Date.now(), parentResolve = () => 
 }
 
 export async function spawn () {
-  console.log('CHROME_PATH', CHROME_PATH)
+  log('CHROME_PATH', CHROME_PATH)
+
   if (CHROME_PATH) {
     // TODO: add a timeout for reject() in case, for whatever reason, chrome doesn't start after a certain period
     return new Promise(async (resolve, reject) => {
@@ -75,7 +78,7 @@ export async function spawn () {
 
       const chrome = sp.spawn(
         CHROME_PATH,
-        [...config.chromeFlags, '--remote-debugging-port=9222'],
+        [...LOGGING_FLAGS, ...config.chromeFlags, '--remote-debugging-port=9222'],
         {
           cwd: os.tmpdir(),
           shell: true,

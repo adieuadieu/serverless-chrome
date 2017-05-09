@@ -9,9 +9,6 @@ const defaultChromeFlags = [
   '--no-sandbox',
   '--user-data-dir=/tmp/user-data',
   '--hide-scrollbars',
-  '--enable-logging',
-  '--log-level=0',
-  '--v=99',
   '--single-process',
   '--data-path=/tmp/data-path',
 
@@ -30,11 +27,11 @@ const defaultChromeFlags = [
   // '--enable-low-end-device-mode',
 
   // '--trace-startup=*,disabled-by-default-memory-infra',
-  //'--trace-startup=*',
+  // '--trace-startup=*',
 ]
 
 const defaultChromeConfig = {
-  pageLoadTimeout: 1000 * 60, // Give the page max 60 seconds to load. time is money!
+  pageLoadTimeout: 1000 * 20, // Give the page max 20 seconds to load. time is money!
 }
 
 export default {

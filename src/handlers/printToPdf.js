@@ -32,28 +32,49 @@ function makePrintOptions (options = {}) {
 }
 
 export async function printUrlToPdf (url, printOptions = {}) {
-  const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 60
+  const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 20
   let result
   let loaded = false
+  const requestQueue = [] // @TODO: write a better quite, which waits a few seconds when reaching 0 before emitting "empty"
 
   const loading = async (startTime = Date.now()) => {
-    if (!loaded && Date.now() - startTime < LOAD_TIMEOUT) {
+    log('Request queue size:', requestQueue.length, requestQueue)
+
+    if ((!loaded || requestQueue.length > 0) && Date.now() - startTime < LOAD_TIMEOUT) {
       await sleep(100)
       await loading(startTime)
     }
   }
 
-  const [tab] = await Cdp.List()
+  const tab = await Cdp.New()
   const client = await Cdp({ host: '127.0.0.1', target: tab })
 
   const { Network, Page } = client
 
-  Network.requestWillBeSent((params) => {
-    log('Chrome is sending request for:', params.request.url)
+  Network.requestWillBeSent((data) => {
+    // only add requestIds which aren't already in the queue
+    // why? if a request to http gets redirected to https, requestId remains the same
+    if (!requestQueue.find(item => item === data.requestId)) {
+      requestQueue.push(data.requestId)
+    }
+
+    log('Chrome is sending request for:', data.requestId, data.request.url)
   })
 
-  Page.loadEventFired(() => {
+  Network.responseReceived(async (data) => {
+    // @TODO: handle this better. sometimes images aren't done loading before we think loading is finished
+    await sleep(25) // wait here, in case this resource has triggered more resources to load
+    requestQueue.splice(requestQueue.findIndex(item => item === data.requestId), 1)
+    log('Chrome received response for:', data.requestId, data.response.url)
+  })
+
+  Page.loadEventFired((data) => {
     loaded = true
+    log('Page.loadEventFired', data)
+  })
+
+  Page.domContentEventFired((data) => {
+    log('Page.domContentEventFired', data)
   })
 
   if (config.logging) {
@@ -71,6 +92,8 @@ export async function printUrlToPdf (url, printOptions = {}) {
     await Page.navigate({ url }) // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigate
     await loading()
 
+    log('We think the page has finished loading. Printing PDF.')
+
     // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
     const pdf = await Page.printToPDF(printOptions)
     result = pdf.data
@@ -78,12 +101,16 @@ export async function printUrlToPdf (url, printOptions = {}) {
     console.error(error)
   }
 
-  /* try {
+  // @TODO: handle this better —
+  // If you don't close the tab, an a subsequent Page.navigate() is unable to load the url,
+  // you'll end up printing a PDF of whatever was loaded in the tab previously (e.g. a previous URL)
+  // _unless_ you Cdp.New() each time. But still good to close to clear up memory in Chrome
+  try {
     log('trying to close tab', tab)
-    await Cdp.Close({ id: tab })
+    await Cdp.Close({ id: tab.id })
   } catch (error) {
     log('unable to close tab', tab, error)
-  }*/
+  }
 
   await client.close()
 
