@@ -62,8 +62,9 @@ export async function printUrlToPdf (url, printOptions = {}) {
   })
 
   Network.responseReceived(async (data) => {
-    // @TODO: handle this better. sometimes images aren't done loading before we think loading is finished
-    await sleep(25) // wait here, in case this resource has triggered more resources to load
+    // @TODO: handle this better. sometimes images, fonts, etc aren't done loading before we think loading is finished
+    // is there a better way to detect this? see if there's any pending js being executed? paints? something?
+    await sleep(100) // wait here, in case this resource has triggered more resources to load.
     requestQueue.splice(requestQueue.findIndex(item => item === data.requestId), 1)
     log('Chrome received response for:', data.requestId, data.response.url)
   })
