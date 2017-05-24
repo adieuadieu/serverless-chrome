@@ -1,0 +1,51 @@
+{
+  "name": "@serverless-chrome/examples/serverless-framework",
+  "version": "1.0.0",
+  "description": "Example serverless functions using the Serverless-framework",
+  "main": "src/handlers.js",
+  "engines": {
+    "node": ">= 6.10.0"
+  },
+  "config": {
+    "jsSrc": "src/"
+  },
+  "scripts": {
+    "test": "npm run lint && npm run ava",
+    "watch:test": "ava --watch",
+    "ava": "ava",
+    "lint": "npm run lint:eslint -s",
+    "lint:eslint": "eslint $npm_package_config_jsSrc",
+    "deploy": "serverless deploy -v",
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adieuadieu/serverless-chrome.git"
+  },
+  "keywords": [
+    "serverless",
+    "chrome",
+    "chromium",
+    "headless",
+    "aws",
+    "lambda",
+    "serverless-framework"
+  ],
+  "author": "Marco Lüthy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adieuadieu/serverless-chrome/issues"
+  },
+  "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/functions/serverless-framework",
+  "dependencies": {
+    "@serverless-chrome/lambda": "0.0.0-pre-release-1"
+  },
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "babel-register": "^6.24.1",
+    "serverless": "^1.13.2",
+  },
+  "ava": {
+    "require": "babel-register",
+    "babel": "inherit"
+  },
+}
