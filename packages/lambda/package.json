@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "debug": "^2.6.8",
+    "extract-zip": "^1.6.5",
     "lighthouse": "^2.0.0"
   },
   "devDependencies": {

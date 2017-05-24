@@ -14,10 +14,16 @@ Standalone package to run Headless Chrome in AWS Lambda.
 
 
 ## Installation
-Install with npm or yarn:
+Install with yarn:
 
 ```bash
 yarn add @serverless-chrome/lambda
+```
+
+Install with npm:
+
+```bash
+npm install --save @serverless-chrome/lambda
 ```
 
 
@@ -31,12 +37,12 @@ todo: check that this code works:
 const launchChrome = require('@serverless-chrome/lambda')
 const CDP = require('chrome-remote-interface')
 
-module.exports.myFunction = function myFunction (event, context, callback) {
+module.exports.handler = function handler (event, context, callback) {
   launchChrome({
     flags: ['--window-size=1280x1696', '--hide-scrollbars']
   })
-  .then(({ url }) => {
-    // Chrome is now running.
+  .then((chrome) => {
+    // Chrome is now running on localhost:9222
 
     CDP.Version()
       .then((versionInfo) => {

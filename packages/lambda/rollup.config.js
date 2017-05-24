@@ -1,5 +1,5 @@
 import babel from 'rollup-plugin-babel'
-// import resolve from 'rollup-plugin-node-resolve'
+import resolve from 'rollup-plugin-node-resolve'
 
 export default {
   entry: 'src/index.js',
@@ -8,7 +8,7 @@ export default {
     { dest: 'dist/bundle.es.js', format: 'es' },
   ],
   plugins: [
-    /* resolve({
+    resolve({
       // module: true, // Default: true
       // jsnext: true, // Default: false
       // main: true, // Default: true
@@ -19,7 +19,7 @@ export default {
       // If true, inspect resolved files to check that they are
       // ES2015 modules
       // modulesOnly: true, // Default: false
-    }),*/
+    }),
     babel({}),
   ],
   external: ['path', 'lighthouse/chrome-launcher/chrome-launcher'],
