@@ -1,45 +1,47 @@
-import chrome from '@serverless-chrome/lambda'
-import Cdp from 'chrome-remote-interface'
-import { sleep } from './src/utils'
+const launchChrome = require('@serverless-chrome/lambda')
+const CDP = require('chrome-remote-interface')
 
-const LOAD_TIMEOUT = 1000 * 30
+module.exports.handler = function handler (event, context, callback) {
+  launchChrome({
+    flags: ['--window-size=1280x1696', '--hide-scrollbars'],
+  })
+    .then((chrome) => {
+      // Chrome is now running on localhost:9222
 
-export default {
-  logging: true,
-  async handler(event) {
-    const requestsMade = []
-    let loaded = false
-
-    const loading = async (startTime = Date.now()) => {
-      if (!loaded && Date.now() - startTime < LOAD_TIMEOUT) {
-        await sleep(100)
-        await loading(startTime)
-      }
-    }
-
-    const tab = await Cdp.New({ host: '127.0.0.1' })
-    const client = await Cdp({ host: '127.0.0.1', tab })
-
-    const { Network, Page, DOM } = client
-
-    Network.requestWillBeSent(params => requestsMade.push(params))
-
-    Page.loadEventFired(() => {
-      loaded = true
+      CDP.Version()
+        .then((versionInfo) => {
+          callback(null, {
+            statusCode: 200,
+            body: JSON.stringify({
+              versionInfo,
+              chrome,
+            }),
+            // headers: {
+            // 'Content-Type': 'application/json',
+            // },
+          })
+        })
+        .catch((error) => {
+          callback(null, {
+            statusCode: 500,
+            body: JSON.stringify({
+              error,
+            }),
+          })
+        })
     })
+    .catch((error) => {
+      // Chrome didn't launch correctly
 
-    const versionInfo = await Cdp.Version()
+      callback(null, {
+        statusCode: 500,
+        body: JSON.stringify({
+          error,
+        }),
+      })
+    })
+}
 
-    await client.close()
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        versionInfo,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  },
+if (require.main === module) {
+  module.exports.handler({}, {}, console.log)
 }

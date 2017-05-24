@@ -3,7 +3,7 @@ import { Launcher as ChromeLauncher } from 'lighthouse/chrome-launcher/chrome-la
 
 const debug = require('debug')('@serverless-chrome/lambda')
 
-const CHROME_PATH = path.resolve('./headless_shell')
+const CHROME_PATH = path.resolve(__dirname, './headless_shell')
 const DEVTOOLS_PORT = 9222
 const DEVTOOLS_HOST = 'http://127.0.0.1'
 const LOGGING_FLAGS = process.env.DEBUG ? ['--enable-logging', '--log-level=0', '--v=99'] : []

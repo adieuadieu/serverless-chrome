@@ -61,3 +61,6 @@ module.exports.handler = function handler (event, context, callback) {
   })
 }
 ```
+
+### TODO:
+add part about how we use lighthouse-launcher, and it'll launch other Chrome on non-lambda env for use in dev.

@@ -8,9 +8,6 @@ const TARBALL_URL = `https://raw.githubusercontent.com/adieuadieu/serverless-chr
 const DOWNLOAD_PATH = path.resolve(__dirname, '../', TARBALL_FILENAME)
 const EXTRACT_PATH = path.resolve(__dirname, '../', 'dist')
 
-console.log(TARBALL_URL)
-console.log(DOWNLOAD_PATH, EXTRACT_PATH)
-
 function download (url = TARBALL_URL, destination = DOWNLOAD_PATH) {
   const file = fs.createWriteStream(destination)
 
@@ -44,6 +41,8 @@ function extractFile (file = DOWNLOAD_PATH, destination = EXTRACT_PATH) {
 }
 
 if (require.main === module) {
+  console.log('Downloading precombiled headless Chrome binary for AWS Lambda')
+
   download().then(extractFile).then(() => fs.unlink(DOWNLOAD_PATH)).catch((error) => {
     console.error(error)
   })

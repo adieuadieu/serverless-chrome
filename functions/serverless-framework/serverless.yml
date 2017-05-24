@@ -1,4 +1,4 @@
-service: serverless-chrome-example
+service: serverless-chrome-examples
 
 provider:
   name: aws
@@ -6,25 +6,42 @@ provider:
   stage: dev
   region: us-west-2
   environment:
-    LOGGING: true
+    DEBUG: "*"
+
+package:
+  exclude:
+    - node_modules/@ava/**
+    - node_modules/babel-**
+    - node_modules/serverless/**
+    - node_modules/chrome-devtools-frontend/**
+    - node_modules/devtools-timeline-model/**
+    - node_modules/aws-sdk/**
+    - '!node_modules/@serverless-chrome/**'
+    - '!node_modules/lighthouse/**'
+    - '!node_modules/mkdirp/**'
+    - '!node_modules/debug/**'
+    - '!node_modules/ms/**'
+    - '!node_modules/chrome-remote-interface/**'
+  include:
+    - src/**
+# ^^ todo: use this instead? https://github.com/dougmoscrop/serverless-plugin-include-dependencies
 
 functions:
   versionInfo:
     description: Headless Chrome Serverless-framework version info example
     memorySize: 1536
     timeout: 30
-    handler: handlers.versionInfo
-
+    handler: src/versionInfo.handler
     events:
       - http:
           path: version-info
           method: get
+
   screenshot:
     description: Headless Chrome Serverless-framework screenshot example
     memorySize: 1536
     timeout: 30
-    handler: handlers.screenshot
-
+    handler: src/captureScreenshot.handler
     events:
       - http:
           path: screenshot

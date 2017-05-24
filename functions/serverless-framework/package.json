@@ -1,5 +1,6 @@
 {
-  "name": "@serverless-chrome/examples/serverless-framework",
+  "name": "@serverless-chrome/functions-serverless-framework",
+  "private": true,
   "version": "1.0.0",
   "description": "Example serverless functions using the Serverless-framework",
   "main": "src/handlers.js",
@@ -15,7 +16,7 @@
     "ava": "ava",
     "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint $npm_package_config_jsSrc",
-    "deploy": "serverless deploy -v",
+    "deploy": "serverless deploy -v"
   },
   "repository": {
     "type": "git",
@@ -37,15 +38,16 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/functions/serverless-framework",
   "dependencies": {
-    "@serverless-chrome/lambda": "0.0.0-pre-release-1"
+    "@serverless-chrome/lambda": "^0.0.0-pre-release-3",
+    "chrome-remote-interface": "^0.22.0"
   },
   "devDependencies": {
     "ava": "^0.19.1",
     "babel-register": "^6.24.1",
-    "serverless": "^1.13.2",
+    "serverless": "^1.13.2"
   },
   "ava": {
     "require": "babel-register",
     "babel": "inherit"
-  },
+  }
 }
