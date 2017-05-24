@@ -8,7 +8,6 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 
 
 ## Contents
-1. [What is it?](#what-is-it)
 1. [Installation](#installation)
 1. [Setup](#setup)
 1. [Testing](#testing)

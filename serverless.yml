@@ -1,4 +1,4 @@
-service: serverless-chrome
+service: lookbook-pdf
 
 provider:
   name: aws
@@ -23,5 +23,5 @@ functions:
 
     events:
       - http:
-          path: chrome
+          path: profile/pdf
           method: get
