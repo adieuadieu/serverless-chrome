@@ -4,7 +4,7 @@ import sp from 'child_process' // TODO: why is this sp and not cp? (cp is also c
 import Cdp from 'chrome-remote-interface'
 import got from 'got'
 import config from './config'
-import { log, psLookup, psKill } from './utils'
+import { log, psLookup, psKill, sleep } from './utils'
 
 const CHROME_PATH = process.env.CHROME_PATH && path.resolve(process.env.CHROME_PATH)
 const HEADLESS_URL = 'http://127.0.0.1:9222'
@@ -16,9 +16,6 @@ export async function isChromeRunning () {
   let running = false
 
   if (config.logging) {
-    log('\n$ ls /tmp\n', sp.execSync('ls -lhtra /tmp').toString())
-    log('\n$ ps lx\n', sp.execSync('ps lx').toString())
-
     try {
       log('CDP List:', await Cdp.List())
     } catch (error) {
@@ -46,18 +43,22 @@ export async function isChromeRunning () {
 }
 
 // TODO: refactor this cuz there's some dumb dumb in here. specifically parentResolve.
+// TODO: add unit test case for when chrome fails to start for whatever reason. catch/reject.
 function waitUntilProcessIsReady (startTime = Date.now(), parentResolve = () => {}) {
-  return new Promise(async (resolve) => {
+  return new Promise(async (resolve, reject) => {
     if (Date.now() - startTime < PROCESS_STARTUP_TIMEOUT) {
-      await got(`${HEADLESS_URL}/json`)
+      await got(`${HEADLESS_URL}/json` /* { retries: 0, timeout: 1000 }*/)
         .then(() => {
           resolve()
           parentResolve()
         })
         .catch(async () => {
+          await sleep(100)
           await waitUntilProcessIsReady(startTime, resolve)
         })
     } else {
+      log('Failed to start Chrome. Chrome startup timeout exceeded.')
+
       resolve()
     }
   })
@@ -65,6 +66,13 @@ function waitUntilProcessIsReady (startTime = Date.now(), parentResolve = () => 
 
 export async function spawn () {
   log('CHROME_PATH', CHROME_PATH)
+
+  log('\n$ ls /tmp\n', sp.execSync('ls -lhtra /tmp').toString())
+  log('\n$ ps lx\n', sp.execSync('ps lx').toString())
+  // log('\n$ mkdir -p /tmp/chrome\n', sp.execSync('mkdir -p /tmp/chrome').toString())
+  // log('\n$ chmod 4755 /tmp/chrome\n', sp.execSync('chmod 4755 /tmp/chrome').toString())
+  // log('\n$ ls /tmp/chrome\n', sp.execSync('ls -lhtra /tmp/chrome').toString())
+  // log('\n$ whoami\n', sp.execSync('whoami').toString())
 
   if (CHROME_PATH) {
     // TODO: add a timeout for reject() in case, for whatever reason, chrome doesn't start after a certain period
@@ -76,36 +84,42 @@ export async function spawn () {
         return resolve()
       }
 
-      const chrome = sp.spawn(
-        CHROME_PATH,
-        [...LOGGING_FLAGS, ...config.chromeFlags, '--remote-debugging-port=9222'],
-        {
-          cwd: os.tmpdir(),
-          shell: true,
-          detached: true,
-          stdio: 'ignore',
-        }
-      )
+      const flags = [...LOGGING_FLAGS, ...config.chromeFlags, '--remote-debugging-port=9222']
+
+      log('Spawning headless shell with: ', CHROME_PATH, flags.join(' '))
+
+      const chrome = sp.spawn(CHROME_PATH, flags, {
+        cwd: os.tmpdir(),
+        env: {
+          CHROME_DEVEL_SANDBOX: '/tmp/chrome',
+        },
+        shell: true,
+        detached: true,
+        stdio: 'ignore',
+      })
 
       /*
-        chrome.on('error', (error) => {
-          log('Failed to start chrome process.', error)
-          reject()
-        })
+      chrome.on('error', (error) => {
+        log('Failed to start chrome process.', error)
+        reject()
+      })
 
-        chrome.stdout.on('data', (data) => {
-          log(`chrome stdout: ${data}`)
-        })
+      chrome.stdout.on('data', (data) => {
+        log(`chrome stdout: ${data}`)
+      })
 
-        chrome.stderr.on('data', (data) => {
-          log(`chrome stderr: ${data}`)
-        }) */
+      chrome.stderr.on('data', (data) => {
+        log(`chrome stderr: ${data}`)
+      })
+      */
 
       chrome.unref()
 
       return waitUntilProcessIsReady(Date.now(), resolve)
     })
   }
+
+  throw new Error('CHROME_PATH is undefined.')
 }
 
 export async function kill () {

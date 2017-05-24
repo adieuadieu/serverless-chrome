@@ -1,70 +1,57 @@
-import os from 'os'
 import path from 'path'
-import sp from 'child_process' // TODO: why is this sp and not cp? (cp is also confusing cuz copy)
-import got from 'got'
-import config from './config'
-import { log, psLookup, psKill, sleep } from './utils'
+import { Launcher as ChromeLauncher } from 'lighthouse/chrome-launcher/chrome-launcher'
 
-const CHROME_PATH = process.env.CHROME_PATH && path.resolve(process.env.CHROME_PATH)
-const HEADLESS_URL = 'http://127.0.0.1:9222'
-const PROCESS_STARTUP_TIMEOUT = 1000 * 5
+const debug = require('debug')('@serverless-chrome/lambda')
 
-const LOGGING_FLAGS = config.logging ? ['--enable-logging', '--log-level=0', '--v=99'] : []
+const CHROME_PATH = path.resolve('./headless_shell')
+const DEVTOOLS_PORT = 9222
+const DEVTOOLS_HOST = 'http://127.0.0.1'
+const LOGGING_FLAGS = process.env.DEBUG ? ['--enable-logging', '--log-level=0', '--v=99'] : []
 
-export default async function spawn () {
-  log('CHROME_PATH', CHROME_PATH)
+export default async function launch (options = { flags: [] }) {
+  const chromeFlags = [
+    ...LOGGING_FLAGS,
+    '--disable-gpu',
+    '--single-process', // Currently wont work without this :-(
+    '--no-sandbox',
+    ...options.flags,
+  ]
+  let chromePath
 
-  log('\n$ ls /tmp\n', sp.execSync('ls -lhtra /tmp').toString())
-  log('\n$ ps lx\n', sp.execSync('ps lx').toString())
-  // log('\n$ mkdir -p /tmp/chrome\n', sp.execSync('mkdir -p /tmp/chrome').toString())
-  // log('\n$ chmod 4755 /tmp/chrome\n', sp.execSync('chmod 4755 /tmp/chrome').toString())
-  // log('\n$ ls /tmp/chrome\n', sp.execSync('ls -lhtra /tmp/chrome').toString())
-  // log('\n$ whoami\n', sp.execSync('whoami').toString())
-
-  if (CHROME_PATH) {
-    // TODO: add a timeout for reject() in case, for whatever reason, chrome doesn't start after a certain period
-    return new Promise(async (resolve, reject) => {
-      const isRunning = await isChromeRunning()
-      log('Is Chrome already running?', isRunning)
-
-      if (isRunning) {
-        return resolve()
-      }
-
-      const flags = [...LOGGING_FLAGS, ...config.chromeFlags, '--remote-debugging-port=9222']
-
-      log('Spawning headless shell with: ', CHROME_PATH, flags.join(' '))
-
-      const chrome = sp.spawn(CHROME_PATH, flags, {
-        cwd: os.tmpdir(),
-        env: {
-          CHROME_DEVEL_SANDBOX: '/tmp/chrome',
-        },
-        shell: true,
-        detached: true,
-        stdio: 'ignore',
-      })
-
-      /*
-      chrome.on('error', (error) => {
-        log('Failed to start chrome process.', error)
-        reject()
-      })
-
-      chrome.stdout.on('data', (data) => {
-        log(`chrome stdout: ${data}`)
-      })
-
-      chrome.stderr.on('data', (data) => {
-        log(`chrome stderr: ${data}`)
-      })
-      */
-
-      chrome.unref()
-
-      return waitUntilProcessIsReady(Date.now(), resolve)
-    })
+  if (process.env.AWS_EXECUTION_ENV) {
+    chromePath = CHROME_PATH
   }
 
-  throw new Error('CHROME_PATH is undefined.')
+  debug('Spawning headless shell with: ', chromePath, chromeFlags.join(' '))
+
+  const instance = new ChromeLauncher({ chromeFlags, chromePath, port: DEVTOOLS_PORT })
+
+  const launchStartTime = Date.now()
+  await instance.launch()
+  const launchTime = Date.now() - launchStartTime
+
+  debug(`It took ${launchTime}ms to spawn chrome.`)
+
+  // unref the chrome instance, otherwise the lambda process won't end correctly
+  if (instance.chrome) {
+    instance.chrome.removeAllListeners()
+    instance.chrome.unref()
+  }
+
+  // Note:
+  // instance.outFile, errFile, pidFile are private fields on the ChromeLaunch class.
+  // If private fields become standard JS, this may break the following usage at some point.
+  return {
+    pid: instance.pid,
+    port: instance.port,
+    url: `${DEVTOOLS_HOST}:${instance.port}`,
+    kill: () => instance.kill(),
+    log: instance.outFile,
+    errorLog: instance.errFile,
+    pidFile: instance.pidFile,
+    metaData: {
+      launchTime,
+      didLaunch: !!instance.pid,
+    },
+  }
 }

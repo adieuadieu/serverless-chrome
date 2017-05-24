@@ -1,5 +1,5 @@
 {
-  "name": "serverless-chrome",
+  "name": "@serverless-chrome/base",
   "version": "1.0.0",
   "description": "Run headless Chrome, serverless-ly",
   "main": "handler.js",
@@ -26,7 +26,11 @@
   "keywords": [
     "serverless",
     "chrome",
-    "headless"
+    "chromium",
+    "headless",
+    "aws",
+    "lambda",
+    "serverless-framework"
   ],
   "author": "Marco Lüthy",
   "license": "MIT",
@@ -34,18 +38,11 @@
     "url": "https://github.com/adieuadieu/serverless-chrome/issues"
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome",
-  "dependencies": {
-    "aws-sdk": "^2.56.0",
-    "chrome-remote-interface": "^0.22.0",
-    "got": "^6.7.1",
-    "ps-node": "^0.1.6",
-    "uuid": "^3.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "ava": "^0.19.1",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
-    "babel-loader": "^7.0.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.1",
@@ -54,21 +51,15 @@
     "babel-runtime": "^6.23.0",
     "codacy-coverage": "^2.0.2",
     "coveralls": "^2.13.1",
-    "decompress": "^4.2.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-plugin-ava": "^4.2.0",
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-tap": "^2.0.1",
-    "exports-loader": "^0.6.4",
-    "imports-loader": "^0.7.1",
-    "json-loader": "0.5.4",
     "nyc": "^10.3.2",
     "serverless": "^1.13.2",
-    "serverless-webpack": "^1.0.0-rc.4",
-    "tap-xunit": "^1.7.0",
-    "webpack": "1.14.0"
+    "tap-xunit": "^1.7.0"
   },
   "ava": {
     "require": "babel-register",

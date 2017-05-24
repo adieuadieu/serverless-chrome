@@ -46,5 +46,6 @@ module.exports = {
     new webpack.optimize.DedupePlugin(),
     // new webpack.optimize.UglifyJsPlugin({ minimize: true, sourceMap: false, warnings: false }),
     new ExtractTarballPlugin(chromeTarball, webpackDir),
+    // new ExtractTarballPlugin(path.join(__dirname, 'tmp/ffmpeg.zip'), webpackDir),
   ],
 }
