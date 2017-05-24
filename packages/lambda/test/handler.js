@@ -6,7 +6,7 @@ module.exports.run = function run (event, context, callback) {
 
   chrome()
     .then((instance) => {
-      debug('we got here. sweet', instance)
+      debug('we got here. sweet.', instance)
 
       callback(null, {
         statusCode: 200,
