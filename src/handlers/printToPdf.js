@@ -34,14 +34,6 @@ function makePrintOptions (options = {}) {
 export async function printUrlToPdf (url, printOptions = {}) {
   const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 60
   let result
-  let loaded = false
-
-  const loading = async (startTime = Date.now()) => {
-    if (!loaded && Date.now() - startTime < LOAD_TIMEOUT) {
-      await sleep(100)
-      await loading(startTime)
-    }
-  }
 
   const [tab] = await Cdp.List()
   const client = await Cdp({ host: '127.0.0.1', target: tab })
@@ -52,9 +44,6 @@ export async function printUrlToPdf (url, printOptions = {}) {
     log('Chrome is sending request for:', params.request.url)
   })
 
-  Page.loadEventFired(() => {
-    loaded = true
-  })
 
   if (config.logging) {
     Cdp.Version((err, info) => {
@@ -68,8 +57,17 @@ export async function printUrlToPdf (url, printOptions = {}) {
       Page.enable(), // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-enable
     ])
 
+    const loadEventFired = Page.loadEventFired()
+
     await Page.navigate({ url }) // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigate
-    await loading()
+
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error(`Page load timed out after ${LOAD_TIMEOUT} ms.`)), LOAD_TIMEOUT)
+      loadEventFired.then(() => {
+        clearTimeout(timeout)
+        resolve()
+      })
+    })
 
     // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
     const pdf = await Page.printToPDF(printOptions)
