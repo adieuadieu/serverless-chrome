@@ -37,9 +37,9 @@
     ansi-styles "^2.2.1"
     esutils "^2.0.2"
 
-"@serverless-chrome/lambda@^0.0.0-pre-release-3":
-  version "0.0.0-pre-release-3"
-  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-0.0.0-pre-release-3.tgz#31ee70b26cab19c5485b77394a2f71c9797e0833"
+"@serverless-chrome/lambda@^0.0.0-pre-release-4":
+  version "0.0.0-pre-release-4"
+  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-0.0.0-pre-release-4.tgz#ecf21999308a689594df1b1d98375ec5b78725cc"
   dependencies:
     debug "^2.6.8"
     extract-zip "^1.6.5"
