@@ -19,6 +19,8 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [Roadmap](#roadmap)
 1. [Troubleshooting](#troubleshooting)
 1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
+1. [Change log](#change-log)
+1. [Prior Art](#prior-art)
 
 
 ## Installation
@@ -275,9 +277,15 @@ export AWS_CLIENT_TIMEOUT=3000000
 Tell us about your project on the [Wiki](https://github.com/adieuadieu/serverless-chrome/wiki/Projects-&amp;-Companies-Using-serverless-chrome)!
 
 
----
+## Change log
 
-You might also be interested in:
+See the [CHANGELOG](https://github.com/adieuadieu/serverless-chrome/blob/master/CHANGELOG.md)
+
+
+## Prior Art
+
+This project was inspired in various ways by the following projects:
+
 - [PhantomJS](http://phantomjs.org/)
 - [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf)
 - [node-webkitgtk](https://github.com/kapouer/node-webkitgtk)
