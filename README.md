@@ -8,6 +8,7 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 
 **Breaking Changes coming up!**: Active development is happening in the [v1.0](https://github.com/adieuadieu/serverless-chrome/tree/feature/v1.0) branch. v1.0 introduces a framework-agnostic package for running Chrome on AWS Lambda. Try the pre-release with `yarn add @serverless-chrome/lambda`. More info is available [here](https://github.com/adieuadieu/serverless-chrome/tree/feature/v1.0/packages/lambda).
 
+
 ## Contents
 1. [What is it?](#what-is-it)
 1. [Installation](#installation)
@@ -17,6 +18,8 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [Known Issues / Limitations](#known-issues-limitations)
 1. [Roadmap](#roadmap)
 1. [Troubleshooting](#troubleshooting)
+1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
+
 
 ## Installation
 Installation can be achieved with the following commands
