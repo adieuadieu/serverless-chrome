@@ -41,6 +41,10 @@ export default async function launch (options = { flags: [] }) {
   // Note:
   // instance.outFile, errFile, pidFile are private fields on the ChromeLaunch class.
   // If private fields become standard JS, this may break the following usage at some point.
+
+  // @TODO: we could store 'instance' in a global var,
+  // such that it can be retrieved inbetween lambda invocations
+
   return {
     pid: instance.pid,
     port: instance.port,
