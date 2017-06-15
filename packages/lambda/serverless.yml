@@ -10,13 +10,27 @@ provider:
 
 package:
   exclude:
-    - chrome/**
-    - node_modules/**
-    - '!node_modules/lighthouse/**'
-    - '!node_modules/mkdirp/**'
-    - '!node_modules/debug/**'
-    - '!node_modules/ms/**'
+    - ./**
+
   include:
+    - node_modules/chrome-launcher/**
+    - node_modules/@types/**
+    - node_modules/mkdirp/**
+    - node_modules/minimist/**
+    - node_modules/rimraf/**
+    - node_modules/glob/**
+    - node_modules/fs.realpath/**
+    - node_modules/inflight/**
+    - node_modules/inherits/**
+    - node_modules/minimatch/**
+    - node_modules/once/**
+    - node_modules/path-is-absolute/**
+    - node_modules/brace-expansion/**
+    - node_modules/concat-map/**
+    - node_modules/balanced-match/**
+    - node_modules/wrappy/**
+    - node_modules/lighthouse/lighthouse-core/lib/**
+    - node_modules/debug/**
     - dist/**
     - test/handler.js
     - headless_shell

@@ -1,7 +1,7 @@
 import path from 'path'
-import { Launcher as ChromeLauncher } from 'lighthouse/chrome-launcher/chrome-launcher'
+import { Launcher as ChromeLauncher } from 'chrome-launcher'
 
-const debug = require('debug')('@serverless-chrome/lambda')
+const debug = (...args) => console.log('@serverless-chrome/lambda', ...args)
 
 const CHROME_PATH = path.resolve(__dirname, './headless_shell')
 const DEVTOOLS_PORT = 9222

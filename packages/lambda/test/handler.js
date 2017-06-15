@@ -1,12 +1,11 @@
-const debug = require('debug')('handler')
 const chrome = require('../dist/bundle.cjs.js')
 
 module.exports.run = function run (event, context, callback) {
-  debug('started')
+  console.log('started')
 
   chrome()
     .then((instance) => {
-      debug('we got here. sweet.', instance)
+      console.log('we got here. sweet.', instance)
 
       callback(null, {
         statusCode: 200,
@@ -20,7 +19,7 @@ module.exports.run = function run (event, context, callback) {
       })
     })
     .catch((error) => {
-      debug('error', error)
+      console.log('error', error)
 
       callback({
         statusCode: 200,

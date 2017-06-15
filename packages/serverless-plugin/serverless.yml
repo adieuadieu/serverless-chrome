@@ -1,0 +1,24 @@
+service: serverless-chrome-serverless-plugin
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: us-east-1
+
+plugins:
+  - serverless-plugin-headless-chrome
+
+package:
+  exclude:
+    - ./**
+  include:
+    - test/**
+    - node_modules/chrome-remote-interface/**
+    - node_modules/commander/**
+    - node_modules/ws/**
+    - node_modules/ultron/**
+
+functions:
+  test:
+    handler: test/handler.hello
