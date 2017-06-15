@@ -267,6 +267,11 @@ export AWS_CLIENT_TIMEOUT=3000000
 </details>
 
 
+## Projects & Companies using serverless-chrome
+
+Tell us about your project on the [Wiki](https://github.com/adieuadieu/serverless-chrome/wiki/Projects-&amp;-Companies-Using-serverless-chrome)!
+
+
 ---
 
 You might also be interested in:
