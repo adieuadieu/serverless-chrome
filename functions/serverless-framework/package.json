@@ -44,7 +44,7 @@
   "devDependencies": {
     "ava": "^0.19.1",
     "babel-register": "^6.24.1",
-    "serverless": "^1.13.2"
+    "serverless": "^1.14.0"
   },
   "ava": {
     "require": "babel-register",
