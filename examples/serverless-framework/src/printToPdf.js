@@ -1,3 +1,10 @@
+//
+//
+// HEY! Be sure to re-incorporate changes from @albinekb
+// https://github.com/adieuadieu/serverless-chrome/commit/fca8328134f1098adf92e115f69002e69df24238
+//
+//
+//
 import Cdp from 'chrome-remote-interface'
 import config from '../config'
 import { log, sleep } from '../utils'
