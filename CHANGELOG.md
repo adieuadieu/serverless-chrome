@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - @serverless-chrome/lambda NPM package from @adieuadieu
-- serverless-plugin-headless-chrome NPM package for Serverless-framework from @adieuadieu
+- @serverless-chrome/lambda will persist Chrome instance across container-reuse from @adieuadieu
+- serverless-plugin-chrome NPM package for Serverless-framework from @adieuadieu
 - CHANGELOG.md from @adieuadieu.
 
 ### Changed
-- Start semantic versioning based on the current English version at 1.0.0.
 - example Serverless-framework printToPdf function handler to use the Serverless plugin from @adieuadieu
 - example Serverless-framework captureScreenshot function handler to use the Serverless plugin from @adieuadieu
 
