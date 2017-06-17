@@ -20,7 +20,20 @@ export default {
       // ES2015 modules
       // modulesOnly: true, // Default: false
     }),
-    babel({}),
+    babel({
+      babelrc: false,
+      presets: [
+        [
+          'env',
+          {
+            modules: false,
+            targets: {
+              node: '6.10',
+            },
+          },
+        ],
+      ],
+    }),
   ],
-  external: ['path', 'chrome-launcher'],
+  external: ['fs', 'child_process', 'net', 'path', 'chrome-launcher'],
 }

@@ -1,6 +1,6 @@
 # serverless-chrome/lambda
 
-Standalone package to run Headless Chrome in AWS Lambda.
+Standalone package to run Headless Chrome on AWS Lambda's Node.js (6.10+) runtime.
 
 
 ## Contents

@@ -66,7 +66,7 @@ function getHandlerFileAndExportName (handler = '') {
   }
 }
 
-export default class ServerlessPlugin {
+export default class ServerlessChrome {
   constructor (serverless, options) {
     this.serverless = serverless
     this.options = options

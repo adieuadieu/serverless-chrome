@@ -1,3 +1,5 @@
+// @TODO: only download the archive if we haven't already downloaded it.
+
 const fs = require('fs')
 const path = require('path')
 const https = require('https')

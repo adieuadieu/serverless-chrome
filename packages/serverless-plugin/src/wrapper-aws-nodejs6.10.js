@@ -1,9 +1,9 @@
-const chrome = require('@serverless-chrome/lambda')
+const launch = require('@serverless-chrome/lambda')
 
 const handler = 'REPLACE_WITH_HANDLER_REQUIRE'
 
 module.exports.REPLACE_WITH_EXPORT_NAME = function ensureHeadlessChrome (event, context, callback) {
-  chrome()
+  launch()
     .then((instance) => {
       handler(event, context, callback, instance)
     })
