@@ -19,7 +19,7 @@ package:
   exclude:
     - ./**
   include:
-    - integration-test/**
+    - handler.js
     - node_modules/chrome-remote-interface/**
     - node_modules/commander/**
     - node_modules/ws/**
@@ -27,4 +27,4 @@ package:
 
 functions:
   test:
-    handler: integration-test/handler.hello
+    handler: handler.test

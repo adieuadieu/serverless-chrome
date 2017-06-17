@@ -1,6 +1,6 @@
 const CDP = require('chrome-remote-interface')
 
-module.exports.hello = (event, context, callback, chrome) => {
+module.exports.test = (event, context, callback, chrome) => {
   CDP.Version()
     .then((versionInfo) => {
       callback(null, {
