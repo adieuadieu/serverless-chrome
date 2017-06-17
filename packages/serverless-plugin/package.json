@@ -48,7 +48,7 @@
     "chrome-remote-interface": "^0.23.2",
     "prettier": "^1.4.4",
     "prettier-eslint": "^6.3.0",
-    "rollup": "^0.41.6",
+    "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0"
   },
@@ -71,7 +71,7 @@
     ]
   },
   "dependencies": {
-    "@serverless-chrome/lambda": "^0.0.0-pre-release-5",
+    "@serverless-chrome/lambda": "^0.0.0-pre-release-5.1",
     "fs-p": "^2.0.0",
     "globby": "^6.1.0"
   }
