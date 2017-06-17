@@ -6,8 +6,7 @@
 @TODO:
   - handle package.individually?
     https://github.com/serverless/serverless/blob/master/lib/plugins/package/lib/packageService.js#L37
-  - support for enabling chrome only one specific functions?
-  - instead of using a wrapper, might be cooler to use the AST and rewrite the handler function
+  - support for enabling chrome only on specific functions?
   - instead of including fs-p dep, use the fs methods from the Utils class provided by Serverless
   - tests.
 */
@@ -62,12 +61,11 @@ export default class ServerlessChrome {
     }
 
     this.hooks = {
-      // 'before:offline:start:init': this.beforeCreateDeploymentArtifacts.bind(this),
+      'before:offline:start:init': this.beforeCreateDeploymentArtifacts.bind(this),
       'before:package:createDeploymentArtifacts': this.beforeCreateDeploymentArtifacts.bind(this),
       'after:package:createDeploymentArtifacts': this.afterCreateDeploymentArtifacts.bind(this),
-      // 'before:deploy:createDeploymentArtifacts': this.beforeCreateDeploymentArtifacts.bind(this),
-      // 'before:invoke:local:invoke': this.beforeCreateDeploymentArtifacts.bind(this),
-      // 'after:invoke:local:invoke': this.cleanup.bind(this),
+      'before:invoke:local:invoke': this.beforeCreateDeploymentArtifacts.bind(this),
+      'after:invoke:local:invoke': this.cleanup.bind(this),
     }
   }
 
@@ -78,7 +76,6 @@ export default class ServerlessChrome {
       utils,
       service,
       service: { provider: { name: providerName, runtime } },
-      variables,
     } = this.serverless
 
     service.package.include = service.package.include || []
@@ -131,7 +128,7 @@ export default class ServerlessChrome {
         const handlerCodePath = path.join(config.servicePath, filePath)
         const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
 
-        const chromeFlags = service.custom.chromeFlags || []
+        const chromeFlags = (service.custom && service.custom.chromeFlags) || []
 
         // Read in the wrapper handler code template
         const wrapperTemplate = await utils.readFile(

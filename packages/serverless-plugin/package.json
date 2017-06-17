@@ -41,6 +41,11 @@
     "url": "https://github.com/adieuadieu/serverless-chrome/issues"
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin",
+  "dependencies": {
+    "@serverless-chrome/lambda": "^0.0.0-pre-release-5.2",
+    "fs-p": "^2.0.0",
+    "globby": "^6.1.0"
+  },
   "devDependencies": {
     "ava": "^0.19.1",
     "babel-preset-env": "^1.5.1",
@@ -69,10 +74,5 @@
         }
       ]
     ]
-  },
-  "dependencies": {
-    "@serverless-chrome/lambda": "^0.0.0-pre-release-5.1",
-    "fs-p": "^2.0.0",
-    "globby": "^6.1.0"
   }
 }
