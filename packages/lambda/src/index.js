@@ -1,4 +1,3 @@
-import { Launcher as LocalChromeLauncher } from 'chrome-launcher'
 import LambdaChromeLauncher from './launcher'
 import { debug } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
@@ -23,6 +22,10 @@ export default async function launch (
         port,
       })
     } else {
+      // This let's us use chrome-launcher in local development,
+      // but omit it from the lambda function's zip artefact
+      // eslint-disable-next-line global-require
+      const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
       chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags, port })
     }
   }
