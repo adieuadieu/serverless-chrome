@@ -62,5 +62,18 @@ module.exports.handler = function handler (event, context, callback) {
 }
 ```
 
-### TODO:
-add part about how we use lighthouse-launcher, and it'll launch other Chrome on non-lambda env for use in dev.
+## Local Development
+
+Local development is supported. In a non-lambda environment, the package will use chrome-launcher to launch a locally installed Chrome. You can also pass your own `chromePath`:
+
+```js
+launchChrome({ chromePath: '/my/local/chrome/path' })
+```
+
+The package has zero external dependencies required for inclusion in your Lambda function's package.
+
+## Framework Plugins
+
+There are plugins which bundle this package for easy deployment available for the following "serverless" frameworks:
+
+- [serverless-plugin-chrome](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin)
