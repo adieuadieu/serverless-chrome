@@ -7,15 +7,8 @@
   - handle package.individually?
     https://github.com/serverless/serverless/blob/master/lib/plugins/package/lib/packageService.js#L37
   - support for enabling chrome only one specific functions?
-  - do a better job picking out the stuff we actually need to INCLUDE
-    unzip -vl .serverless/serverless-chrome-serverless-plugin.zip
-    OR... make it not hard-coded!
-    OR go back to custom code instead of relying on chrome-launcher which comes with tons of deps
-  - figure out how to shrinkwrap or ensure the correct versions of packages we're using in INCLUDE
-  - remove the debug dependency in the lambda module, then we can remove debug and ms in INCLUDES
   - instead of using a wrapper, might be cooler to use the AST and rewrite the handler function
   - instead of including fs-p dep, use the fs methods from the Utils class provided by Serverless
-  - support passing chrome frags via custom variables in serverless.yml
   - tests.
 */
 
@@ -33,25 +26,6 @@ const INCLUDES = [
   'node_modules/@serverless-chrome/lambda/package.json',
   'node_modules/@serverless-chrome/lambda/dist/bundle.cjs.js',
   'node_modules/@serverless-chrome/lambda/dist/headless_shell',
-  'node_modules/chrome-launcher/**',
-  'node_modules/@types/**',
-  'node_modules/mkdirp/**',
-  'node_modules/minimist/**',
-  'node_modules/rimraf/**',
-  'node_modules/glob/**',
-  'node_modules/fs.realpath/**',
-  'node_modules/inflight/**',
-  'node_modules/inherits/**',
-  'node_modules/minimatch/**',
-  'node_modules/once/**',
-  'node_modules/path-is-absolute/**',
-  'node_modules/brace-expansion/**',
-  'node_modules/concat-map/**',
-  'node_modules/balanced-match/**',
-  'node_modules/wrappy/**',
-  'node_modules/lighthouse/lighthouse-core/lib/**',
-  'node_modules/debug/**',
-  'node_modules/ms/**',
 ]
 
 function getHandlerFileAndExportName (handler = '') {
@@ -104,6 +78,7 @@ export default class ServerlessChrome {
       utils,
       service,
       service: { provider: { name: providerName, runtime } },
+      variables,
     } = this.serverless
 
     service.package.include = service.package.include || []
@@ -156,6 +131,8 @@ export default class ServerlessChrome {
         const handlerCodePath = path.join(config.servicePath, filePath)
         const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
 
+        const chromeFlags = service.custom.chromeFlags || []
+
         // Read in the wrapper handler code template
         const wrapperTemplate = await utils.readFile(
           path.resolve(__dirname, '..', 'src', `wrapper-${providerName}-${runtime}.js`)
@@ -163,12 +140,12 @@ export default class ServerlessChrome {
 
         // Include the original handler via require
         const wrapperCode = wrapperTemplate
+          .replace("'REPLACE_WITH_HANDLER_REQUIRE'", `require('./${originalFileRenamed}')`)
           .replace(
-            "'REPLACE_WITH_HANDLER_REQUIRE'",
-            `require('./${originalFileRenamed}').${exportName}`
+            "'REPLACE_WITH_OPTIONS'",
+            `{ ${chromeFlags.length ? `chromeFlags: ['${chromeFlags.join("', '")}']` : ''} }`
           )
-          .replace('REPLACE_WITH_EXPORT_NAME', exportName)
-
+          .replace(/REPLACE_WITH_EXPORT_NAME/gm, exportName)
         // Move the original handler's file aside
         await fs.move(
           path.resolve(handlerCodePath, fileName),

@@ -70,7 +70,7 @@ module.exports.hello = (event, context, callback, chrome) => {
 
 ## Examples
 
-Example functions are available [here](). They include:
+Example functions are available [here](https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework). They include:
 
 - Screenshot capturing handler: takes a picture of a URL
 - print-to-PDF handler: turns a URL into a PDF
@@ -83,8 +83,31 @@ Local development is supported. You must install the `chrome-launcher` package i
 
 ## Configuration
 
-todo:
-via custom variables you can pass chrome flags.
+You can pass custom flags with which to launch Chrome using the `custom` section in `serverless.yml`. For example:
+
+```yaml
+plugins:
+  - serverless-plugin-chrome
+
+custom:
+  chromeFlags:
+    - --window-size=1280x1696 # Letter size
+    - --hide-scrollbars
+    - --ignore-certificate-errors
+```
+
+You can enable debugging/logging output by specifying the DEBUG env variable in the provider section of `serverless.yml`. For example:
+
+```yaml
+provider:
+  name: aws
+  runtime: nodejs6.10
+  environment:
+    DEBUG: "*"
+
+plugins:
+  - serverless-plugin-chrome
+```
 
 
 ### Using with other plugins

@@ -1,4 +1,4 @@
-service: serverless-chrome-serverless-plugin
+service: serverless-chrome-sls-plugin-test
 
 provider:
   name: aws
@@ -7,13 +7,19 @@ provider:
   region: us-east-1
 
 plugins:
-  - serverless-plugin-headless-chrome
+  - serverless-plugin-chrome
+
+custom:
+  chromeFlags:
+    - --window-size=1280x1696 # Letter size
+    - --hide-scrollbars
+    - --ignore-certificate-errors
 
 package:
   exclude:
     - ./**
   include:
-    - test/**
+    - integration-test/**
     - node_modules/chrome-remote-interface/**
     - node_modules/commander/**
     - node_modules/ws/**
@@ -21,4 +27,4 @@ package:
 
 functions:
   test:
-    handler: test/handler.hello
+    handler: integration-test/handler.hello
