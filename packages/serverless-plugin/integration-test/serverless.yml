@@ -7,6 +7,7 @@ provider:
   region: us-east-1
 
 plugins:
+  - serverless-plugin-typescript
   - serverless-plugin-chrome
 
 custom:
@@ -19,12 +20,14 @@ package:
   exclude:
     - ./**
   include:
-    - handler.js
+    - ./**.js
     - node_modules/chrome-remote-interface/**
     - node_modules/commander/**
     - node_modules/ws/**
     - node_modules/ultron/**
 
 functions:
-  test:
-    handler: handler.test
+  # test:
+  #   handler: handler.test
+  typescript-test:
+    handler: typescript-handler.test

@@ -67,6 +67,9 @@ export default class ServerlessChrome {
       'before:invoke:local:invoke': this.beforeCreateDeploymentArtifacts.bind(this),
       'after:invoke:local:invoke': this.cleanup.bind(this),
     }
+
+    // only mess with the service path if we're not already known to be within a .build folder
+    this.messWithServicePath = !serverless.service.plugins.includes('serverless-plugin-typescript')
   }
 
   async beforeCreateDeploymentArtifacts () {
@@ -86,36 +89,41 @@ export default class ServerlessChrome {
     this.originalServicePath = config.servicePath
 
     // Fake service path so that serverless will know what to zip
-    config.servicePath = path.join(this.originalServicePath, BUILD_FOLDER)
+    // Unless, we're already in a .build folder from another plugin
+    if (this.messWithServicePath) {
+      config.servicePath = path.join(this.originalServicePath, BUILD_FOLDER)
 
-    if (!fs.existsSync(config.servicePath)) {
-      fs.mkdirpSync(config.servicePath)
-    }
+      if (!fs.existsSync(config.servicePath)) {
+        fs.mkdirpSync(config.servicePath)
+      }
 
-    // include node_modules into build
-    if (!fs.existsSync(path.resolve(path.join(BUILD_FOLDER, 'node_modules')))) {
-      fs.symlinkSync(
-        path.resolve('node_modules'),
-        path.resolve(path.join(BUILD_FOLDER, 'node_modules'))
-      )
-    }
+      // include node_modules into build
+      if (!fs.existsSync(path.resolve(path.join(BUILD_FOLDER, 'node_modules')))) {
+        fs.symlinkSync(
+          path.resolve('node_modules'),
+          path.resolve(path.join(BUILD_FOLDER, 'node_modules'))
+        )
+      }
 
-    // include any "extras" from the "include" section
-    if (service.package.include.length) {
-      const files = await globby(service.package.include)
+      // include any "extras" from the "include" section
+      if (service.package.include.length) {
+        const files = await globby(service.package.include, { cwd: this.originalServicePath })
 
-      files.forEach((filename) => {
-        const destFileName = path.resolve(path.join(BUILD_FOLDER, filename))
-        const dirname = path.dirname(destFileName)
+        files.forEach((filename) => {
+          const sourceFile = path.resolve(path.join(this.originalServicePath, filename))
+          const destFileName = path.resolve(path.join(config.servicePath, filename))
 
-        if (!fs.existsSync(dirname)) {
-          fs.mkdirpSync(dirname)
-        }
+          const dirname = path.dirname(destFileName)
 
-        if (!fs.existsSync(destFileName)) {
-          fs.copySync(path.resolve(filename), path.resolve(path.join(BUILD_FOLDER, filename)))
-        }
-      })
+          if (!fs.existsSync(dirname)) {
+            fs.mkdirpSync(dirname)
+          }
+
+          if (!fs.existsSync(destFileName)) {
+            fs.copySync(sourceFile, destFileName)
+          }
+        })
+      }
     }
 
     // Add our node_modules dependencies to the package includes
@@ -143,6 +151,7 @@ export default class ServerlessChrome {
             `{ ${chromeFlags.length ? `chromeFlags: ['${chromeFlags.join("', '")}']` : ''} }`
           )
           .replace(/REPLACE_WITH_EXPORT_NAME/gm, exportName)
+
         // Move the original handler's file aside
         await fs.move(
           path.resolve(handlerCodePath, fileName),
@@ -156,20 +165,22 @@ export default class ServerlessChrome {
   }
 
   async afterCreateDeploymentArtifacts () {
-    // Copy .build to .serverless
-    await fs.copy(
-      path.join(this.originalServicePath, BUILD_FOLDER, SERVERLESS_FOLDER),
-      path.join(this.originalServicePath, SERVERLESS_FOLDER)
-    )
+    if (this.messWithServicePath) {
+      // Copy .build to .serverless
+      await fs.copy(
+        path.join(this.originalServicePath, BUILD_FOLDER, SERVERLESS_FOLDER),
+        path.join(this.originalServicePath, SERVERLESS_FOLDER)
+      )
 
-    this.serverless.service.package.artifact = path.join(
-      this.originalServicePath,
-      SERVERLESS_FOLDER,
-      path.basename(this.serverless.service.package.artifact)
-    )
+      this.serverless.service.package.artifact = path.join(
+        this.originalServicePath,
+        SERVERLESS_FOLDER,
+        path.basename(this.serverless.service.package.artifact)
+      )
 
-    // Cleanup after everything is copied
-    await this.cleanup()
+      // Cleanup after everything is copied
+      await this.cleanup()
+    }
   }
 
   async cleanup () {

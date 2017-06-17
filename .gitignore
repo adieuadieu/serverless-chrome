@@ -64,3 +64,4 @@ config.yml
 config.json
 /config.js
 event.json
+.build/

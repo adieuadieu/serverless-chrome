@@ -10,5 +10,9 @@
   "license": "MIT",
   "dependencies": {
     "chrome-remote-interface": "^0.23.2"
+  },
+  "devDependencies": {
+    "serverless-plugin-chrome": "^0.0.0-pre-release-5.0",
+    "serverless-plugin-typescript": "^0.3.1"
   }
 }

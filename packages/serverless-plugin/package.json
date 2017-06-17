@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-chrome",
-  "version": "0.0.0-pre-release-5",
+  "version": "0.0.0-pre-release-5.0",
   "description": "A Serverless-framework plugin that takes care of running headless Chrome so that you can move on with getting things done.",
   "keywords": [
     "serverless",
