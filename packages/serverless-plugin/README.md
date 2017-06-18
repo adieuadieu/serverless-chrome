@@ -2,6 +2,7 @@
 
 A [Serverless-framework](https://github.com/serverless/serverless) plugin which bundles the [@serverless-chrome/lambda](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda) package and ensures that Headless Chrome is running when your function handler is invoked.
 
+[![npm](https://img.shields.io/npm/v/serverless-plugin-chrome.svg?style=flat-square)](https://www.npmjs.com/package/serverless-plugin-chrome)
 
 ## Contents
 1. [Installation](#installation)
@@ -16,13 +17,13 @@ A [Serverless-framework](https://github.com/serverless/serverless) plugin which 
 Install with yarn:
 
 ```bash
-yarn add --dev serverless-plugin-headless-chrome
+yarn add --dev serverless-plugin-chrome
 ```
 
 Install with npm:
 
 ```bash
-npm install --save-dev serverless-plugin-headless-chrome
+npm install --save-dev serverless-plugin-chrome
 ```
 
 Requires Node 6.10 runtime.
@@ -129,3 +130,22 @@ plugins:
   - serverless-plugin-typescript
   - serverless-plugin-chrome # 2nd
 ```
+
+
+## Troubleshooting
+
+<details id="ts-aws-client-timeout">
+  <summary>I keep getting a timeout error when deploying and it's really annoying.</summary>
+
+  Indeed, that is annoying. I've had the same problem, and so that's why it's now here in this troubleshooting section. This may be an issue in the underlying AWS SDK when using a slower Internet connection. Try changing the `AWS_CLIENT_TIMEOUT` environment variable to a higher value. For example, in your command prompt enter the following and try deploying again:
+
+```bash
+export AWS_CLIENT_TIMEOUT=3000000
+```
+</details>
+
+<details id="ts-argh">
+  <summary>Aaaaaarggghhhhhh!!!</summary>
+
+  Uuurrrggghhhhhh! Have you tried [filing an Issue](https://github.com/adieuadieu/serverless-chrome/issues/new)?
+</details>

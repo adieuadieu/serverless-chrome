@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - @serverless-chrome/lambda NPM package from @adieuadieu
-- @serverless-chrome/lambda will persist Chrome instance across container-reuse from @adieuadieu
 - serverless-plugin-chrome NPM package for Serverless-framework from @adieuadieu
 - CHANGELOG.md from @adieuadieu.
 

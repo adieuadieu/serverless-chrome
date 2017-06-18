@@ -12,10 +12,10 @@ Please note that this project is released with a [Contributor Code of Conduct][c
 ## Submitting a pull request
 
 0. [Fork][fork] and clone the repository
-0. Create a new branch from the _develop_ branch: `git checkout -b feature/my-new-feature-name develop`
+0. Create a new branch: `git checkout -b feature/my-new-feature-name master`
 0. Make your change
 0. Run the unit tests and make sure they pass and have 100% coverage.
-0. Push to your fork and [submit a pull request][pr] to merge your changes to the _develop_ branch.
+0. Push to your fork and [submit a pull request][pr] to merge your changes.
 0. Pat your self on the back and wait for your pull request to be reviewed and merged.
 
 Here are a few things you can do that will increase the likelihood of your pull request being accepted:

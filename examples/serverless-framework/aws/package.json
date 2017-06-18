@@ -44,7 +44,10 @@
   "devDependencies": {
     "ava": "^0.19.1",
     "babel-register": "^6.24.1",
-    "serverless": "^1.14.0"
+    "prettier": "^1.4.4",
+    "prettier-eslint": "^6.3.0",
+    "serverless": "^1.14.0",
+    "serverless-plugin-chrome": "^0.0.0-pre-release-5.0"
   },
   "ava": {
     "require": "babel-register",
