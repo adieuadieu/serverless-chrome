@@ -1,0 +1,38 @@
+service: serverless-chrome-sls-plugin-test
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: us-east-1
+
+plugins:
+  # - serverless-plugin-typescript
+  - serverless-plugin-chrome
+
+custom:
+  chromeFlags:
+    - --window-size=1280x1696 # Letter size
+    - --hide-scrollbars
+    - --ignore-certificate-errors
+
+package:
+  # individually: true
+  exclude:
+    - ./**
+  include:
+    - ./**.js
+    - node_modules/chrome-remote-interface/**
+    - node_modules/commander/**
+    - node_modules/ws/**
+    - node_modules/ultron/**
+
+functions:
+   test:
+     handler: handler.test
+   anotherTest:
+     handler: anotherHandler.test
+    #  package:
+    #   individually: true
+  # typescript-test:
+  #   handler: typescript-handler.test

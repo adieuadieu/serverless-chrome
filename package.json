@@ -15,9 +15,7 @@
     "ava": "ava",
     "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint $npm_package_config_jsSrc",
-    "coverage": "nyc report",
-    "deploy": "serverless deploy -v",
-    "postinstall": "if [ ! -f ./config.js ]; then UUID=$(openssl rand -base64 32 | tr -d \"/=+\"); echo \"export default {uuid: \\\"$UUID\\\"}\" > ./config.js; fi"
+    "coverage": "nyc report"
   },
   "repository": {
     "type": "git",
@@ -58,7 +56,8 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-tap": "^2.0.1",
     "nyc": "^10.3.2",
-    "serverless": "^1.13.2",
+    "prettier": "^1.4.4",
+    "prettier-eslint": "^6.3.0",
     "tap-xunit": "^1.7.0"
   },
   "ava": {
@@ -75,7 +74,7 @@
         "env",
         {
           "targets": {
-            "node": 6.1
+            "node": "6.10"
           }
         }
       ],

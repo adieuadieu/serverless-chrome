@@ -1,0 +1,18 @@
+{
+  "name": "serverless-plugin-chrome-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chrome-remote-interface": "^0.23.2"
+  },
+  "devDependencies": {
+    "serverless-plugin-chrome": "^0.0.0-pre-release-5.0",
+    "serverless-plugin-typescript": "^0.3.1"
+  }
+}

@@ -10,15 +10,11 @@ provider:
 
 package:
   exclude:
-    - chrome/**
-    - node_modules/**
-    - '!node_modules/lighthouse/**'
-    - '!node_modules/mkdirp/**'
-    - '!node_modules/debug/**'
-    - '!node_modules/ms/**'
+    - ./**
+
   include:
-    - dist/**
-    - test/handler.js
+    - ../dist/**
+    - handler.js
     - headless_shell
     - libosmesa.so
 
@@ -27,7 +23,7 @@ functions:
     description: serverless-chrome/lambda test
     memorySize: 1536
     timeout: 30
-    handler: test/handler.run
+    handler: handler.run
 
     events:
       - http:

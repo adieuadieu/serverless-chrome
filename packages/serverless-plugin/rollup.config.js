@@ -1,12 +1,11 @@
-import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
+// import commonjs from 'rollup-plugin-commonjs'
+import babel from 'rollup-plugin-babel'
 
 export default {
   entry: 'src/index.js',
-  targets: [
-    { dest: 'dist/bundle.cjs.js', format: 'cjs' },
-    { dest: 'dist/bundle.es.js', format: 'es' },
-  ],
+  targets: [{ dest: 'dist/index.js', format: 'cjs' }, { dest: 'dist/index.es.js', format: 'es' }],
+  sourceMap: true,
   plugins: [
     resolve({
       // module: true, // Default: true
@@ -20,6 +19,7 @@ export default {
       // ES2015 modules
       // modulesOnly: true, // Default: false
     }),
+    // commonjs({}),
     babel({
       babelrc: false,
       presets: [
@@ -35,5 +35,5 @@ export default {
       ],
     }),
   ],
-  external: ['fs', 'child_process', 'net', 'path', 'chrome-launcher'],
+  external: ['path', 'globby', 'fs-p'],
 }

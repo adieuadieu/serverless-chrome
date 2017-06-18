@@ -1,6 +1,6 @@
 {
   "name": "@serverless-chrome/lambda",
-  "version": "0.0.0-pre-release-4",
+  "version": "0.0.0-pre-release-5.2",
   "description": "Run headless Chrome/Chromium on AWS Lambda",
   "author": "Marco Lüthy <marco@luethy.net>",
   "keywords": [
@@ -43,15 +43,16 @@
     "postinstall": "node scripts/postinstall.js"
   },
   "dependencies": {
-    "debug": "^2.6.8",
-    "extract-zip": "^1.6.5",
-    "lighthouse": "^2.0.0"
+    "chrome-launcher": "^0.1.3",
+    "extract-zip": "^1.6.5"
   },
   "devDependencies": {
     "ava": "^0.19.1",
-    "babel-preset-env": "^1.5.1",
+    "babel-preset-env": "^1.5.2",
     "babel-register": "^6.24.1",
-    "rollup": "^0.41.6",
+    "prettier": "^1.4.4",
+    "prettier-eslint": "^6.3.0",
+    "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0"
   },
@@ -60,14 +61,14 @@
     "babel": "inherit"
   },
   "babel": {
-    "sourceMaps": false,
+    "sourceMaps": true,
     "presets": [
       [
         "env",
         {
-          "modules": false,
+          "modules": "commonjs",
           "targets": {
-            "node": "6.1"
+            "node": "6.10"
           }
         }
       ]

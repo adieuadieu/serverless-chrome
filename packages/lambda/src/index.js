@@ -1,61 +1,63 @@
-import path from 'path'
-import { Launcher as ChromeLauncher } from 'lighthouse/chrome-launcher/chrome-launcher'
+import LambdaChromeLauncher from './launcher'
+import { debug } from './utils'
+import DEFAULT_CHROME_FLAGS from './flags'
 
-const debug = require('debug')('@serverless-chrome/lambda')
-
-const CHROME_PATH = path.resolve(__dirname, './headless_shell')
 const DEVTOOLS_PORT = 9222
 const DEVTOOLS_HOST = 'http://127.0.0.1'
-const LOGGING_FLAGS = process.env.DEBUG ? ['--enable-logging', '--log-level=0', '--v=99'] : []
 
-export default async function launch (options = { flags: [] }) {
-  const chromeFlags = [
-    ...LOGGING_FLAGS,
-    '--disable-gpu',
-    '--single-process', // Currently wont work without this :-(
-    '--no-sandbox',
-    ...options.flags,
-  ]
-  let chromePath
+// persist the instance across invocations
+// when the *lambda* container is reused.
+let chromeInstance
 
-  if (process.env.AWS_EXECUTION_ENV) {
-    chromePath = CHROME_PATH
+export default async function launch (
+  { flags = [], chromePath, port = DEVTOOLS_PORT, forceLambdaLauncher = false } = {}
+) {
+  const chromeFlags = [...DEFAULT_CHROME_FLAGS, ...flags]
+
+  if (!chromeInstance) {
+    if (process.env.AWS_EXECUTION_ENV || forceLambdaLauncher) {
+      chromeInstance = new LambdaChromeLauncher({
+        chromePath,
+        chromeFlags,
+        port,
+      })
+    } else {
+      // This let's us use chrome-launcher in local development,
+      // but omit it from the lambda function's zip artefact
+      // eslint-disable-next-line global-require
+      const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
+      chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags, port })
+    }
   }
 
-  debug('Spawning headless shell with: ', chromePath, chromeFlags.join(' '))
-
-  const instance = new ChromeLauncher({ chromeFlags, chromePath, port: DEVTOOLS_PORT })
+  debug('Spawning headless shell')
 
   const launchStartTime = Date.now()
-  await instance.launch()
+  await chromeInstance.launch()
   const launchTime = Date.now() - launchStartTime
 
   debug(`It took ${launchTime}ms to spawn chrome.`)
 
   // unref the chrome instance, otherwise the lambda process won't end correctly
-  if (instance.chrome) {
-    instance.chrome.removeAllListeners()
-    instance.chrome.unref()
+  if (chromeInstance.chrome) {
+    chromeInstance.chrome.removeAllListeners()
+    chromeInstance.chrome.unref()
   }
 
-  // Note:
-  // instance.outFile, errFile, pidFile are private fields on the ChromeLaunch class.
-  // If private fields become standard JS, this may break the following usage at some point.
-
-  // @TODO: we could store 'instance' in a global var,
-  // such that it can be retrieved inbetween lambda invocations
-
   return {
-    pid: instance.pid,
-    port: instance.port,
-    url: `${DEVTOOLS_HOST}:${instance.port}`,
-    kill: () => instance.kill(),
-    log: instance.outFile,
-    errorLog: instance.errFile,
-    pidFile: instance.pidFile,
+    pid: chromeInstance.pid,
+    port: chromeInstance.port,
+    url: `${DEVTOOLS_HOST}:${chromeInstance.port}`,
+    kill: () => {
+      chromeInstance.kill()
+      chromeInstance = undefined
+    },
+    log: chromeInstance.outFile,
+    errorLog: chromeInstance.errFile,
+    pidFile: chromeInstance.pidFile,
     metaData: {
       launchTime,
-      didLaunch: !!instance.pid,
+      didLaunch: !!chromeInstance.pid,
     },
   }
 }
