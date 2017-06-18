@@ -2,9 +2,9 @@
 
 Serverless Chrome contains everything you need to get started running headless Chrome on AWS Lambda (possibly Azure and GCP Functions soon).
 
-The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. Serverless Chrome takes care of building and bundling the Chrome binaries and making sure Chrome is running when your serverless function executes. In addition, this project also provides a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
+The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. Serverless Chrome takes care of building and bundling the Chrome binaries and making sure Chrome is running when your serverless function executes. In addition, this project also provides a few example services for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
 
-Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/) in serverless architectures.
+Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/) in serverless architectures and doing testing/CI, web-scraping, pre-rendering, etc.
 
 
 [![CircleCI](https://img.shields.io/circleci/project/github/adieuadieu/serverless-chrome/master.svg?style=flat-square)](https://circleci.com/gh/adieuadieu/serverless-chrome)
@@ -32,12 +32,14 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 
 This project contains:
 
-- **[@serverless-chrome/lambda](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda)** package<br/>
+- **[@serverless-chrome/lambda](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda)** Node package<br/>
   A standalone module for AWS Lambda which bundles and launches Headless Chrome with support for local development. For use with—but not limited to—tools like [Apex](https://github.com/apex/apex), or [Claudia.js](https://github.com/claudiajs/claudia).
-- **[serverless-plugin-chrome](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin)** package<br/>
+- **[serverless-plugin-chrome](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin)** Node package<br/>
   A plugin for [Serverless-framework](https://serverless.com/) services which takes care of everything for you. You just write the code to drive Chrome.
 - **[Example functions](https://github.com/adieuadieu/serverless-chrome/tree/master/examples)**
   - [Serverless-framework](https://serverless.com/) AWS Lambda Node.js functions using `serverless-plugin-chrome`
+- **Docker Stuff**<br/>
+  For building Headless Chrome
 
 
 ## Quick Start
@@ -80,7 +82,7 @@ serverless deploy
 Further details are available in the [Serverless Lambda example](https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws).
 
 
-# Examples
+## Examples
 
 A collection of example functions for different providers and frameworks.
 
@@ -114,7 +116,7 @@ Test with `yarn test` or just `yarn ava` to skip the linter.
 
 1. Hack to Chrome code to disable `/dev/shm`. Details [here](https://medium.com/@marco.luethy/running-headless-chrome-on-aws-lambda-fa82ad33a9eb).
 1. `/tmp` size on Lambda is only about 500MB.
-1. For steady/consistent load, it might not be the most cost efficient to do this on Lambda vs. EC2
+1. For steady/predictable loads, it might not be the most cost efficient to do this on Lambda vs. EC2
 
 
 ## Roadmap
@@ -122,6 +124,8 @@ Test with `yarn test` or just `yarn ava` to skip the linter.
 *1.1*
 
 1. Support for Google Cloud Functions
+1. Example for Apex
+1. Example for Claudia.js
 
 *1.2*
 

@@ -49,6 +49,7 @@ make the tarball:
 mkdir out/headless-chrome && cd out
 cp Headless/headless_shell Headless/libosmesa.so headless-chrome/
 tar -zcvf chrome-headless-lambda-linux-x64.tar.gz headless-chrome/
+zip headless-chrome chrome-headless-lambda-linux-x64.zip
 ```
 
 ```
@@ -63,6 +64,7 @@ scp -i path/to/your/key-pair.pem ec2-user@<the-instance-public-ip>:/home/ec2-use
 
 ```bash
 git fetch --tags
+gclient sync --jobs 16
 ```
 
 https://omahaproxy.appspot.com/

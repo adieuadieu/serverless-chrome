@@ -2,7 +2,7 @@
   "name": "@serverless-chrome/lambda",
   "version": "1.0.0-1",
   "description": "Run headless Chrome/Chromium on AWS Lambda",
-  "author": "Marco Lüthy <marco@luethy.net>",
+  "author": "Marco Lüthy",
   "keywords": [
     "serverless",
     "chrome",
