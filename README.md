@@ -6,6 +6,8 @@ The aim of this project is to provide the scaffolding for using Headless Chrome 
 
 Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/) in serverless architectures.
 
+**Breaking Changes coming up!**: Active development is happening in the [develop](https://github.com/adieuadieu/serverless-chrome/tree/develop) branch. v1.0 introduces a framework-agnostic package for running Chrome on AWS Lambda. Try the pre-release with `yarn add @serverless-chrome/lambda`. More info is available [here](https://github.com/adieuadieu/serverless-chrome/tree/develop/packages/lambda).
+
 
 ## Contents
 1. [Installation](#installation)
@@ -15,6 +17,10 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [Known Issues / Limitations](#known-issues-limitations)
 1. [Roadmap](#roadmap)
 1. [Troubleshooting](#troubleshooting)
+1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
+1. [Change log](#change-log)
+1. [Prior Art](#prior-art)
+
 
 ## Installation
 Installation can be achieved with the following commands
@@ -265,9 +271,20 @@ export AWS_CLIENT_TIMEOUT=3000000
 </details>
 
 
----
+## Projects & Companies using serverless-chrome
 
-You might also be interested in:
+Tell us about your project on the [Wiki](https://github.com/adieuadieu/serverless-chrome/wiki/Projects-&amp;-Companies-Using-serverless-chrome)!
+
+
+## Change log
+
+See the [CHANGELOG](https://github.com/adieuadieu/serverless-chrome/blob/master/CHANGELOG.md)
+
+
+## Prior Art
+
+This project was inspired in various ways by the following projects:
+
 - [PhantomJS](http://phantomjs.org/)
 - [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf)
 - [node-webkitgtk](https://github.com/kapouer/node-webkitgtk)

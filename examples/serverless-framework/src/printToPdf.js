@@ -41,15 +41,14 @@ function makePrintOptions (options = {}) {
 export async function printUrlToPdf (url, printOptions = {}) {
   const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 20
   let result
-  let loaded = false
   const requestQueue = [] // @TODO: write a better quite, which waits a few seconds when reaching 0 before emitting "empty"
 
-  const loading = async (startTime = Date.now()) => {
+  const emptyQueue = async () => {
     log('Request queue size:', requestQueue.length, requestQueue)
 
-    if ((!loaded || requestQueue.length > 0) && Date.now() - startTime < LOAD_TIMEOUT) {
+    if (requestQueue.length > 0) {
       await sleep(100)
-      await loading(startTime)
+      await emptyQueue(startTime)
     }
   }
 
@@ -76,15 +75,6 @@ export async function printUrlToPdf (url, printOptions = {}) {
     log('Chrome received response for:', data.requestId, data.response.url)
   })
 
-  Page.loadEventFired((data) => {
-    loaded = true
-    log('Page.loadEventFired', data)
-  })
-
-  Page.domContentEventFired((data) => {
-    log('Page.domContentEventFired', data)
-  })
-
   if (config.logging) {
     Cdp.Version((err, info) => {
       console.log('CDP version info', err, info)
@@ -97,8 +87,19 @@ export async function printUrlToPdf (url, printOptions = {}) {
       Page.enable(), // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-enable
     ])
 
+    const loadEventFired = Page.loadEventFired()
+
     await Page.navigate({ url }) // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigate
-    await loading()
+
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(reject, LOAD_TIMEOUT, new Error(`Page load timed out after ${LOAD_TIMEOUT} ms.`))
+
+      loadEventFired.then(async () => {
+        await emptyQueue()
+        clearTimeout(timeout)
+        resolve()
+      })
+    })
 
     log('We think the page has finished loading. Printing PDF.')
 
