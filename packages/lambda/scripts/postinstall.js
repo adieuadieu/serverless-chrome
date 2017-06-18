@@ -1,5 +1,9 @@
-// @TODO: only download the archive if we haven't already downloaded it.
-
+/*
+@TODO: only download the archive if we haven't already downloaded it.
+@TODO: peg to an archive version, so each package version only downloads specific chrome version
+        using pkg.config.chromeVersion
+@TODO: checksum/crc check on archive using pkg.config.tarballChecksum
+*/
 const fs = require('fs')
 const path = require('path')
 const https = require('https')

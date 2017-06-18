@@ -100,7 +100,7 @@ A collection of example functions for different providers and frameworks.
 
 The current Chrome build is:
 
-- **Browser**: HeadlessChrome/1.0.3135.0
+- **Browser**: HeadlessChrome/61.0.3135.0
 - **Protocol-Version**: 1.2
 - **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/61.0.3135.0 Safari/537.36
 - **V8-Version**: 6.1.201

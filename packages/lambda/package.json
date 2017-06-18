@@ -28,7 +28,9 @@
     "node": ">= 6.10"
   },
   "config": {
-    "jsSrc": "src/"
+    "jsSrc": "src/",
+    "chromeVersion": "61.0.3135.0",
+    "tarballChecksum": "not implemented"
   },
   "scripts": {
     "test": "npm run lint && nyc ava",
