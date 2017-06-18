@@ -7,7 +7,7 @@ provider:
   region: us-east-1
 
 plugins:
-  - serverless-plugin-typescript
+  # - serverless-plugin-typescript
   - serverless-plugin-chrome
 
 custom:
@@ -27,7 +27,9 @@ package:
     - node_modules/ultron/**
 
 functions:
-  # test:
-  #   handler: handler.test
-  typescript-test:
-    handler: typescript-handler.test
+   test:
+     handler: handler.test
+   anotherTest:
+     handler: anotherHandler.test
+  # typescript-test:
+  #   handler: typescript-handler.test

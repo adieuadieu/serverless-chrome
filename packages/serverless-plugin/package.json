@@ -66,7 +66,7 @@
       [
         "env",
         {
-          "modules": false,
+          "modules": "commonjs",
           "targets": {
             "node": "6.10"
           }

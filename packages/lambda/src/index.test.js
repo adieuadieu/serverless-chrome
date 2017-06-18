@@ -1,7 +1,3 @@
-/*
-  @note:
-    - we launch chrome on different ports because tests run concurrently
-*/
 import test from 'ava'
 import * as chromeFinder from 'chrome-launcher/chrome-finder'
 import launch from './index'

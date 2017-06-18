@@ -15,50 +15,24 @@ import * as path from 'path'
 import * as fs from 'fs-p'
 import globby from 'globby'
 
-const SERVERLESS_FOLDER = '.serverless'
-const BUILD_FOLDER = '.build'
-
-const SUPPORTED_PROVIDERS = ['aws']
-const SUPPORTED_RUNTIMES = ['nodejs6.10']
-
-const INCLUDES = [
-  'node_modules/@serverless-chrome/lambda/package.json',
-  'node_modules/@serverless-chrome/lambda/dist/bundle.cjs.js',
-  'node_modules/@serverless-chrome/lambda/dist/headless_shell',
-]
-
-function getHandlerFileAndExportName (handler = '') {
-  const fileParts = handler.split('.')
-  const exportName = fileParts.pop()
-  const file = fileParts.join('.')
-
-  return {
-    filePath: path.dirname(file),
-    fileName: `${path.basename(file)}.js`, // is it OK to assume .js?
-    exportName,
-  }
-}
+import { SERVERLESS_FOLDER, BUILD_FOLDER, INCLUDES } from './constants'
+import {
+  throwIfUnsupportedProvider,
+  throwIfUnsupportedRuntime,
+  throwIfWrongPluginOrder,
+  getHandlerFileAndExportName,
+} from './utils'
 
 export default class ServerlessChrome {
   constructor (serverless, options) {
     this.serverless = serverless
     this.options = options
 
-    const { name: providerName, runtime } = serverless.service.provider
+    const { provider: { name: providerName, runtime }, plugins } = serverless.service
 
-    if (!SUPPORTED_PROVIDERS.includes(providerName)) {
-      throw new Error(
-        'The "serverless-plugin-headless-chrome" plugin currently only supports AWS Lambda. ' +
-          `Your service is using the "${providerName}" provider.`
-      )
-    }
-
-    if (!SUPPORTED_RUNTIMES.includes(runtime)) {
-      throw new Error(
-        'The "serverless-plugin-headless-chrome" plugin only supports the Node.js 6.10 runtime. ' +
-          `Your service is using the "${runtime}" provider.`
-      )
-    }
+    throwIfUnsupportedProvider(providerName)
+    throwIfUnsupportedRuntime(runtime)
+    throwIfWrongPluginOrder(plugins)
 
     this.hooks = {
       'before:offline:start:init': this.beforeCreateDeploymentArtifacts.bind(this),
@@ -69,7 +43,7 @@ export default class ServerlessChrome {
     }
 
     // only mess with the service path if we're not already known to be within a .build folder
-    this.messWithServicePath = !serverless.service.plugins.includes('serverless-plugin-typescript')
+    this.messWithServicePath = !plugins.includes('serverless-plugin-typescript')
   }
 
   async beforeCreateDeploymentArtifacts () {

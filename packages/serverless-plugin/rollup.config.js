@@ -20,7 +20,20 @@ export default {
       // modulesOnly: true, // Default: false
     }),
     // commonjs({}),
-    babel({}),
+    babel({
+      babelrc: false,
+      presets: [
+        [
+          'env',
+          {
+            modules: false,
+            targets: {
+              node: '6.10',
+            },
+          },
+        ],
+      ],
+    }),
   ],
   external: ['path', 'globby', 'fs-p'],
 }
