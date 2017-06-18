@@ -1,3 +1,7 @@
+machine:
+  node:
+    version: 6.10
+
 test:
   override:
     - mkdir -p $CIRCLE_TEST_REPORTS/reports

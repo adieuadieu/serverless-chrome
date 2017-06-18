@@ -1,0 +1,77 @@
+{
+  "name": "@serverless-chrome/lambda",
+  "version": "0.0.0-pre-release-5.2",
+  "description": "Run headless Chrome/Chromium on AWS Lambda",
+  "author": "Marco Lüthy <marco@luethy.net>",
+  "keywords": [
+    "serverless",
+    "chrome",
+    "chromium",
+    "headless",
+    "aws",
+    "lambda"
+  ],
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.es.js",
+  "files": [
+    "dist/bundle.cjs.js",
+    "dist/bundle.es.js",
+    "scripts/postinstall.js"
+  ],
+  "repository": "git@github.com:adieuadieu/serverless-chrome.git",
+  "bugs": {
+    "url": "https://github.com/adieuadieu/serverless-chrome/issues"
+  },
+  "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 6.10"
+  },
+  "config": {
+    "jsSrc": "src/"
+  },
+  "scripts": {
+    "test": "npm run lint && nyc ava",
+    "watch:test": "ava --watch",
+    "ava": "ava",
+    "lint": "npm run lint:eslint -s",
+    "lint:eslint": "eslint $npm_package_config_jsSrc",
+    "coverage": "nyc report",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "prepublishOnly": "rm -Rf dist/ && yarn build",
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "dependencies": {
+    "chrome-launcher": "^0.1.3",
+    "extract-zip": "^1.6.5"
+  },
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "babel-preset-env": "^1.5.2",
+    "babel-register": "^6.24.1",
+    "prettier": "^1.4.4",
+    "prettier-eslint": "^6.3.0",
+    "rollup": "^0.43.0",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-node-resolve": "^3.0.0"
+  },
+  "ava": {
+    "require": "babel-register",
+    "babel": "inherit"
+  },
+  "babel": {
+    "sourceMaps": true,
+    "presets": [
+      [
+        "env",
+        {
+          "modules": "commonjs",
+          "targets": {
+            "node": "6.10"
+          }
+        }
+      ]
+    ]
+  }
+}
