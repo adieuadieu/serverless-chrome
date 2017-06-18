@@ -53,7 +53,7 @@ zip headless-chrome chrome-headless-lambda-linux-x64.zip
 ```
 
 ```
-scp -i path/to/your/key-pair.pem ec2-user@<the-instance-public-ip>:/home/ec2-user/Chromium/src/out/chrome-headless-lambda-linux-x64.tar.gz ./
+scp -i path/to/your/key-pair.pem ec2-user@<the-instance-public-ip>:/home/ec2-user/Chromium/src/out/chrome-headless-lambda-linux-x64.zip ./
 ```
 
 

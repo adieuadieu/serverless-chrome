@@ -16,7 +16,6 @@ package:
     - ../dist/**
     - handler.js
     - headless_shell
-    - libosmesa.so
 
 functions:
   test:

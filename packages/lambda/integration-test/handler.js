@@ -3,7 +3,7 @@ const chrome = require('../dist/bundle.cjs.js')
 module.exports.run = function run (event, context, callback) {
   console.log('started')
 
-  chrome()
+  chrome({ chromePath: './headless_shell' })
     .then((instance) => {
       console.log('we got here. sweet.', instance)
 
