@@ -16,6 +16,7 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 
 
 ## Contents
+1. [The Project](#the-project)
 1. [Quick Start](#quick-start)
 1. [Examples](#examples)
 1. [Chrome Version](#chrome-version)
@@ -25,6 +26,18 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
 1. [Change log](#change-log)
 1. [Prior Art](#prior-art)
+
+
+## The Project
+
+This project contains:
+
+- **[@serverless-chrome/lambda](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda)** package<br/>
+  A standalone module for AWS Lambda which bundles and launches Headless Chrome with support for local development. For use with—but not limited to—tools like [Apex](https://github.com/apex/apex), or [Claudia.js](https://github.com/claudiajs/claudia).
+- **[serverless-plugin-chrome](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin)** package<br/>
+  A plugin for [Serverless-framework](https://serverless.com/) services which takes care of everything for you. You just write the code to drive Chrome.
+- **[Example functions](https://github.com/adieuadieu/serverless-chrome/tree/master/examples)**
+  - [Serverless-framework](https://serverless.com/) AWS Lambda Node.js functions using `serverless-plugin-chrome`
 
 
 ## Quick Start
