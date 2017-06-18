@@ -17,6 +17,7 @@ custom:
     - --ignore-certificate-errors
 
 package:
+  # individually: true
   exclude:
     - ./**
   include:
@@ -31,5 +32,7 @@ functions:
      handler: handler.test
    anotherTest:
      handler: anotherHandler.test
+    #  package:
+    #   individually: true
   # typescript-test:
   #   handler: typescript-handler.test
