@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@serverless-chrome/lambda@^0.0.0-pre-release-5.2":
-  version "0.0.0-pre-release-5.2"
-  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-0.0.0-pre-release-5.2.tgz#931bc5f39fae7db800efddee571e4daade9c0e4a"
+"@serverless-chrome/lambda@^1.0.0-1":
+  version "1.0.0-1"
+  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-1.0.0-1.tgz#915fb254ff3209dbdf5710d6129db89147ec8efc"
   dependencies:
     chrome-launcher "^0.1.3"
     extract-zip "^1.6.5"
@@ -884,11 +884,11 @@ semver-diff@^2.0.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 
-serverless-plugin-chrome@^0.0.0-pre-release-5.0:
-  version "0.0.0-pre-release-5.0"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-0.0.0-pre-release-5.0.tgz#39e41680a53d2d32b9727dea08a87ab7b43729f5"
+serverless-plugin-chrome@^1.0.0-1:
+  version "1.0.0-1"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-1.tgz#c3f2cd41c99151d3708658c6975984666f03337a"
   dependencies:
-    "@serverless-chrome/lambda" "^0.0.0-pre-release-5.2"
+    "@serverless-chrome/lambda" "^1.0.0-1"
     fs-p "^2.0.0"
     globby "^6.1.0"
 
