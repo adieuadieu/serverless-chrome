@@ -3,11 +3,15 @@
 [fork]: https://github.com/adieuadieu/serverless-chrome/fork
 [pr]: https://github.com/adieuadieu/serverless-chrome/compare
 [code-of-conduct]: CODE_OF_CONDUCT.md
-[documentation]: docs/making-changes.md
 
 Hi there! We're thrilled that you'd like to contribute to this project. Your help is essential for keeping it great.
 
 Please note that this project is released with a [Contributor Code of Conduct][code-of-conduct]. By participating in this project you agree to abide by its terms.
+
+## Contribution Agreement
+
+As a contributor, you represent that the code you submit is your original work or that of your employer (in which case you represent you have the right to bind your employer). By submitting code, you (and, if applicable, your employer) are licensing the submitted code to the open source community subject to the MIT license.
+
 
 ## Submitting a pull request
 
