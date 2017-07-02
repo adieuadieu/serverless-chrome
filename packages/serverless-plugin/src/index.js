@@ -57,7 +57,7 @@ export default class ServerlessChrome {
       service: { provider: { name: providerName, runtime } },
     } = this.serverless
 
-    service.package.include = service.package.include || ['**', '!node_modules/**']
+    service.package.include = service.package.include || []
 
     cli.log('Injecting Headless Chrome...')
 
@@ -82,7 +82,9 @@ export default class ServerlessChrome {
       }
 
       // include any "extras" from the "include" section
-      const files = await globby(service.package.include, { cwd: this.originalServicePath })
+      const files = await globby([...service.package.include, '**', '!node_modules/**'], {
+        cwd: this.originalServicePath,
+      })
 
       files.forEach((filename) => {
         const sourceFile = path.resolve(path.join(this.originalServicePath, filename))

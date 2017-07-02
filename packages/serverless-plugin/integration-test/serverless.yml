@@ -9,7 +9,7 @@ provider:
     DEBUG: "*"
 
 plugins:
-  # - serverless-plugin-typescript
+#  - serverless-plugin-typescript
   - serverless-plugin-chrome
 
 custom:
@@ -34,7 +34,7 @@ functions:
      handler: handler.test
    anotherTest:
      handler: anotherHandler.test
-    #  package:
-    #   individually: true
+     package:
+      individually: true
   # typescript-test:
   #   handler: typescript-handler.test
