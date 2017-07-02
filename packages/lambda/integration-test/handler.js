@@ -1,9 +1,10 @@
-const chrome = require('../dist/bundle.cjs.js')
+const path = require('path')
+const chrome = require('./dist/bundle.cjs.js')
 
 module.exports.run = function run (event, context, callback) {
   console.log('started')
 
-  chrome({ chromePath: './headless_shell' })
+  chrome({ chromePath: path.resolve(__dirname, './headless_shell') })
     .then((instance) => {
       console.log('we got here. sweet.', instance)
 

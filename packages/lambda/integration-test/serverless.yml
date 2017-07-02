@@ -1,10 +1,10 @@
-service: serverless-chrome-package-lambda-test
+service: serverless-chrome-lambda-pkg-test
 
 provider:
   name: aws
   runtime: nodejs6.10
   stage: dev
-  region: us-west-2
+  region: us-east-1
   environment:
     DEBUG: "*"
 
@@ -13,7 +13,7 @@ package:
     - ./**
 
   include:
-    - ../dist/**
+    - ./dist/**
     - handler.js
     - headless_shell
 

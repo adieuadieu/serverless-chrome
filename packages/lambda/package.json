@@ -1,6 +1,6 @@
 {
   "name": "@serverless-chrome/lambda",
-  "version": "1.0.0-4",
+  "version": "1.0.0-5",
   "description": "Run headless Chrome/Chromium on AWS Lambda",
   "author": "Marco Lüthy",
   "keywords": [
@@ -35,7 +35,7 @@
   "scripts": {
     "test": "npm run lint && nyc ava",
     "watch:test": "ava --watch",
-    "test:docker": "docker run -v \"$PWD/integration-test\":/var/task lambci/lambda:nodejs6.10 test/handler.hello",
+    "test:docker": "docker run -v \"$PWD/integration-test\":/var/task lambci/lambda:nodejs6.10 test/handler.run",
     "ava": "ava",
     "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint $npm_package_config_jsSrc",
@@ -46,15 +46,14 @@
     "postinstall": "node scripts/postinstall.js"
   },
   "dependencies": {
-    "chrome-launcher": "^0.2.1",
     "extract-zip": "^1.6.5"
   },
   "devDependencies": {
-    "ava": "^0.19.1",
+    "ava": "^0.20.0",
     "babel-preset-env": "^1.5.2",
     "babel-register": "^6.24.1",
-    "prettier": "^1.4.4",
-    "prettier-eslint": "^6.3.0",
+    "prettier": "^1.5.2",
+    "prettier-eslint": "^6.4.1",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0"

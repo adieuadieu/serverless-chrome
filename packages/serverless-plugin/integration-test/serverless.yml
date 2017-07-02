@@ -5,6 +5,8 @@ provider:
   runtime: nodejs6.10
   stage: dev
   region: us-east-1
+  environment:
+    DEBUG: "*"
 
 plugins:
   # - serverless-plugin-typescript
@@ -15,17 +17,17 @@ custom:
     - --window-size=1280x1696 # Letter size
     - --hide-scrollbars
     - --ignore-certificate-errors
-
-package:
-  # individually: true
-  exclude:
-    - ./**
-  include:
-    - ./**.js
-    - node_modules/chrome-remote-interface/**
-    - node_modules/commander/**
-    - node_modules/ws/**
-    - node_modules/ultron/**
+#
+# package:
+#   # individually: true
+#   exclude:
+#     - ./**
+#   include:
+#     - ./**.js
+#     - node_modules/chrome-remote-interface/**
+#     - node_modules/commander/**
+#     - node_modules/ws/**
+#     - node_modules/ultron/**
 
 functions:
    test:

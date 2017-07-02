@@ -8,6 +8,8 @@
     https://github.com/serverless/serverless/blob/master/lib/plugins/package/lib/packageService.js#L37
   - support for enabling chrome only on specific functions?
   - instead of including fs-p dep, use the fs methods from the Utils class provided by Serverless
+  - config option to, instead of including chrome in artifact zip, download it on
+    cold-start invocations this could be useful for development, instead of having to upload 50MB each deploy
   - tests.
 */
 
@@ -55,7 +57,7 @@ export default class ServerlessChrome {
       service: { provider: { name: providerName, runtime } },
     } = this.serverless
 
-    service.package.include = service.package.include || []
+    service.package.include = service.package.include || ['**', '!node_modules/**']
 
     cli.log('Injecting Headless Chrome...')
 
@@ -80,24 +82,22 @@ export default class ServerlessChrome {
       }
 
       // include any "extras" from the "include" section
-      if (service.package.include.length) {
-        const files = await globby(service.package.include, { cwd: this.originalServicePath })
+      const files = await globby(service.package.include, { cwd: this.originalServicePath })
 
-        files.forEach((filename) => {
-          const sourceFile = path.resolve(path.join(this.originalServicePath, filename))
-          const destFileName = path.resolve(path.join(config.servicePath, filename))
+      files.forEach((filename) => {
+        const sourceFile = path.resolve(path.join(this.originalServicePath, filename))
+        const destFileName = path.resolve(path.join(config.servicePath, filename))
 
-          const dirname = path.dirname(destFileName)
+        const dirname = path.dirname(destFileName)
 
-          if (!fs.existsSync(dirname)) {
-            fs.mkdirpSync(dirname)
-          }
+        if (!fs.existsSync(dirname)) {
+          fs.mkdirpSync(dirname)
+        }
 
-          if (!fs.existsSync(destFileName)) {
-            fs.copySync(sourceFile, destFileName)
-          }
-        })
-      }
+        if (!fs.existsSync(destFileName)) {
+          fs.copySync(sourceFile, destFileName)
+        }
+      })
     }
 
     // Add our node_modules dependencies to the package includes
@@ -108,6 +108,7 @@ export default class ServerlessChrome {
         const { handler } = service.getFunction(functionName)
         const { filePath, fileName, exportName } = getHandlerFileAndExportName(handler)
         const handlerCodePath = path.join(config.servicePath, filePath)
+
         const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
 
         const chromeFlags = (service.custom && service.custom.chromeFlags) || []

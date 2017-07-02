@@ -28,6 +28,11 @@ Install with npm:
 npm install --save @serverless-chrome/lambda
 ```
 
+If you wish to develop locally, you also need to install `chrome-launcher`:
+
+```bash
+npm install --save-dev chrome-launcher
+```
 
 ## Setup
 

@@ -9,10 +9,10 @@
   "author": "Marco Lüthy",
   "license": "MIT",
   "dependencies": {
-    "chrome-remote-interface": "^0.23.2"
+    "chrome-remote-interface": "^0.23.3"
   },
   "devDependencies": {
-    "serverless-plugin-chrome": "^1.0.0-1",
-    "serverless-plugin-typescript": "^0.3.1"
+    "@serverless-chrome/lambda": "^1.0.0-5",
+    "serverless-plugin-typescript": "^0.4.0"
   }
 }
