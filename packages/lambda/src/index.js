@@ -1,3 +1,4 @@
+import fs from 'fs'
 import LambdaChromeLauncher from './launcher'
 import { debug } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
@@ -24,16 +25,39 @@ export default async function launch (
     } else {
       // This let's us use chrome-launcher in local development,
       // but omit it from the lambda function's zip artefact
-      // eslint-disable-next-line global-require
-      const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
-      chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags, port })
+      try {
+        // eslint-disable-next-line global-require
+        const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
+        chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags, port })
+      } catch (error) {
+        throw new Error(
+          '@serverless-chrome/lambda: Unable to find "chrome-launcher". ' +
+            "Make sure it's installed if you wish to develop locally."
+        )
+      }
     }
   }
 
   debug('Spawning headless shell')
 
   const launchStartTime = Date.now()
-  await chromeInstance.launch()
+
+  try {
+    await chromeInstance.launch()
+  } catch (error) {
+    debug('Error trying to spawn chrome:', error)
+
+    if (process.env.DEBUG) {
+      debug('stdout log:', fs.readFileSync(`${chromeInstance.userDataDir}/chrome-out.log`, 'utf8'))
+      debug('stderr log:', fs.readFileSync(`${chromeInstance.userDataDir}/chrome-err.log`, 'utf8'))
+    }
+
+    throw new Error(
+      'Unable to start Chrome. If you have the DEBUG env variable set,' +
+        'there will be more in the logs.'
+    )
+  }
+
   const launchTime = Date.now() - launchStartTime
 
   debug(`It took ${launchTime}ms to spawn chrome.`)
@@ -52,9 +76,9 @@ export default async function launch (
       chromeInstance.kill()
       chromeInstance = undefined
     },
-    log: chromeInstance.outFile,
-    errorLog: chromeInstance.errFile,
-    pidFile: chromeInstance.pidFile,
+    log: `${chromeInstance.userDataDir}/chrome-out.log`,
+    errorLog: `${chromeInstance.userDataDir}/chrome-err.log`,
+    pidFile: `${chromeInstance.userDataDir}/chrome.pid`,
     metaData: {
       launchTime,
       didLaunch: !!chromeInstance.pid,
