@@ -24,7 +24,20 @@ export function psKill (options = { command: '' }) {
       if (error) {
         return reject(error)
       }
-      return resolve(result)
+
+      const pid = result && result.pid
+
+      if (!pid) {
+        return reject(new Error('Could not found target process to kill'))
+      }
+
+      return ps.kill(pid, (_e) => {
+        if (_e) {
+          return reject(_e)
+        }
+
+        return resolve()
+      })
     })
   })
 }
