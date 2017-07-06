@@ -692,9 +692,9 @@ babel-plugin-transform-strict-mode@^6.24.1:
     babel-runtime "^6.22.0"
     babel-types "^6.24.1"
 
-babel-preset-env@^1.5.1:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/babel-preset-env/-/babel-preset-env-1.5.2.tgz#cd4ae90a6e94b709f97374b33e5f8b983556adef"
+babel-preset-env@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/babel-preset-env/-/babel-preset-env-1.6.0.tgz#2de1c782a780a0a5d605d199c957596da43c44e4"
   dependencies:
     babel-plugin-check-es2015-constants "^6.22.0"
     babel-plugin-syntax-trailing-function-commas "^6.22.0"
@@ -952,16 +952,16 @@ chokidar@^1.4.2:
   optionalDependencies:
     fsevents "^1.0.0"
 
-chrome-launcher@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/chrome-launcher/-/chrome-launcher-0.3.0.tgz#fe380ed9c4962b758f8ac75ad2b1edda1e3b371d"
+chrome-launcher@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/chrome-launcher/-/chrome-launcher-0.3.1.tgz#0e9a2904a6f549ba135d20554189028eddd0a22d"
   dependencies:
     "@types/core-js" "^0.9.41"
     "@types/mkdirp" "^0.3.29"
     "@types/node" "6.0.66"
     lighthouse-logger "^1.0.0"
     mkdirp "0.5.1"
-    rimraf "2.2.8"
+    rimraf "^2.6.1"
 
 ci-info@^1.0.0:
   version "1.0.0"
@@ -2805,9 +2805,9 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
-prettier-eslint@^6.4.1:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/prettier-eslint/-/prettier-eslint-6.4.1.tgz#14672e297b9049775c638c6448c3998c1f0268f9"
+prettier-eslint@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/prettier-eslint/-/prettier-eslint-6.4.2.tgz#9bafd9549e0827396c75848e8dbeb65525b9096e"
   dependencies:
     common-tags "^1.4.0"
     dlv "^1.1.0"
@@ -3129,10 +3129,6 @@ rimraf@2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.6.1:
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.1.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
   dependencies:
     glob "^7.0.5"
-
-rimraf@2.2.8:
-  version "2.2.8"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
 rollup-plugin-babel@^2.7.1:
   version "2.7.1"

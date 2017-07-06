@@ -29,9 +29,9 @@ brace-expansion@^1.1.7:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
 
-chrome-remote-interface@^0.23.3:
-  version "0.23.3"
-  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.23.3.tgz#686fcb3f9c1e1abd88ce69b6bb7bc9f6afd85562"
+chrome-remote-interface@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.24.0.tgz#20d7145eb4c4c31fe07b4476823cfadae939d294"
   dependencies:
     commander "2.1.x"
     ws "2.0.x"
@@ -216,9 +216,9 @@ safe-buffer@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.0.1.tgz#d263ca54696cd8a306b5ca6551e92de57918fbe7"
 
-serverless-plugin-typescript@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-typescript/-/serverless-plugin-typescript-0.4.0.tgz#10c134d3833251e0eafb241f8ac924efe7bf61e5"
+serverless-plugin-typescript@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-typescript/-/serverless-plugin-typescript-0.5.0.tgz#4a5c4cd933c18262444fb6deb64901032eab16a3"
   dependencies:
     fs-p "2.0.0"
     globby "^6.1.0"

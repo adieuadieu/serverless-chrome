@@ -38,16 +38,16 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/functions/serverless-framework",
   "dependencies": {
-    "@serverless-chrome/lambda": "^1.0.0-4",
-    "chrome-remote-interface": "^0.23.2"
+    "@serverless-chrome/lambda": "^1.0.0-5",
+    "chrome-remote-interface": "^0.24.0"
   },
   "devDependencies": {
-    "ava": "^0.19.1",
+    "ava": "^0.20.0",
     "babel-register": "^6.24.1",
-    "prettier": "^1.4.4",
-    "prettier-eslint": "^6.3.0",
-    "serverless": "^1.16.0",
-    "serverless-plugin-chrome": "^1.0.0-6"
+    "prettier": "^1.5.2",
+    "prettier-eslint": "^6.4.2",
+    "serverless": "^1.17.0",
+    "serverless-plugin-chrome": "^1.0.0-9"
   },
   "ava": {
     "require": "babel-register",
