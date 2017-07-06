@@ -125,7 +125,7 @@ export default class ServerlessChrome {
           .replace("'REPLACE_WITH_HANDLER_REQUIRE'", `require('./${originalFileRenamed}')`)
           .replace(
             "'REPLACE_WITH_OPTIONS'",
-            `{ ${chromeFlags.length ? `chromeFlags: ['${chromeFlags.join("', '")}']` : ''} }`
+            `{ ${chromeFlags.length ? `flags: ['${chromeFlags.join("', '")}']` : ''} }`
           )
           .replace(/REPLACE_WITH_EXPORT_NAME/gm, exportName)
 
