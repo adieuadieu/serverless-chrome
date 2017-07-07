@@ -1,8 +1,8 @@
 import Cdp from 'chrome-remote-interface'
 import config from '../config'
-import { log, sleep } from '../utils'
+import { log, sleep } from './utils'
 
-export async function captureScreenshotOfUrl (url) {
+export default async function captureScreenshotOfUrl (url) {
   const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 60
 
   let result
@@ -61,26 +61,3 @@ export async function captureScreenshotOfUrl (url) {
 
   return result
 }
-
-export default (async function captureScreenshotHandler (event) {
-  const { queryStringParameters: { url } } = event
-  let screenshot
-
-  log('Processing screenshot capture for', url)
-
-  try {
-    screenshot = await captureScreenshotOfUrl(url)
-  } catch (error) {
-    console.error('Error capturing screenshot for', url, error)
-    throw new Error('Unable to capture screenshot')
-  }
-
-  return {
-    statusCode: 200,
-    // it's not possible to send binary via AWS API Gateway as it expects JSON response from Lambda
-    body: `<html><body><img src="data:image/png;base64,${screenshot}" /></body></html>`,
-    headers: {
-      'Content-Type': 'text/html',
-    },
-  }
-})

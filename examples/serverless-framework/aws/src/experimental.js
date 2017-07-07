@@ -11,7 +11,7 @@ import path from 'path'
 import { spawn, execSync } from 'child_process'
 import Cdp from 'chrome-remote-interface'
 import config from '../config'
-import { log, sleep } from '../utils'
+import { log, sleep } from './utils'
 
 const defaultOptions = {
   captureFrameRate: 1,
