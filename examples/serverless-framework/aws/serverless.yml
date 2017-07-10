@@ -10,6 +10,7 @@ provider:
 
 plugins:
   - serverless-plugin-chrome
+  - serverless-webpack
   - serverless-apigwy-binary  # For Raw Binary responses only
 
 custom:
@@ -17,15 +18,11 @@ custom:
     - --window-size=1280x1696 # Letter size
     - --hide-scrollbars
 
-package:
-  exclude:
-    - ./**
-  include:
-    - ./src/**
-    - node_modules/chrome-remote-interface/**
-    - node_modules/commander/**
-    - node_modules/ws/**
-    - node_modules/ultron/**
+#package:
+#  exclude:
+#    - ./**
+#  include:
+#    - ./src/**
 
 functions:
   version-info:
@@ -45,20 +42,10 @@ functions:
     handler: src/requestLogger.handler
     events:
       - http:
-          path: version-info
+          path: request-logger
           method: get
 
-  screenshot-html:
-    description: Headless Chrome Serverless-framework screenshot example (returns html)
-    memorySize: 1536
-    timeout: 30
-    handler: src/captureScreenshotHtml.handler
-    events:
-      - http:
-          path: screenshot
-          method: get
-
-  screenshot-raw:
+  screenshot-binary:
     description: Headless Chrome Serverless-framework screenshot example (returns binary)
     memorySize: 1536
     timeout: 30
@@ -69,17 +56,17 @@ functions:
           method: get
           contentHandling: CONVERT_TO_BINARY
 
-  pdf-html:
-    description: Headless Chrome Serverless-framework pdf example (returns html)
+  screenshot-html:
+    description: Headless Chrome Serverless-framework screenshot example (returns html)
     memorySize: 1536
     timeout: 30
-    handler: src/printToPdfHtml.handler
+    handler: src/captureScreenshotHtml.handler
     events:
       - http:
-          path: pdf
+          path: screenshot-html
           method: get
 
-  pdf-raw:
+  pdf-binary:
     description: Headless Chrome Serverless-framework pdf example (returns binary)
     memorySize: 1536
     timeout: 30
@@ -89,3 +76,13 @@ functions:
           path: pdf
           method: get
           contentHandling: CONVERT_TO_BINARY
+
+  pdf-html:
+    description: Headless Chrome Serverless-framework pdf example (returns html)
+    memorySize: 1536
+    timeout: 30
+    handler: src/printToPdfHtml.handler
+    events:
+      - http:
+          path: pdf-html
+          method: get
