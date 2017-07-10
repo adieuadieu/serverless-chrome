@@ -14,6 +14,8 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 [![David](https://img.shields.io/david/dev/adieuadieu/serverless-chrome.svg?style=flat-square)]()
 [![GitHub release](https://img.shields.io/github/release/adieuadieu/serverless-chrome.svg?style=flat-square)](https://github.com/adieuadieu/serverless-chrome)
 
+Please be sure to raise PRs against the _develop_ branch.
+
 
 ## Contents
 1. [The Project](#the-project)
