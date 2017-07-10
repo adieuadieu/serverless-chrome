@@ -8,6 +8,8 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 
 **Breaking Changes coming up!**: Active development is happening in the [develop](https://github.com/adieuadieu/serverless-chrome/tree/develop) branch. v1.0 introduces a framework-agnostic package for running Chrome on AWS Lambda. Try the pre-release with `yarn add @serverless-chrome/lambda`. More info is available [here](https://github.com/adieuadieu/serverless-chrome/tree/develop/packages/lambda). There's also a Serverless-framework plugin [here](https://github.com/adieuadieu/serverless-chrome/tree/develop/packages/serverless-plugin).
 
+Please be sure to raise PRs against the _develop_ branch.
+
 
 ## Contents
 1. [What is it?](#what-is-it)
