@@ -6,7 +6,6 @@
 //
 //
 import Cdp from 'chrome-remote-interface'
-import config from '../config'
 import { log, sleep } from './utils'
 
 const defaultPrintOptions = {
@@ -39,7 +38,7 @@ export function makePrintOptions (options = {}) {
 }
 
 export default async function printUrlToPdf (url, printOptions = {}) {
-  const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 20
+  const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 20
   let result
   const requestQueue = [] // @TODO: write a better quite, which waits a few seconds when reaching 0 before emitting "empty"
 
@@ -75,7 +74,7 @@ export default async function printUrlToPdf (url, printOptions = {}) {
     log('Chrome received response for:', data.requestId, data.response.url)
   })
 
-  if (config.logging) {
+  if (process.env.LOGGING === 'TRUE') {
     Cdp.Version((err, info) => {
       console.log('CDP version info', err, info)
     })

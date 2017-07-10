@@ -7,6 +7,8 @@ provider:
   region: us-east-1
   environment:
     DEBUG: "*" # you'll see logs in CloudWatch, or $ serverless logs -f functionName
+    PAGE_LOAD_TIMEOUT: 30000
+    LOGGING: 'TRUE'
 
 plugins:
   - serverless-plugin-chrome
@@ -17,12 +19,6 @@ custom:
   chromeFlags:
     - --window-size=1280x1696 # Letter size
     - --hide-scrollbars
-
-#package:
-#  exclude:
-#    - ./**
-#  include:
-#    - ./src/**
 
 functions:
   version-info:

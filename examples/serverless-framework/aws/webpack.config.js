@@ -24,7 +24,7 @@ module.exports = {
     ],
   },
   resolve: {
-
+    symlinks: false
   },
   output: {
     libraryTarget: 'commonjs',

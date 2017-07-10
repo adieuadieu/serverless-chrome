@@ -1,9 +1,8 @@
 import Cdp from 'chrome-remote-interface'
-import config from '../config'
 import { log, sleep } from './utils'
 
 export default async function captureScreenshotOfUrl (url) {
-  const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 60
+  const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 60
 
   let result
   let loaded = false
@@ -28,7 +27,7 @@ export default async function captureScreenshotOfUrl (url) {
     loaded = true
   })
 
-  if (config.logging) {
+  if (process.env.LOGGING === 'TRUE') {
     Cdp.Version((err, info) => {
       console.log('CDP version info', err, info)
     })
