@@ -12,7 +12,7 @@ provider:
 
 plugins:
   - serverless-plugin-chrome
-  - serverless-webpack
+  #- serverless-webpack
   - serverless-apigwy-binary  # For Raw Binary responses only
 
 custom:

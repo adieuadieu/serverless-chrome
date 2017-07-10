@@ -1,7 +1,7 @@
-export function log (...stuffToLog) {
-  if (process.env.LOGGING) console.log(...stuffToLog)
-}
+exports.log = function () {
+  if (process.env.LOGGING === 'TRUE') console.log(arguments);
+};
 
-export function sleep (miliseconds = 1000) {
+exports.sleep = function (miliseconds = 1000) {
   return new Promise(resolve => setTimeout(() => resolve(), miliseconds))
-}
+};

@@ -1,23 +1,21 @@
-import { log } from './utils'
+const { log } = require('./utils');
 
-import captureScreenshotOfUrl from './captureScreenshot'
+const captureScreenshotOfUrl = require('./captureScreenshot');
 
-export default (async function captureScreenshotBinaryHandler (event) {
-  const { queryStringParameters: { url } } = event
-  let screenshot
+exports.captureScreenshotBinaryHandler = function(event) {
+  const url = event.queryStringParameters.url;
 
-  log('Processing screenshot capture for', url)
+  log('Processing screenshot capture for', url);
 
-  try {
-    screenshot = await captureScreenshotOfUrl(url)
-  } catch (error) {
-    console.error('Error capturing screenshot for', url, error)
-    throw new Error('Unable to capture screenshot')
-  }
-
-  return {
-    statusCode: 200,
-    body: screenshot, // is in base64
-    isBase64Encoded: true,
-  }
-})
+  return captureScreenshotOfUrl(url)
+    .then((body) => {
+      return {
+        statusCode: 200,
+        body: body, // is in base64
+        isBase64Encoded: true,
+      }
+    }).catch((err) => {
+      console.error('Error capturing screenshot for', url, err);
+      throw new Error('Unable to capture screenshot')
+    });
+};
