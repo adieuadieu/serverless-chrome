@@ -28,7 +28,7 @@ export default async function launch (
       try {
         // eslint-disable-next-line global-require
         const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
-        chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags, port })
+        chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags: flags, port })
       } catch (error) {
         throw new Error(
           '@serverless-chrome/lambda: Unable to find "chrome-launcher". ' +
