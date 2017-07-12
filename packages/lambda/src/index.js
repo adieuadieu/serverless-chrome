@@ -63,6 +63,12 @@ export default async function launch (
   debug(`It took ${launchTime}ms to spawn chrome.`)
 
   // unref the chrome instance, otherwise the lambda process won't end correctly
+  /* @TODO: make this an option?
+    There's an option to change callbackWaitsForEmptyEventLoop in the Lambda context
+    http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html
+    Which means you could log chrome output to cloudwatch directly
+    without unreffing chrome.
+  */
   if (chromeInstance.chrome) {
     chromeInstance.chrome.removeAllListeners()
     chromeInstance.chrome.unref()
