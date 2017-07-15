@@ -49,12 +49,12 @@
     "extract-zip": "^1.6.5"
   },
   "devDependencies": {
-    "ava": "^0.20.0",
-    "babel-preset-env": "^1.5.2",
+    "ava": "^0.21.0",
+    "babel-preset-env": "^1.6.0",
     "babel-register": "^6.24.1",
-    "prettier": "^1.5.2",
-    "prettier-eslint": "^6.4.1",
-    "rollup": "^0.43.0",
+    "prettier": "^1.5.3",
+    "prettier-eslint": "^6.4.2",
+    "rollup": "^0.45.2",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0"
   },
