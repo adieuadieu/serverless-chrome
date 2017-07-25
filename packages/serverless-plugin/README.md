@@ -91,10 +91,24 @@ plugins:
   - serverless-plugin-chrome
 
 custom:
-  chromeFlags:
-    - --window-size=1280x1696 # Letter size
-    - --hide-scrollbars
-    - --ignore-certificate-errors
+  chrome:
+    flags:
+      - --window-size=1280x1696 # Letter size
+      - --hide-scrollbars
+      - --ignore-certificate-errors
+    functions:
+      - enableChromeOnThisFunctionName
+      - mySuperChromeFunction
+```
+
+It is also possible to enable Chrome on only specific functions in your service using the `custom.chrome.functions` configuration. For example:
+
+```yaml
+custom:
+  chrome:
+    functions:
+      - enableChromeOnThisFunctionName
+      - mySuperChromeFunction
 ```
 
 You can enable debugging/logging output by specifying the DEBUG env variable in the provider section of `serverless.yml`. For example:

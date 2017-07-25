@@ -11,6 +11,7 @@
   - config option to, instead of including chrome in artifact zip, download it on
     cold-start invocations this could be useful for development, instead of having to upload 50MB each deploy
   - tests.
+  - custom.chrome.functions breaks when a wrapped and non-wrapped function have the same handler.js file
 */
 
 import * as path from 'path'
@@ -56,6 +57,12 @@ export default class ServerlessChrome {
       service,
       service: { provider: { name: providerName, runtime } },
     } = this.serverless
+
+    console.log('haha', service.custom.chrome)
+
+    const functionsToWrap =
+      (service.custom && service.custom.chrome && service.custom.chrome.functions) ||
+      service.getAllFunctions()
 
     service.package.include = service.package.include || []
 
@@ -106,14 +113,17 @@ export default class ServerlessChrome {
     service.package.include = [...service.package.include, ...INCLUDES]
 
     await Promise.all(
-      service.getAllFunctions().map(async (functionName) => {
+      functionsToWrap.map(async (functionName) => {
         const { handler } = service.getFunction(functionName)
         const { filePath, fileName, exportName } = getHandlerFileAndExportName(handler)
         const handlerCodePath = path.join(config.servicePath, filePath)
 
         const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
 
-        const chromeFlags = (service.custom && service.custom.chromeFlags) || []
+        const chromeFlags =
+          (service.custom && service.custom.chromeFlags) || // chromeFlags is deprecated.
+          (service.custom && service.custom.chrome && service.custom.flags) ||
+          []
 
         // Read in the wrapper handler code template
         const wrapperTemplate = await utils.readFile(
