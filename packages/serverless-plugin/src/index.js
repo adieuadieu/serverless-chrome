@@ -58,8 +58,6 @@ export default class ServerlessChrome {
       service: { provider: { name: providerName, runtime } },
     } = this.serverless
 
-    console.log('haha', service.custom.chrome)
-
     const functionsToWrap =
       (service.custom && service.custom.chrome && service.custom.chrome.functions) ||
       service.getAllFunctions()
