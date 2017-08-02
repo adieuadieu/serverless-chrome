@@ -16,6 +16,8 @@ module.exports = function captureScreenshotOfUrl(url) {
     })
   };
 
+
+
   return Cdp.List()
     .then((data) => Cdp({ host: '127.0.0.1', target: data.tab }))
     .then((conn) => {
@@ -38,19 +40,18 @@ module.exports = function captureScreenshotOfUrl(url) {
       }
 
       return Promise.all([
-        Network.enable(), // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
-        Page.enable() // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
-      ])
+          Network.enable(), // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
+          Page.enable() // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
+        ])
+        .then(() => Page.navigate({ url })) // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
+        .catch((err) => {
+          console.error(err);
+          client.close();
+        })
+        .then(() => loading())
+        // TODO: resize the chrome "window" so we capture the full height of the page
+        .then(() => Page.captureScreenshot());
     })
-    .then(() => Page.navigate({ url })) // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
-    .catch((err) => {
-      console.error(err);
-      client.close();
-    })
-    .then(() => loading())
-    // TODO: resize the chrome "window" so we capture the full height of the page
-    .then(() => Page.captureScreenshot())
-
     .then((data) => {
       return data;
     });
