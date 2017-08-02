@@ -50,7 +50,7 @@
     "babel-register": "^6.24.1",
     "prettier": "^1.5.2",
     "prettier-eslint": "^6.4.2",
-    "serverless": "^1.17.0",
+    "serverless": "^1.18.0",
     "serverless-apigwy-binary": "^0.1.0",
     "serverless-plugin-chrome": "^1.0.0-9",
     "serverless-webpack": "^2.0.0",
