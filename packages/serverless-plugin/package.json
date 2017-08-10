@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-chrome",
-  "version": "1.0.0-9",
+  "version": "1.0.0-11",
   "description": "A Serverless-framework plugin that takes care of running headless Chrome so that you can move on with getting things done.",
   "keywords": [
     "serverless",
@@ -13,7 +13,12 @@
   ],
   "main": "dist/index.js",
   "module": "dist/index.es.js",
-  "files": ["dist", "src", "package.json", "README.md"],
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md"
+  ],
   "scripts": {
     "test": "npm run lint && nyc ava",
     "test:docker": "docker run -v \"$PWD\":/var/task lambci/lambda:nodejs6.10 test/handler.test",
@@ -42,13 +47,13 @@
     "globby": "^6.1.0"
   },
   "devDependencies": {
-    "ava": "^0.20.0",
+    "ava": "^0.21.0",
     "babel-preset-env": "^1.6.0",
     "babel-register": "^6.24.1",
     "chrome-launcher": "^0.3.1",
-    "prettier": "^1.5.2",
+    "prettier": "^1.5.3",
     "prettier-eslint": "^6.4.2",
-    "rollup": "^0.43.0",
+    "rollup": "^0.45.2",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0"
   },

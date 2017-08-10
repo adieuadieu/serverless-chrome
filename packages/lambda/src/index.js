@@ -26,7 +26,7 @@ export default async function launch (
       // This let's us use chrome-launcher in local development,
       // but omit it from the lambda function's zip artefact
       try {
-        // eslint-disable-next-line global-require
+        // eslint-disable-next-line
         const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
         chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags: flags, port })
       } catch (error) {

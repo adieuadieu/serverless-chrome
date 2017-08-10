@@ -13,10 +13,14 @@ plugins:
   - serverless-plugin-chrome
 
 custom:
-  chromeFlags:
-    - --window-size=1280x1696 # Letter size
-    - --hide-scrollbars
-    - --ignore-certificate-errors
+  chrome:
+    flags:
+      - --window-size=1280x1696 # Letter size
+      - --hide-scrollbars
+      - --ignore-certificate-errors
+    functions:
+      - test
+      - anotherTest
 #
 # package:
 #   # individually: true
@@ -30,11 +34,15 @@ custom:
 #     - node_modules/ultron/**
 
 functions:
-   test:
-     handler: handler.test
-   anotherTest:
-     handler: anotherHandler.test
-     package:
-      individually: true
+  test:
+    handler: handler.test
+  anotherTest:
+    handler: anotherHandler.test
+    package:
+      # individually: true
+  noChromeHere:
+    handler: noChrome.test
+
+
   # typescript-test:
   #   handler: typescript-handler.test
