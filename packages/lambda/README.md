@@ -77,6 +77,10 @@ Local development is supported. In a non-lambda environment, the package will us
 launchChrome({ chromePath: '/my/local/chrome/path' })
 ```
 
+**Command line flags (or "switches")**
+
+The behavior of chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On lambda [default flags](https://github.com/adieuadieu/serverless-chrome/blob/develop/packages/lambda/src/flags.js) are used, but in development no default flags are used.
+
 The package has zero external dependencies required for inclusion in your Lambda function's package.
 
 ## Framework Plugins
