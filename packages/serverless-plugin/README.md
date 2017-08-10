@@ -83,7 +83,7 @@ Local development is supported. You must install the `chrome-launcher` package i
 
 **Command line flags (or "switches")**
 
-The behavior of chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On lambda [default flags](https://github.com/adieuadieu/serverless-chrome/blob/develop/packages/lambda/src/flags.js) are used, but in development no default flags are used.
+The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](https://github.com/adieuadieu/serverless-chrome/blob/develop/packages/lambda/src/flags.js) are used, but in development no default flags are used.
 
 ## Configuration
 
