@@ -81,6 +81,9 @@ Example functions are available [here](https://github.com/adieuadieu/serverless-
 
 Local development is supported. You must install the `chrome-launcher` package in your project. A locally installed version of Chrome will be launched.
 
+**Command line flags (or "switches")**
+
+The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](https://github.com/adieuadieu/serverless-chrome/blob/develop/packages/lambda/src/flags.js) are used, but in development no default flags are used.
 
 ## Configuration
 
