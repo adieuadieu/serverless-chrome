@@ -29,8 +29,8 @@
   },
   "config": {
     "jsSrc": "src/",
-    "chromeVersion": "61.0.3135.0",
-    "tarballChecksum": "not implemented"
+    "chromeZipFileName": "chrome-headless-lambda-linux-62.0.3181.0.zip",
+    "nssZipFileName": "nss-2017-08-10-990be4e30bf8.zip"
   },
   "scripts": {
     "test": "npm run lint && nyc ava",

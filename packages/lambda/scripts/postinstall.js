@@ -1,7 +1,5 @@
 /*
 @TODO: only download the archive if we haven't already downloaded it.
-@TODO: peg to an archive version, so each package version only downloads specific chrome version
-        using pkg.config.chromeVersion
 @TODO: checksum/crc check on archive using pkg.config.tarballChecksum
 */
 const fs = require('fs')
@@ -9,12 +7,25 @@ const path = require('path')
 const https = require('https')
 const extract = require('extract-zip')
 
-const TARBALL_FILENAME = 'chrome-headless-lambda-linux-60.0.3095.0.zip'
-const TARBALL_URL = `https://raw.githubusercontent.com/adieuadieu/serverless-chrome/develop/packages/lambda/chrome/${TARBALL_FILENAME}`
-const DOWNLOAD_PATH = path.resolve(__dirname, '../', TARBALL_FILENAME)
-const EXTRACT_PATH = path.resolve(__dirname, '../', 'dist')
+function unlink(path) {
+  return new Promise((resolve, reject) => {
+    fs.unlink(path, err => err ? reject(err) : resolve());
+  });
+}
 
-function download (url = TARBALL_URL, destination = DOWNLOAD_PATH) {
+function rename(from, to) {
+  return new Promise((resolve, reject) => {
+    fs.rename(from, to, err => err ? reject(err) : resolve());
+  })
+}
+
+function extractFile (file, destination) {
+  return new Promise((resolve, reject) => {
+    extract(file, { dir: destination }, err => err ? reject(err) : resolve());
+  })
+}
+
+function download (url, destination) {
   const file = fs.createWriteStream(destination)
 
   return new Promise((resolve, reject) => {
@@ -33,25 +44,42 @@ function download (url = TARBALL_URL, destination = DOWNLOAD_PATH) {
   })
 }
 
-// unzips and makes path.txt point at the correct executable
-function extractFile (file = DOWNLOAD_PATH, destination = EXTRACT_PATH) {
-  return new Promise((resolve, reject) => {
-    extract(file, { dir: destination }, (error) => {
-      if (error) {
-        return reject(error)
-      }
+const RAW_PACKAGES_URL = 'https://raw.githubusercontent.com/qubyte/serverless-chrome/nss/packages';
 
-      return resolve()
-    })
-  })
+function downloadChrome() {
+  const ZIP_FILENAME = process.env.npm_package_config_chromeZipFileName;
+  const ZIP_URL = `${RAW_PACKAGES_URL}/lambda/chrome/${ZIP_FILENAME}`
+  const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
+  const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
+
+  console.log('Downloading precompiled headless Chrome binary for AWS Lambda.')
+
+  return download(ZIP_URL, DOWNLOAD_PATH)
+    .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
+    .then(() => unlink(DOWNLOAD_PATH))
+    .then(() => console.log('Completed Chrome download.'))
+    .catch(error => console.error(error))
+}
+
+function downloadNss() {
+  const ZIP_FILENAME = process.env.npm_package_config_nssZipFileName;
+  const ZIP_URL = `${RAW_PACKAGES_URL}/lambda/nss/${ZIP_FILENAME}`
+  const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
+  const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
+
+  console.log('Downloading precompiled NSS library and binaries for AWS Lambda.')
+
+  return download(ZIP_URL, DOWNLOAD_PATH)
+    .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
+    .then(() => unlink(DOWNLOAD_PATH))
+    .then(() => rename(path.join(EXTRACT_PATH, 'dist'), path.join(EXTRACT_PATH, 'nss')))
+    .then(() => console.log('Completed NSS download.'))
+    .catch(error => console.error(error))
 }
 
 if (require.main === module) {
-  console.log('Downloading precombiled headless Chrome binary for AWS Lambda')
-
-  download().then(extractFile).then(() => fs.unlink(DOWNLOAD_PATH)).catch((error) => {
-    console.error(error)
-  })
+  downloadChrome()
+    .then(downloadNss);
 }
 
 module.exports = {
