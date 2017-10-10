@@ -17,7 +17,7 @@ Please be sure to raise PRs against the _develop_ branch.
 1. [Setup](#setup)
 1. [Testing](#testing)
 1. [Configuration and Deployment](#configuration-and-deployment)
-1. [Known Issues / Limitations](#known-issues-limitations)
+1. [Known Issues / Limitations](#known-issues--limitations)
 1. [Roadmap](#roadmap)
 1. [Troubleshooting](#troubleshooting)
 1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
