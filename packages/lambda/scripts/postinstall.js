@@ -1,5 +1,4 @@
 /*
-@TODO: only download the archive if we haven't already downloaded it.
 @TODO: checksum/crc check on archive using pkg.config.tarballChecksum
 */
 const fs = require('fs')
@@ -7,30 +6,41 @@ const path = require('path')
 const https = require('https')
 const extract = require('extract-zip')
 
-function unlink(path) {
+const RELEASE_DOWNLOAD_URL_BASE = 'https://github.com/adieuadieu/serverless-chrome/releases/download'
+
+function unlink (path) {
   return new Promise((resolve, reject) => {
-    fs.unlink(path, err => err ? reject(err) : resolve());
-  });
+    fs.unlink(path, error => error ? reject(error) : resolve())
+  })
 }
 
-function rename(from, to) {
+function rename (from, to) {
   return new Promise((resolve, reject) => {
-    fs.rename(from, to, err => err ? reject(err) : resolve());
+    fs.rename(from, to, error => error ? reject(error) : resolve())
   })
 }
 
 function extractFile (file, destination) {
   return new Promise((resolve, reject) => {
-    extract(file, { dir: destination }, err => err ? reject(err) : resolve());
+    extract(file, { dir: destination }, error => error ? reject(error) : resolve())
   })
 }
 
-function download (url, destination) {
-  const file = fs.createWriteStream(destination)
-
+function get (url, destination) {
   return new Promise((resolve, reject) => {
     https
       .get(url, (response) => {
+        if (response.statusCode >= 300 && response.statusCode <= 400) {
+          return get(response.headers.location, destination)
+            .then(resolve)
+            .catch(reject)
+        } else if (response.statusCode !== 200) {
+          fs.unlink(destination, () => null)
+          return reject(`HTTP ${response.statusCode}: Could not download ${url}`)
+        }
+
+        const file = fs.createWriteStream(destination)
+  
         response.pipe(file)
 
         file.on('finish', () => {
@@ -38,51 +48,39 @@ function download (url, destination) {
         })
       })
       .on('error', (error) => {
-        fs.unlink(destination)
+        fs.unlink(destination, () => null)
         reject(error)
       })
   })
 }
 
-const RAW_PACKAGES_URL = 'https://raw.githubusercontent.com/qubyte/serverless-chrome/nss/packages';
-
-function downloadChrome() {
-  const ZIP_FILENAME = process.env.npm_package_config_chromeZipFileName;
-  const ZIP_URL = `${RAW_PACKAGES_URL}/lambda/chrome/${ZIP_FILENAME}`
+function getChromium () {
+  const ZIP_FILENAME = `headless-chromium-${process.env.npm_package_config_chromiumVersion}-amazonlinux-2017-03.zip`
+  const ZIP_URL = `${RELEASE_DOWNLOAD_URL_BASE}/${process.env.npm_package_version}/${ZIP_FILENAME}`
   const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
   const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
 
-  console.log('Downloading precompiled headless Chrome binary for AWS Lambda.')
+  if (fs.existsSync(DOWNLOAD_PATH)) {
+    console.log(`Precompiled headless Chromium binary for AWS Lambda previously downloaded. Skipping download.`)
+    return Promise.resolve()
+  }
 
-  return download(ZIP_URL, DOWNLOAD_PATH)
+  console.log('Downloading precompiled headless Chromium binary for AWS Lambda.')
+  
+  return get(ZIP_URL, DOWNLOAD_PATH)
     .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
-    .then(() => unlink(DOWNLOAD_PATH))
-    .then(() => console.log('Completed Chrome download.'))
-    .catch(error => console.error(error))
-}
-
-function downloadNss() {
-  const ZIP_FILENAME = process.env.npm_package_config_nssZipFileName;
-  const ZIP_URL = `${RAW_PACKAGES_URL}/lambda/nss/${ZIP_FILENAME}`
-  const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
-  const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
-
-  console.log('Downloading precompiled NSS library and binaries for AWS Lambda.')
-
-  return download(ZIP_URL, DOWNLOAD_PATH)
-    .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
-    .then(() => unlink(DOWNLOAD_PATH))
-    .then(() => rename(path.join(EXTRACT_PATH, 'dist'), path.join(EXTRACT_PATH, 'nss')))
-    .then(() => console.log('Completed NSS download.'))
-    .catch(error => console.error(error))
+    .then(() => console.log('Completed Headless Chromium download.'))
 }
 
 if (require.main === module) {
-  downloadChrome()
-    .then(downloadNss);
+  getChromium()
+  .catch(error => {
+    console.error(error)
+    process.exit(1)
+  })
 }
 
 module.exports = {
-  download,
+  get,
   extractFile,
 }

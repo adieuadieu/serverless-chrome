@@ -29,8 +29,6 @@
   },
   "config": {
     "jsSrc": "src/",
-    "chromeVersion": "61.0.3135.0",
-    "tarballChecksum": "not implemented",
     "chromiumVersion": "64.0.3242.2"
   },
   "scripts": {
@@ -45,18 +43,18 @@
     "dev": "rollup -c -w",
     "prepublishOnly": "rm -Rf dist/ && yarn build",
     "postinstall": "node scripts/postinstall.js",
-    "build:chrome": "scripts/build-chrome.sh"
+    "build-binaries": "scripts/build-binaries.sh",
+    "build-binaries:chromium": "scripts/build-binaries.sh chromium"
   },
   "dependencies": {
     "extract-zip": "^1.6.5"
   },
   "devDependencies": {
     "ava": "^0.22.0",
+    "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babel-register": "^6.26.0",
-    "prettier": "^1.5.3",
-    "prettier-eslint": "^6.4.2",
-    "rollup": "^0.48.2",
+    "rollup": "0.50.0",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-node-resolve": "^3.0.0"
   },

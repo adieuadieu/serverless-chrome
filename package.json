@@ -16,7 +16,8 @@
     "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint $npm_package_config_jsSrc",
     "coverage": "nyc report",
-    "upgrade-packages": "yarn upgrade-interactive --latest --exact"
+    "upgrade-packages": "yarn upgrade-interactive --latest --exact",
+    "prettier": "prettier --no-semi --single-quote --trailing-comma es5 --write"
   },
   "repository": {
     "type": "git",
@@ -56,6 +57,7 @@
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-promise": "3.6.0",
     "eslint-tap": "^2.0.1",
+    "husky": "0.14.3",
     "nyc": "11.2.1",
     "prettier": "1.7.4",
     "prettier-eslint": "8.2.1",
@@ -117,5 +119,20 @@
         "always"
       ]
     }
+  },
+  "prettier": {
+    "eslintIntegration": true,
+    "jsonEnable": [],
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "useTabs": false
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "yarn prettier",
+      "yarn lint",
+      "git add"
+    ]
   }
 }

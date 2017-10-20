@@ -1,5 +1,5 @@
 import fs from 'fs'
-import path from 'path'
+//import path from 'path'
 import LambdaChromeLauncher from './launcher'
 import { debug } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
@@ -8,13 +8,13 @@ const DEVTOOLS_PORT = 9222
 const DEVTOOLS_HOST = 'http://127.0.0.1'
 
 // Prepend NSS related libraries and binaries to the library path and path respectively on lambda.
-if (process.env.AWS_EXECUTION_ENV) {
+/*if (process.env.AWS_EXECUTION_ENV) {
   const nssSubPath = fs.readFileSync(path.join(__dirname, 'nss', 'latest'), 'utf8').trim();
   const nssPath = path.join(__dirname, 'nss', subnssSubPathPath);
 
   process.env.LD_LIBRARY_PATH = path.join(nssPath, 'lib') +  ':' + process.env.LD_LIBRARY_PATH;
   process.env.PATH = path.join(nssPath, 'bin') + ':' + process.env.PATH;
-}
+}*/
 
 // persist the instance across invocations
 // when the *lambda* container is reused.
