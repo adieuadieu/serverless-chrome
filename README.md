@@ -1,5 +1,7 @@
 # serverless-chrome
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/adieuadieu/serverless-chrome.svg)](https://greenkeeper.io/)
+
 Serverless Chrome contains everything you need to get started running headless Chrome on AWS Lambda (possibly Azure and GCP Functions soon).
 
 The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. Serverless Chrome takes care of building and bundling the Chrome binaries and making sure Chrome is running when your serverless function executes. In addition, this project also provides a few "example" handlers for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
