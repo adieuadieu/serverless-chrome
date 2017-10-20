@@ -29,8 +29,9 @@
   },
   "config": {
     "jsSrc": "src/",
-    "chromeZipFileName": "chrome-headless-lambda-linux-62.0.3181.0.zip",
-    "nssZipFileName": "nss-2017-08-10-990be4e30bf8.zip"
+    "chromeVersion": "61.0.3135.0",
+    "tarballChecksum": "not implemented",
+    "chromiumVersion": "64.0.3242.2"
   },
   "scripts": {
     "test": "npm run lint && nyc ava",
@@ -43,7 +44,8 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "prepublishOnly": "rm -Rf dist/ && yarn build",
-    "postinstall": "node scripts/postinstall.js"
+    "postinstall": "node scripts/postinstall.js",
+    "build:chrome": "scripts/build-chrome.sh"
   },
   "dependencies": {
     "extract-zip": "^1.6.5"
