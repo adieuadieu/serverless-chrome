@@ -28,8 +28,7 @@
     "node": ">= 6.10"
   },
   "config": {
-    "jsSrc": "src/",
-    "chromiumVersion": "64.0.3242.2"
+    "jsSrc": "src/"
   },
   "scripts": {
     "test": "npm run lint && nyc ava",
@@ -44,7 +43,8 @@
     "prepublishOnly": "rm -Rf dist/ && yarn build",
     "postinstall": "node scripts/postinstall.js",
     "build-binaries": "scripts/build-binaries.sh",
-    "build-binaries:chromium": "scripts/build-binaries.sh chromium"
+    "build-binaries:chromium": "scripts/build-binaries.sh chromium",
+    "latest-versions": "scripts/latest-versions.sh"
   },
   "dependencies": {
     "extract-zip": "^1.6.5"

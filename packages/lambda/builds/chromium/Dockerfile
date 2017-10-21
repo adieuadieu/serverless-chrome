@@ -1,6 +1,6 @@
-# Original Dockferfile from Outsider <outsideris@gmail.com>
+# Original Dockferfile from JeongHoon Byun (aka Outsider)
 # via https://github.com/outsideris/headless-chrome-for-lambda
-# Thank you, Outsider!
+# Thank you, JeongHoon!
 
 FROM amazonlinux:2017.03
 
@@ -22,32 +22,43 @@ RUN yum install -y \
     pam-devel pango-devel pciutils-devel pulseaudio-libs-devel \
     zlib.i686 httpd mod_ssl php php-cli python-psutil wdiff --enablerepo=epel
 
-# ref: https://chromium.googlesource.com/chromium/src.git/+refs
-ENV VERSION 64.0.3242.2
+WORKDIR /build
 
 # install dept_tools
-WORKDIR /chrome
 RUN git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
-ENV PATH="/opt/gtk/bin:${PATH}:/chrome/depot_tools"
+ENV PATH="/opt/gtk/bin:${PATH}:/build/depot_tools"
 
-WORKDIR /chrome/Chromium
+WORKDIR /build/Chromium
+
 # fetch chromium source code
 # ref: https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
 RUN git clone https://chromium.googlesource.com/chromium/src.git
 
-WORKDIR /chrome/Chromium/src
+# ref: https://chromium.googlesource.com/chromium/src.git/+refs
+ARG VERSION
+ENV VERSION ${VERSION:-64.0.3242.2}
+
+WORKDIR /build/Chromium/src
+
+# Pull latest in case Docker used a cache in the git clone step (which we want as it takes forever)
+RUN git pull
+
 # checkout the release tag
 RUN git checkout -b build "${VERSION}"
 
-ADD .gclient /chrome/Chromium/
-WORKDIR /chrome/Chromium
+ADD .gclient /build/Chromium/
+
+WORKDIR /build/Chromium
+
 # Checkout all the submodules at their branch DEPS revisions
 RUN gclient sync --with_branch_heads --jobs 16
+
 # tweak to disable use of the tmpfs mounted at /dev/shm
 RUN sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i src/base/files/file_util_posix.cc
 
-WORKDIR /chrome/Chromium/src
+WORKDIR /build/Chromium/src
+
 # specify build flags
 RUN mkdir -p out/Headless && \
     echo 'import("//build/args/headless.gn")' > out/Headless/args.gn && \
@@ -61,5 +72,9 @@ RUN mkdir -p out/Headless && \
 # build chromium headless shell
 RUN ninja -C out/Headless headless_shell
 
-# strip?
+WORKDIR /build
+
+RUN cp /build/Chromium/src/out/Headless/headless_shell /build/headless-chromium
+
+# strip? http://sourceware.org/binutils/docs-2.16/binutils/strip.html
 # RUN strip out/Headless/headless_shell
