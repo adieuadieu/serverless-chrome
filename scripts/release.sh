@@ -47,9 +47,10 @@ RELEASE_TEMPLATE='{
   "tag_name": "%s",
   "name": "%s",
   "prerelease": %s,
-  "draft": %s,
-  "body": %s
+  "draft": %s
 }'
+
+RELEASE_BODY=""
 
 create_draft_release() {
   # shellcheck disable=SC2034
@@ -66,9 +67,6 @@ create_draft_release() {
   then
     RELEASE_ID=$(echo "$output" | jq -re '.id')
     UPLOAD_URL_TEMPLATE=$(echo "$output" | jq -re '.upload_url')
-  else
-    echo "problem creating draft."
-    echo "$output"
   fi
 }
 
@@ -81,7 +79,20 @@ upload_release_asset() {
     --header "Authorization: token $GITHUB_TOKEN" \
     --header 'Content-Type: application/zip' \
     --data-binary "@$1" \
-    "${UPLOAD_URL_TEMPLATE%\{*}?name=$2" \
+    "${UPLOAD_URL_TEMPLATE%\{*}?name=$2&label=$1" \
+    > /dev/null
+}
+
+update_release_body() {
+  # shellcheck disable=SC2059
+  curl \
+    --silent \
+    --fail \
+    --request PATCH \
+    --header "Authorization: token $GITHUB_TOKEN" \
+    --header 'Content-Type: application/json' \
+    --data "{\"body\":\"$RELEASE_BODY\"}" \
+    "https://api.github.com/repos/$GITHUB_ORG/$GITHUB_REPO/releases/$1" \
     > /dev/null
 }
 
@@ -98,7 +109,6 @@ publish_release() {
     > /dev/null
 }
 
-
 echo "Creating draft release $TAG"
 create_draft_release
 
@@ -107,25 +117,28 @@ cd packages/lambda/builds
 
 for BUILD in */Dockerfile; do
   BUILD_NAME="${BUILD%%/*}"
-  (
-    cd "$BUILD_NAME"
+  
+    cd "$BUILD_NAME" || exit
 
     VERSION=$(./latest.sh)
-    ZIPFILE=build/headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip
+    ZIPFILE=headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip
+
+    cd build/
 
     if [ ! -f "$ZIPFILE" ]; then
       echo "$BUILD_NAME version $VERSION has not been built. Building ..."
-      ../../scripts/build-binaries.sh "$BUILD_NAME"
+      ../../../scripts/build-binaries.sh "$BUILD_NAME"
     fi
 
-    echo "Uploading $ZIPFILE"
+    echo "Uploading $ZIPFILE to GitHub"
 
     upload_release_asset "$ZIPFILE" "headless-$BUILD_NAME-amazonlinux-2017-03.zip"
-
-  )
+  
+    RELEASE_BODY="$RELEASE_BODY$BUILD_NAME $VERSION for amazonlinux:2017.03\n"
 done
 
+update_release_body "$RELEASE_ID"
 
-# printf "Publishing release %s ... " "$TAG"
+# echo "Publishing release $TAG ... "
 # publish_release "$RELEASE_ID"
 # echo 'done'
