@@ -1,5 +1,12 @@
 This is outdated.
 
+Note: to successfully build the Docker image you may need to increase the size of the Docker data sparse image: https://community.hortonworks.com/articles/65901/how-to-increase-the-size-of-the-base-docker-for-ma.html
+e.g.
+```
+rm ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2
+qemu-img create -f qcow2 ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2 50Gb
+```
+warning! this will wipe all of your images/containers.
 
 
 # What is this?

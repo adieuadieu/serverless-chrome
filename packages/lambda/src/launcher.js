@@ -14,7 +14,7 @@ import net from 'net'
 import { delay, debug, makeTempDir, clearConnection } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
 
-const CHROME_PATH = path.resolve(__dirname, './headless_shell')
+const CHROME_PATH = path.resolve(__dirname, './headless-chromium')
 
 export default class Launcher {
   constructor (options = {}) {
@@ -87,8 +87,8 @@ export default class Launcher {
     const launcher = this
 
     return new Promise((resolve, reject) => {
-      let retries = 0
-      ;(function poll () {
+      let retries = 0;
+      (function poll () {
         debug('Waiting for Chrome', retries)
 
         launcher

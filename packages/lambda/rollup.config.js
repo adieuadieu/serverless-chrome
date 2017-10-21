@@ -2,10 +2,10 @@ import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
 
 export default {
-  entry: 'src/index.js',
-  targets: [
-    { dest: 'dist/bundle.cjs.js', format: 'cjs' },
-    { dest: 'dist/bundle.es.js', format: 'es' },
+  input: 'src/index.js',
+  output: [
+    { file: 'dist/bundle.cjs.js', format: 'cjs' },
+    { file: 'dist/bundle.es.js', format: 'es' },
   ],
   plugins: [
     resolve({

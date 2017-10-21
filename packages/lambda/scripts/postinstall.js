@@ -56,9 +56,8 @@ function get (url, destination) {
 }
 
 function getChromium () {
-  const ZIP_FILENAME = `headless-chromium-${process.env
-    .npm_package_config_chromiumVersion}-amazonlinux-2017-03.zip`
-  const ZIP_URL = `${RELEASE_DOWNLOAD_URL_BASE}/${process.env.npm_package_version}/${ZIP_FILENAME}`
+  const ZIP_FILENAME = 'headless-chromium-amazonlinux-2017-03.zip'
+  const ZIP_URL = `${RELEASE_DOWNLOAD_URL_BASE}/v${process.env.npm_package_version}/${ZIP_FILENAME}`
   const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
   const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
 

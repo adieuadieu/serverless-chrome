@@ -1,5 +1,5 @@
 import fs from 'fs'
-//import path from 'path'
+// import path from 'path'
 import LambdaChromeLauncher from './launcher'
 import { debug } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
@@ -8,21 +8,21 @@ const DEVTOOLS_PORT = 9222
 const DEVTOOLS_HOST = 'http://127.0.0.1'
 
 // Prepend NSS related libraries and binaries to the library path and path respectively on lambda.
-/*if (process.env.AWS_EXECUTION_ENV) {
+/* if (process.env.AWS_EXECUTION_ENV) {
   const nssSubPath = fs.readFileSync(path.join(__dirname, 'nss', 'latest'), 'utf8').trim();
   const nssPath = path.join(__dirname, 'nss', subnssSubPathPath);
 
   process.env.LD_LIBRARY_PATH = path.join(nssPath, 'lib') +  ':' + process.env.LD_LIBRARY_PATH;
   process.env.PATH = path.join(nssPath, 'bin') + ':' + process.env.PATH;
-}*/
+} */
 
 // persist the instance across invocations
 // when the *lambda* container is reused.
 let chromeInstance
 
-export default async function launch (
-  { flags = [], chromePath, port = DEVTOOLS_PORT, forceLambdaLauncher = false } = {}
-) {
+export default async function launch ({
+  flags = [], chromePath, port = DEVTOOLS_PORT, forceLambdaLauncher = false,
+} = {}) {
   const chromeFlags = [...DEFAULT_CHROME_FLAGS, ...flags]
 
   if (!chromeInstance) {
@@ -40,10 +40,8 @@ export default async function launch (
         const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
         chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags: flags, port })
       } catch (error) {
-        throw new Error(
-          '@serverless-chrome/lambda: Unable to find "chrome-launcher". ' +
-            "Make sure it's installed if you wish to develop locally."
-        )
+        throw new Error('@serverless-chrome/lambda: Unable to find "chrome-launcher". ' +
+            "Make sure it's installed if you wish to develop locally.")
       }
     }
   }
@@ -62,10 +60,8 @@ export default async function launch (
       debug('stderr log:', fs.readFileSync(`${chromeInstance.userDataDir}/chrome-err.log`, 'utf8'))
     }
 
-    throw new Error(
-      'Unable to start Chrome. If you have the DEBUG env variable set,' +
-        'there will be more in the logs.'
-    )
+    throw new Error('Unable to start Chrome. If you have the DEBUG env variable set,' +
+        'there will be more in the logs.')
   }
 
   const launchTime = Date.now() - launchStartTime

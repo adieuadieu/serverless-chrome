@@ -65,3 +65,5 @@ config.json
 /config.js
 event.json
 .build/
+build/
+headless-chromium-amazonlinux-2017-03.zip
