@@ -96,19 +96,6 @@ update_release_body() {
     > /dev/null
 }
 
-publish_release() {
-  # shellcheck disable=SC2059
-  curl \
-    --silent \
-    --fail \
-    --request PATCH \
-    --header "Authorization: token $GITHUB_TOKEN" \
-    --header 'Content-Type: application/json' \
-    --data '{"draft": false}' \
-    "https://api.github.com/repos/$GITHUB_ORG/$GITHUB_REPO/releases/$1" \
-    > /dev/null
-}
-
 echo "Creating draft release $TAG"
 create_draft_release
 
@@ -138,7 +125,3 @@ for BUILD in */Dockerfile; do
 done
 
 update_release_body "$RELEASE_ID"
-
-# echo "Publishing release $TAG ... "
-# publish_release "$RELEASE_ID"
-# echo 'done'
