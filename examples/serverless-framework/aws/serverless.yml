@@ -7,24 +7,18 @@ provider:
   region: us-east-1
   environment:
     DEBUG: "*" # you'll see logs in CloudWatch, or $ serverless logs -f functionName
+    PAGE_LOAD_TIMEOUT: 30000
+    LOGGING: 'TRUE'
 
 plugins:
   - serverless-plugin-chrome
+  #- serverless-webpack
+  - serverless-apigwy-binary  # For Raw Binary responses only
 
 custom:
   chromeFlags:
     - --window-size=1280x1696 # Letter size
     - --hide-scrollbars
-
-package:
-  exclude:
-    - ./**
-  include:
-    - ./src/**
-    - node_modules/chrome-remote-interface/**
-    - node_modules/commander/**
-    - node_modules/ws/**
-    - node_modules/ultron/**
 
 functions:
   version-info:
@@ -44,25 +38,47 @@ functions:
     handler: src/requestLogger.handler
     events:
       - http:
-          path: version-info
+          path: request-logger
           method: get
 
-  screenshot:
-    description: Headless Chrome Serverless-framework screenshot example
+  screenshot-binary:
+    description: Headless Chrome Serverless-framework screenshot example (returns binary)
     memorySize: 1536
-    timeout: 30
-    handler: src/captureScreenshot.handler
+    timeout: 120
+    handler: src/captureScreenshotBinary.handler
     events:
       - http:
           path: screenshot
           method: get
+          contentHandling: CONVERT_TO_BINARY
 
-  pdf:
-    description: Headless Chrome Serverless-framework pdf example
+  screenshot-html:
+    description: Headless Chrome Serverless-framework screenshot example (returns html)
     memorySize: 1536
-    timeout: 30
-    handler: src/versionInfo.handler
+    timeout: 120
+    handler: src/captureScreenshotHtml.handler
     events:
       - http:
-          path: version-info
+          path: screenshot-html
+          method: get
+
+  pdf-binary:
+    description: Headless Chrome Serverless-framework pdf example (returns binary)
+    memorySize: 1536
+    timeout: 120
+    handler: src/printToPdfBinary.handler
+    events:
+      - http:
+          path: pdf
+          method: get
+          contentHandling: CONVERT_TO_BINARY
+
+  pdf-html:
+    description: Headless Chrome Serverless-framework pdf example (returns html)
+    memorySize: 1536
+    timeout: 120
+    handler: src/printToPdfHtml.handler
+    events:
+      - http:
+          path: pdf-html
           method: get

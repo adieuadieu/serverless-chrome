@@ -10,8 +10,7 @@ import fs from 'fs'
 import path from 'path'
 import { spawn, execSync } from 'child_process'
 import Cdp from 'chrome-remote-interface'
-import config from '../config'
-import { log, sleep } from '../utils'
+import { log, sleep } from './utils'
 
 const defaultOptions = {
   captureFrameRate: 1,
@@ -38,7 +37,7 @@ function makePrintOptions (options = {}) {
 }
 
 export async function makeVideo (url, options = {}, invokeid = '') {
-  const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 20
+  const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 20
   let result
   let loaded = false
   let framesCaptured = 0
@@ -102,7 +101,7 @@ export async function makeVideo (url, options = {}, invokeid = '') {
     })
   })
 
-  if (config.logging) {
+  if (process.env.LOGGING === 'TRUE') {
     Cdp.Version((err, info) => {
       console.log('CDP version info', err, info)
     })

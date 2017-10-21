@@ -42,14 +42,38 @@
   },
   "devDependencies": {
     "ava": "^0.20.0",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
     "babel-register": "^6.24.1",
     "prettier": "^1.5.2",
     "prettier-eslint": "^6.4.2",
-    "serverless": "^1.17.0",
-    "serverless-plugin-chrome": "^1.0.0-9"
+    "serverless": "^1.18.0",
+    "serverless-apigwy-binary": "^0.1.0",
+    "serverless-plugin-chrome": "^1.0.0-9",
+    "serverless-webpack": "^2.0.0",
+    "webpack": "^3.1.0"
   },
   "ava": {
     "require": "babel-register",
-    "babel": "inherit"
+    "babel": "inherits"
+  },
+  "babel": {
+    "sourceMaps": true,
+    "presets": [
+      [
+        "env",
+        {
+          "modules": "commonjs",
+          "targets": {
+            "node": "6.10"
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
   }
 }

@@ -1,5 +1,6 @@
 import test from 'ava'
-import captureScreenshotHandler, { captureScreenshotOfUrl } from './captureScreenshot'
+import captureScreenshotOfUrl from './captureScreenshot'
+import captureScreenshotHandler from './captureScreenshotHtml'
 
 const testUrl = 'https://github.com/adieuadieu'
 const testEvent = {

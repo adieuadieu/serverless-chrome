@@ -1,5 +1,6 @@
 import test from 'ava'
-import printToPdfHandler, { printUrlToPdf } from './printToPdf'
+import printToPdfHandler from './printToPdfHtml'
+import printUrlToPdf from './printToPdf'
 
 const testUrl = 'https://github.com/adieuadieu'
 const testEvent = {

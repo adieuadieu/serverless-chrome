@@ -6,8 +6,7 @@
 //
 //
 import Cdp from 'chrome-remote-interface'
-import config from '../config'
-import { log, sleep } from '../utils'
+import { log, sleep } from './utils'
 
 const defaultPrintOptions = {
   landscape: false,
@@ -28,7 +27,7 @@ function cleanPrintOptionValue (type, value) {
   return types[type](value)
 }
 
-function makePrintOptions (options = {}) {
+export function makePrintOptions (options = {}) {
   return Object.entries(options).reduce(
     (printOptions, [option, value]) => ({
       ...printOptions,
@@ -38,8 +37,8 @@ function makePrintOptions (options = {}) {
   )
 }
 
-export async function printUrlToPdf (url, printOptions = {}) {
-  const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 20
+export default async function printUrlToPdf (url, printOptions = {}) {
+  const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 20
   let result
   const requestQueue = [] // @TODO: write a better quite, which waits a few seconds when reaching 0 before emitting "empty"
 
@@ -75,7 +74,7 @@ export async function printUrlToPdf (url, printOptions = {}) {
     log('Chrome received response for:', data.requestId, data.response.url)
   })
 
-  if (config.logging) {
+  if (process.env.LOGGING === 'TRUE') {
     Cdp.Version((err, info) => {
       console.log('CDP version info', err, info)
     })
@@ -125,42 +124,3 @@ export async function printUrlToPdf (url, printOptions = {}) {
 
   return result
 }
-
-export default (async function printToPdfHandler (event) {
-  const { queryStringParameters: { url, ...printParameters } } = event
-  const printOptions = makePrintOptions(printParameters)
-  let pdf
-
-  log('Processing PDFification for', url, printOptions)
-
-  const startTime = Date.now()
-
-  try {
-    pdf = await printUrlToPdf(url, printOptions)
-  } catch (error) {
-    console.error('Error printing pdf for', url, error)
-    throw new Error('Unable to print pdf')
-  }
-
-  const endTime = Date.now()
-
-  // TODO: probably better to write the pdf to S3,
-  // but that's a bit more complicated for this example.
-  return {
-    statusCode: 200,
-    // it's not possible to send binary via AWS API Gateway as it expects JSON response from Lambda
-    body: `
-      <html>
-        <body>
-          <p><a href="${url}">${url}</a></p>
-          <p><code>${JSON.stringify(printOptions, null, 2)}</code></p>
-          <p>Chromium took ${endTime - startTime} ms to load URL and render PDF.</p>
-          <embed src="data:application/pdf;base64,${pdf}" width="100%" height="100%" type='application/pdf'>
-        </body>
-      </html>
-    `,
-    headers: {
-      'Content-Type': 'text/html',
-    },
-  }
-})
