@@ -1,7 +1,4 @@
 /*
-@TODO: only download the archive if we haven't already downloaded it.
-@TODO: peg to an archive version, so each package version only downloads specific chrome version
-        using pkg.config.chromeVersion
 @TODO: checksum/crc check on archive using pkg.config.tarballChecksum
 */
 const fs = require('fs')
@@ -9,17 +6,42 @@ const path = require('path')
 const https = require('https')
 const extract = require('extract-zip')
 
-const TARBALL_FILENAME = 'chrome-headless-lambda-linux-60.0.3095.0.zip'
-const TARBALL_URL = `https://raw.githubusercontent.com/adieuadieu/serverless-chrome/develop/packages/lambda/chrome/${TARBALL_FILENAME}`
-const DOWNLOAD_PATH = path.resolve(__dirname, '../', TARBALL_FILENAME)
-const EXTRACT_PATH = path.resolve(__dirname, '../', 'dist')
+const RELEASE_DOWNLOAD_URL_BASE =
+  'https://github.com/adieuadieu/serverless-chrome/releases/download'
 
-function download (url = TARBALL_URL, destination = DOWNLOAD_PATH) {
-  const file = fs.createWriteStream(destination)
+function unlink (path) {
+  return new Promise((resolve, reject) => {
+    fs.unlink(path, error => (error ? reject(error) : resolve()))
+  })
+}
 
+function rename (from, to) {
+  return new Promise((resolve, reject) => {
+    fs.rename(from, to, error => (error ? reject(error) : resolve()))
+  })
+}
+
+function extractFile (file, destination) {
+  return new Promise((resolve, reject) => {
+    extract(file, { dir: destination }, error => (error ? reject(error) : resolve()))
+  })
+}
+
+function get (url, destination) {
   return new Promise((resolve, reject) => {
     https
       .get(url, (response) => {
+        if (response.statusCode >= 300 && response.statusCode <= 400) {
+          return get(response.headers.location, destination)
+            .then(resolve)
+            .catch(reject)
+        } else if (response.statusCode !== 200) {
+          fs.unlink(destination, () => null)
+          return reject(`HTTP ${response.statusCode}: Could not download ${url}`)
+        }
+
+        const file = fs.createWriteStream(destination)
+
         response.pipe(file)
 
         file.on('finish', () => {
@@ -27,34 +49,39 @@ function download (url = TARBALL_URL, destination = DOWNLOAD_PATH) {
         })
       })
       .on('error', (error) => {
-        fs.unlink(destination)
+        fs.unlink(destination, () => null)
         reject(error)
       })
   })
 }
 
-// unzips and makes path.txt point at the correct executable
-function extractFile (file = DOWNLOAD_PATH, destination = EXTRACT_PATH) {
-  return new Promise((resolve, reject) => {
-    extract(file, { dir: destination }, (error) => {
-      if (error) {
-        return reject(error)
-      }
+function getChromium () {
+  const ZIP_FILENAME = `headless-chromium-${process.env
+    .npm_package_config_chromiumVersion}-amazonlinux-2017-03.zip`
+  const ZIP_URL = `${RELEASE_DOWNLOAD_URL_BASE}/${process.env.npm_package_version}/${ZIP_FILENAME}`
+  const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
+  const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
 
-      return resolve()
-    })
-  })
+  if (fs.existsSync(DOWNLOAD_PATH)) {
+    console.log('Precompiled headless Chromium binary for AWS Lambda previously downloaded. Skipping download.')
+    return Promise.resolve()
+  }
+
+  console.log('Downloading precompiled headless Chromium binary for AWS Lambda.')
+
+  return get(ZIP_URL, DOWNLOAD_PATH)
+    .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
+    .then(() => console.log('Completed Headless Chromium download.'))
 }
 
 if (require.main === module) {
-  console.log('Downloading precombiled headless Chrome binary for AWS Lambda')
-
-  download().then(extractFile).then(() => fs.unlink(DOWNLOAD_PATH)).catch((error) => {
+  getChromium().catch((error) => {
     console.error(error)
+    process.exit(1)
   })
 }
 
 module.exports = {
-  download,
+  get,
   extractFile,
 }

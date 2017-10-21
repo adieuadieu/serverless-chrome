@@ -38,7 +38,6 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/functions/serverless-framework",
   "dependencies": {
-    "@serverless-chrome/lambda": "^1.0.0-5",
     "chrome-remote-interface": "^0.24.0"
   },
   "devDependencies": {

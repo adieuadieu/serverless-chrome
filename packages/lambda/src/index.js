@@ -1,10 +1,20 @@
 import fs from 'fs'
+//import path from 'path'
 import LambdaChromeLauncher from './launcher'
 import { debug } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
 
 const DEVTOOLS_PORT = 9222
 const DEVTOOLS_HOST = 'http://127.0.0.1'
+
+// Prepend NSS related libraries and binaries to the library path and path respectively on lambda.
+/*if (process.env.AWS_EXECUTION_ENV) {
+  const nssSubPath = fs.readFileSync(path.join(__dirname, 'nss', 'latest'), 'utf8').trim();
+  const nssPath = path.join(__dirname, 'nss', subnssSubPathPath);
+
+  process.env.LD_LIBRARY_PATH = path.join(nssPath, 'lib') +  ':' + process.env.LD_LIBRARY_PATH;
+  process.env.PATH = path.join(nssPath, 'bin') + ':' + process.env.PATH;
+}*/
 
 // persist the instance across invocations
 // when the *lambda* container is reused.
@@ -26,9 +36,9 @@ export default async function launch (
       // This let's us use chrome-launcher in local development,
       // but omit it from the lambda function's zip artefact
       try {
-        // eslint-disable-next-line global-require
+        // eslint-disable-next-line
         const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
-        chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags, port })
+        chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags: flags, port })
       } catch (error) {
         throw new Error(
           '@serverless-chrome/lambda: Unable to find "chrome-launcher". ' +
@@ -63,6 +73,12 @@ export default async function launch (
   debug(`It took ${launchTime}ms to spawn chrome.`)
 
   // unref the chrome instance, otherwise the lambda process won't end correctly
+  /* @TODO: make this an option?
+    There's an option to change callbackWaitsForEmptyEventLoop in the Lambda context
+    http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html
+    Which means you could log chrome output to cloudwatch directly
+    without unreffing chrome.
+  */
   if (chromeInstance.chrome) {
     chromeInstance.chrome.removeAllListeners()
     chromeInstance.chrome.unref()

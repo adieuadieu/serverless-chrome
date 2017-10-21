@@ -81,6 +81,9 @@ Example functions are available [here](https://github.com/adieuadieu/serverless-
 
 Local development is supported. You must install the `chrome-launcher` package in your project. A locally installed version of Chrome will be launched.
 
+**Command line flags (or "switches")**
+
+The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](https://github.com/adieuadieu/serverless-chrome/blob/develop/packages/lambda/src/flags.js) are used, but in development no default flags are used.
 
 ## Configuration
 
@@ -91,10 +94,24 @@ plugins:
   - serverless-plugin-chrome
 
 custom:
-  chromeFlags:
-    - --window-size=1280x1696 # Letter size
-    - --hide-scrollbars
-    - --ignore-certificate-errors
+  chrome:
+    flags:
+      - --window-size=1280x1696 # Letter size
+      - --hide-scrollbars
+      - --ignore-certificate-errors
+    functions:
+      - enableChromeOnThisFunctionName
+      - mySuperChromeFunction
+```
+
+It is also possible to enable Chrome on only specific functions in your service using the `custom.chrome.functions` configuration. For example:
+
+```yaml
+custom:
+  chrome:
+    functions:
+      - enableChromeOnThisFunctionName
+      - mySuperChromeFunction
 ```
 
 You can enable debugging/logging output by specifying the DEBUG env variable in the provider section of `serverless.yml`. For example:
