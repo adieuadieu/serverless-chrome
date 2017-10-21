@@ -31,8 +31,10 @@
     "jsSrc": "src/"
   },
   "scripts": {
+    "clean": "rm -Rf dist/",
     "test": "npm run lint && nyc ava",
     "watch:test": "ava --watch",
+    "pretest:docker": "npm run postinstall && npm run build",
     "test:docker": "docker run -v \"$PWD/integration-test\":/var/task -v \"$PWD/dist\":/var/task/dist lambci/lambda:nodejs6.10 handler.run",
     "ava": "ava",
     "lint": "npm run lint:eslint -s",
@@ -40,11 +42,11 @@
     "coverage": "nyc report",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "prepublishOnly": "rm -Rf dist/ && yarn build",
+    "prepublishOnly": "npm run clean && yarn build",
     "postinstall": "node scripts/postinstall.js",
     "build-binaries": "scripts/build-binaries.sh",
     "build-binaries:chromium": "scripts/build-binaries.sh chromium",
-    "latest-versions": "scripts/latest-versions.sh",
+    "latest-browser-versions": "scripts/latest-versions.sh",
     "upgrade-dependencies": "yarn upgrade-interactive --latest --exact"
   },
   "dependencies": {
