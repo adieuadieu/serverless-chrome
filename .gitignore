@@ -65,3 +65,4 @@ config.json
 /config.js
 event.json
 .build/
+build/

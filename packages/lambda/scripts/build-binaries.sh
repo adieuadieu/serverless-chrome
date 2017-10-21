@@ -17,14 +17,14 @@ PACKAGE_DIRECTORY=$(pwd)
 
 build() {
   BUILD_NAME=$1
-
+  
   cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
   
   DOCKER_IMAGE=serverless-chrome-$BUILD_NAME
   # VERSION=$(jq -r .config."$BUILD_NAME"Version "$PACKAGE_DIRECTORY"/package.json)
   VERSION=$(./latest.sh)
-  BUILD_PATH=build/$BUILD_NAME
-  ZIPFILE_PATH=$BUILD_PATH/../headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip
+  BUILD_PATH="build/$BUILD_NAME"
+  ZIPFILE_PATH="../headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
     
   if [ ! -f "$ZIPFILE_PATH" ]; then
     export VERSION
@@ -37,12 +37,14 @@ build() {
     docker build -t "$DOCKER_IMAGE" --build-arg VERSION="$VERSION" .
 
     # Extract binary from docker image
-    docker run -dt --name "$DOCKER_IMAGE" "$DOCKER_IMAGE"
+    docker run -dt --rm --name "$DOCKER_IMAGE" "$DOCKER_IMAGE"
     docker cp "$DOCKER_IMAGE":/build/headless-"$BUILD_NAME" "$BUILD_PATH"
     docker stop "$DOCKER_IMAGE"
 
     # Package
-    zip -9 "$ZIPFILE_PATH" "$BUILD_PATH"
+    cd "$BUILD_PATH"
+    zip -9 -D "$ZIPFILE_PATH" "headless-$BUILD_NAME"
+    cd ../../
 
     # Cleanup
     rm -Rf "$BUILD_PATH"

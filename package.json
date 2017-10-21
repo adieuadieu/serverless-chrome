@@ -16,8 +16,9 @@
     "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint $npm_package_config_jsSrc",
     "coverage": "nyc report",
-    "upgrade-packages": "yarn upgrade-interactive --latest --exact",
-    "prettier": "prettier --no-semi --single-quote --trailing-comma es5 --write"
+    "upgrade-dependencies": "yarn upgrade-interactive --latest --exact",
+    "prettier": "prettier --no-semi --single-quote --trailing-comma es5 --write",
+    "release": "scripts/release.sh"
   },
   "repository": {
     "type": "git",
@@ -40,15 +41,15 @@
   "homepage": "https://github.com/adieuadieu/serverless-chrome",
   "dependencies": {},
   "devDependencies": {
-    "ava": "^0.22.0",
-    "babel-core": "^6.26.0",
+    "ava": "0.22.0",
+    "babel-core": "6.26.0",
     "babel-eslint": "8.0.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.6.1",
-    "babel-preset-stage-3": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "babel-runtime": "^6.26.0",
+    "babel-preset-stage-3": "6.24.1",
+    "babel-register": "6.26.0",
+    "babel-runtime": "6.26.0",
     "codacy-coverage": "2.0.3",
     "coveralls": "3.0.0",
     "eslint": "4.9.0",
@@ -56,12 +57,12 @@
     "eslint-plugin-ava": "4.2.2",
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-promise": "3.6.0",
-    "eslint-tap": "^2.0.1",
+    "eslint-tap": "2.0.1",
     "husky": "0.14.3",
     "nyc": "11.2.1",
     "prettier": "1.7.4",
     "prettier-eslint": "8.2.1",
-    "tap-xunit": "^1.7.0"
+    "tap-xunit": "1.7.0"
   },
   "ava": {
     "require": "babel-register",

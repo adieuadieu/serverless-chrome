@@ -36,11 +36,6 @@ if [ -z "$TAG" ]; then
   exit
 fi
 
-if ! ls build/release/*.tar.gz > /dev/null 2>&1; then
-  printf "%s: No release packages to upload\n" Error
-  exit 1
-fi
-
 # Check if this is a pre-release version (denoted by a hyphen):
 if [ "${TAG#*-}" != "$TAG" ]; then
   PRE=true
@@ -52,7 +47,8 @@ RELEASE_TEMPLATE='{
   "tag_name": "%s",
   "name": "%s",
   "prerelease": %s,
-  "draft": %s
+  "draft": %s,
+  "body": %s
 }'
 
 create_draft_release() {
@@ -70,6 +66,9 @@ create_draft_release() {
   then
     RELEASE_ID=$(echo "$output" | jq -re '.id')
     UPLOAD_URL_TEMPLATE=$(echo "$output" | jq -re '.upload_url')
+  else
+    echo "problem creating draft."
+    echo "$output"
   fi
 }
 
@@ -80,9 +79,9 @@ upload_release_asset() {
     --fail \
     --request POST \
     --header "Authorization: token $GITHUB_TOKEN" \
-    --header 'Content-Type: application/gzip' \
+    --header 'Content-Type: application/zip' \
     --data-binary "@$1" \
-    "${UPLOAD_URL_TEMPLATE%\{*}?name=$1" \
+    "${UPLOAD_URL_TEMPLATE%\{*}?name=$2" \
     > /dev/null
 }
 
@@ -94,25 +93,39 @@ publish_release() {
     --request PATCH \
     --header "Authorization: token $GITHUB_TOKEN" \
     --header 'Content-Type: application/json' \
-    --data "$(printf "$RELEASE_TEMPLATE" "$TAG" "$TAG" "$PRE" false)" \
+    --data '{"draft": false}' \
     "https://api.github.com/repos/$GITHUB_ORG/$GITHUB_REPO/releases/$1" \
     > /dev/null
 }
 
-cd build/release
 
-echo '+++ Releasing new version'
-
-printf "Creating draft release %s ... " "$TAG"
+echo "Creating draft release $TAG"
 create_draft_release
-echo 'done'
 
-for FILE in *.tar.gz; do
-  printf "Uploading %s ... " "$FILE"
-  upload_release_asset "$FILE"
-  echo 'done'
+# upload zipped builds
+cd packages/lambda/builds
+
+for BUILD in */Dockerfile; do
+  BUILD_NAME="${BUILD%%/*}"
+  (
+    cd "$BUILD_NAME"
+
+    VERSION=$(./latest.sh)
+    ZIPFILE=build/headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip
+
+    if [ ! -f "$ZIPFILE" ]; then
+      echo "$BUILD_NAME version $VERSION has not been built. Building ..."
+      ../../scripts/build-binaries.sh "$BUILD_NAME"
+    fi
+
+    echo "Uploading $ZIPFILE"
+
+    upload_release_asset "$ZIPFILE" "headless-$BUILD_NAME-amazonlinux-2017-03.zip"
+
+  )
 done
 
-printf "Publishing release %s ... " "$TAG"
-publish_release "$RELEASE_ID"
-echo 'done'
+
+# printf "Publishing release %s ... " "$TAG"
+# publish_release "$RELEASE_ID"
+# echo 'done'
