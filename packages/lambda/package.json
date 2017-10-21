@@ -33,7 +33,7 @@
   "scripts": {
     "test": "npm run lint && nyc ava",
     "watch:test": "ava --watch",
-    "test:docker": "docker run -v \"$PWD/integration-test\":/var/task lambci/lambda:nodejs6.10 test/handler.run",
+    "test:docker": "docker run -v \"$PWD/integration-test\":/var/task -v \"$PWD/dist\":/var/task/dist lambci/lambda:nodejs6.10 handler.run",
     "ava": "ava",
     "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint $npm_package_config_jsSrc",
