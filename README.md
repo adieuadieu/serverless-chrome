@@ -4,7 +4,7 @@ Serverless Chrome contains everything you need to get started running headless C
 
 The aim of this project is to provide the scaffolding for using Headless Chrome during a serverless function invocation. Serverless Chrome takes care of building and bundling the Chrome binaries and making sure Chrome is running when your serverless function executes. In addition, this project also provides a few example services for common patterns (e.g. taking a screenshot of a page, printing to PDF, some scraping, etc.)
 
-Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/) in serverless architectures and doing testing/CI, web-scraping, pre-rendering, etc.
+Why? Because it's neat. It also opens up interesting possibilities for using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/) (and tools like [Chromeless](https://github.com/graphcool/chromeless) or [Puppeteer](https://github.com/GoogleChrome/puppeteer)) in serverless architectures and doing testing/CI, web-scraping, pre-rendering, etc.
 
 
 [![CircleCI](https://img.shields.io/circleci/project/github/adieuadieu/serverless-chrome/master.svg?style=flat-square)](https://circleci.com/gh/adieuadieu/serverless-chrome)
@@ -46,7 +46,7 @@ Using AWS Lambda, the quickest way to get started is with the [Serverless-framew
 First, install `serverless` globally:
 
 ```bash
-git clone
+git clone https://github.com/adieuadieu/serverless-chrome.git
 cd serverless-chrome/examples/serverless-framework/aws
 npm install
 ```
