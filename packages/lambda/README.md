@@ -56,7 +56,7 @@ module.exports.handler = function handler (event, context, callback) {
         callback(error)
       })
   })
-  // Chrome didn't launch correctly
+  // Chrome didn't launch correctly 😢
   .catch(callback)
 }
 ```

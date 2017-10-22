@@ -30,7 +30,10 @@
     "headless",
     "aws",
     "lambda",
-    "serverless-framework"
+    "serverless-framework",
+    "screenshot",
+    "screen capture",
+    "pdf"
   ],
   "author": "Marco Lüthy",
   "license": "MIT",
@@ -49,7 +52,6 @@
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
     "serverless": "1.23.0",
-    "serverless-apigwy-binary": "0.1.0",
     "serverless-plugin-chrome": "1.0.0-12",
     "serverless-webpack": "3.1.2",
     "webpack": "3.8.1"

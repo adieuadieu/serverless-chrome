@@ -78,7 +78,6 @@ RUN cp /build/Chromium/src/out/Headless/headless_shell /build/headless-chromium-
 
 WORKDIR /build
 
-
 # Use UPX to package headless chromium
 # this adds 1-1.5 seconds of startup time so generally
 # not so great for use in AWS Lambda so we don't actually use it 

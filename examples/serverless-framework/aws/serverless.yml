@@ -13,7 +13,6 @@ provider:
 plugins:
   - serverless-plugin-chrome
   #- serverless-webpack
-  - serverless-apigwy-binary  # For Raw Binary responses only
 
 custom:
   chromeFlags:
@@ -25,7 +24,7 @@ functions:
     description: Headless Chrome Serverless-framework version info example
     memorySize: 1024
     timeout: 30
-    handler: src/versionInfo.handler
+    handler: src/handlers/version.default
     events:
       - http:
           path: version-info
@@ -35,50 +34,38 @@ functions:
     description: Headless Chrome Serverless-framework request logging example
     memorySize: 1024
     timeout: 30
-    handler: src/requestLogger.handler
+    handler: src/handlers/requestLogger.default
     events:
       - http:
           path: request-logger
           method: get
 
   screenshot-binary:
-    description: Headless Chrome Serverless-framework screenshot example (returns binary)
+    description: Headless Chrome Serverless-framework screenshot example
     memorySize: 1536
     timeout: 30
-    handler: src/captureScreenshotBinary.handler
+    handler: src/handlers/screenshot.default
     events:
       - http:
           path: screenshot
           method: get
-          contentHandling: CONVERT_TO_BINARY
 
-  screenshot-html:
-    description: Headless Chrome Serverless-framework screenshot example (returns html)
+  pdf:
+    description: Headless Chrome Serverless-framework PDF example
     memorySize: 1536
     timeout: 30
-    handler: src/captureScreenshotHtml.handler
-    events:
-      - http:
-          path: screenshot-html
-          method: get
-
-  pdf-binary:
-    description: Headless Chrome Serverless-framework pdf example (returns binary)
-    memorySize: 1536
-    timeout: 30
-    handler: src/printToPdfBinary.handler
+    handler: src/handlers/pdf.default
     events:
       - http:
           path: pdf
           method: get
-          contentHandling: CONVERT_TO_BINARY
 
-  pdf-html:
-    description: Headless Chrome Serverless-framework pdf example (returns html)
-    memorySize: 1536
-    timeout: 30
-    handler: src/printToPdfHtml.handler
-    events:
-      - http:
-          path: pdf-html
-          method: get
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Properties:
+        BinaryMediaTypes:
+          # - "*/*"
+          # - "*~1*" # on updates, slash / is escaped as ~1 cuz, you know, AWS.
+          - "image/png"
+          - "application/pdf"

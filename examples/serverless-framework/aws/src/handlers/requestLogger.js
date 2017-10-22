@@ -3,7 +3,7 @@ import Cdp from 'chrome-remote-interface'
 
 const LOAD_TIMEOUT = 1000 * 30
 
-export async function handler (event, context, callback) {
+export default async function handler (event, context, callback) {
   const requestsMade = []
 
   const [tab] = await Cdp.List()

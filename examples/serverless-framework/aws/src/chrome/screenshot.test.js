@@ -1,14 +1,14 @@
 import test from 'ava'
-import printToPdfHandler from './printToPdfHtml'
-import printUrlToPdf from './printToPdf'
+import handler from '../handlers/screenshot'
+import screenshot from './screenshot'
 
 const testUrl = 'https://github.com/adieuadieu'
 const testEvent = {
   queryStringParameters: { url: testUrl },
 }
 
-test('printToPdf handler', async (t) => {
-  const promise = printToPdfHandler(testEvent, {})
+test('Screenshot handler', async (t) => {
+  const promise = handler(testEvent, {})
 
   t.notThrows(promise)
 
@@ -17,19 +17,16 @@ test('printToPdf handler', async (t) => {
   t.is(result.statusCode, 200)
 })
 
-/*
-test('printToPdf handler should throw an error when not provided with a valid URL',
-async (t) => {
-  const promise = printToPdfHandler({})
+test('Screenshot handler should throw an error when not provided with a valid URL', async (t) => {
+  const promise = handler({})
 
   t.throws(promise)
 
   await promise
 })
-*/
 
-test('printUrlToPdf() should return base64 encoded application/pdf', async (t) => {
-  const promise = printUrlToPdf(testUrl)
+test('screenshot() should return base64 encoded image/png', async (t) => {
+  const promise = screenshot(testUrl)
 
   t.notThrows(promise)
 

@@ -6,7 +6,8 @@
 //
 //
 import Cdp from 'chrome-remote-interface'
-import { log, sleep } from './utils'
+import log from '../utils/log'
+import sleep from '../utils/sleep'
 
 const defaultPrintOptions = {
   landscape: false,
@@ -47,7 +48,7 @@ export default async function printUrlToPdf (url, printOptions = {}) {
 
     if (requestQueue.length > 0) {
       await sleep(100)
-      await emptyQueue(startTime)
+      await emptyQueue()
     }
   }
 
@@ -74,12 +75,6 @@ export default async function printUrlToPdf (url, printOptions = {}) {
     log('Chrome received response for:', data.requestId, data.response.url)
   })
 
-  if (process.env.LOGGING === 'TRUE') {
-    Cdp.Version((err, info) => {
-      console.log('CDP version info', err, info)
-    })
-  }
-
   try {
     await Promise.all([
       Network.enable(), // https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-enable
@@ -91,7 +86,11 @@ export default async function printUrlToPdf (url, printOptions = {}) {
     await Page.navigate({ url }) // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigate
 
     await new Promise((resolve, reject) => {
-      const timeout = setTimeout(reject, LOAD_TIMEOUT, new Error(`Page load timed out after ${LOAD_TIMEOUT} ms.`))
+      const timeout = setTimeout(
+        reject,
+        LOAD_TIMEOUT,
+        new Error(`Page load timed out after ${LOAD_TIMEOUT} ms.`)
+      )
 
       loadEventFired.then(async () => {
         await emptyQueue()

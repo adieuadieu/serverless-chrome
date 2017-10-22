@@ -1,3 +1,5 @@
+// EXPERIMENTAL
+
 /*
 
 @todo: time the duration between screenshot frames, and create ffmpeg video based on duration between framesCaptured
@@ -10,7 +12,8 @@ import fs from 'fs'
 import path from 'path'
 import { spawn, execSync } from 'child_process'
 import Cdp from 'chrome-remote-interface'
-import { log, sleep } from './utils'
+import log from '../utils/log'
+import sleep from '../utils/sleep'
 
 const defaultOptions = {
   captureFrameRate: 1,
@@ -55,7 +58,9 @@ export async function makeVideo (url, options = {}, invokeid = '') {
   const tab = await Cdp.New()
   const client = await Cdp({ host: '127.0.0.1', target: tab })
 
-  const { Network, Page, Input, DOM, Overlay } = client
+  const {
+    Network, Page, Input, DOM, Overlay,
+  } = client
 
   Network.requestWillBeSent((data) => {
     // only add requestIds which aren't already in the queue
@@ -219,7 +224,7 @@ export async function makeVideo (url, options = {}, invokeid = '') {
   return { data: result, framesCaptured }
 }
 
-export default (async function experimentalHandler (event, { invokeid }) {
+export default async function handler (event, { invokeid }, callback) {
   const { queryStringParameters: { url, ...printParameters } } = event
   const options = makePrintOptions(printParameters)
   let result = {}
@@ -232,12 +237,12 @@ export default (async function experimentalHandler (event, { invokeid }) {
     result = await makeVideo(url, options, invokeid)
   } catch (error) {
     console.error('Error printing pdf for', url, error)
-    throw new Error('Unable to print pdf')
+    return callback(error)
   }
 
   // TODO: probably better to write the pdf to S3,
   // but that's a bit more complicated for this example.
-  return {
+  return callback(null, {
     statusCode: 200,
     // it's not possible to send binary via AWS API Gateway as it expects JSON response from Lambda
     body: `
@@ -245,7 +250,8 @@ export default (async function experimentalHandler (event, { invokeid }) {
         <body>
           <p><a href="${url}">${url}</a></p>
           <p><code>${JSON.stringify(options, null, 2)}</code></p>
-          <p>It took Chromium & FFmpeg ${Date.now() - startTime}ms to load URL, interact with the age and render video. Captured ${result.framesCaptured} frames.</p>
+          <p>It took Chromium & FFmpeg ${Date.now() -
+            startTime}ms to load URL, interact with the age and render video. Captured ${result.framesCaptured} frames.</p>
           <embed src="data:video/mp4;base64,${result.data}" width="100%" height="80%" type='video/mp4'>
         </body>
       </html>
@@ -253,5 +259,5 @@ export default (async function experimentalHandler (event, { invokeid }) {
     headers: {
       'Content-Type': 'text/html',
     },
-  }
-})
+  })
+}

@@ -1,5 +1,6 @@
 import Cdp from 'chrome-remote-interface'
-import { log, sleep } from './utils'
+import log from '../utils/log'
+import sleep from '../utils/sleep'
 
 export default async function captureScreenshotOfUrl (url) {
   const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 60
@@ -27,11 +28,7 @@ export default async function captureScreenshotOfUrl (url) {
     loaded = true
   })
 
-  if (process.env.LOGGING === 'TRUE') {
-    Cdp.Version((err, info) => {
-      console.log('CDP version info', err, info)
-    })
-  }
+  const loadEventFired = Page.loadEventFired()
 
   try {
     await Promise.all([
@@ -54,7 +51,7 @@ export default async function captureScreenshotOfUrl (url) {
     await Cdp.Close({ id: tab })
   } catch (error) {
     log('unable to close tab', tab, error)
-  }*/
+  } */
 
   await client.close()
 

@@ -4136,12 +4136,6 @@ semver@~5.0.1:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.0.3.tgz#77466de589cd5d3c95f138aa78bc569a3cb5d27a"
 
-serverless-apigwy-binary@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/serverless-apigwy-binary/-/serverless-apigwy-binary-0.1.0.tgz#3a0ac4e4f0955c0c49f1f1f3c63244079a4824e8"
-  dependencies:
-    bluebird "^3.5.0"
-
 serverless-plugin-chrome@1.0.0-12:
   version "1.0.0-12"
   resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-12.tgz#c5eb63595aeed7ba99257999edc649aa9bb5ef22"
