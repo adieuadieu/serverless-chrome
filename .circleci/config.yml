@@ -1,15 +1,14 @@
 version: 2
 jobs:
   build_lambda:
-    working_directory: ~/packages/lambda
+    working_directory: $CIRCLE_WORKING_DIRECTORY/packages/lambda
     machine: true
     steps:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: Install npm wee
-          command: npm install
+      - run: pwd
+      - run: npm install
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
@@ -17,7 +16,7 @@ jobs:
       - run:
           name: Integration test
           command: cd packages/lambda && npm run test:integration
-          
+
   test_lambda:
     working_directory: ~/packages/lambda
     machine: true
