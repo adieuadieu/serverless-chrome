@@ -1,5 +1,5 @@
 {
-  "name": "@serverless-chrome/functions-serverless-framework",
+  "name": "@serverless-chrome/example-serverless-framework-aws",
   "private": true,
   "version": "1.0.0",
   "description": "Example serverless functions using the Serverless-framework",
