@@ -35,14 +35,14 @@ custom:
 
 functions:
   test:
-    handler: handler.test
+    handler: src/handler.default
   anotherTest:
-    handler: anotherHandler.test
+    handler: src/anotherHandler.default
     package:
       # individually: true
   noChromeHere:
-    handler: noChrome.test
+    handler: src/noChrome.default
 
 
   # typescript-test:
-  #   handler: typescript-handler.test
+  #   handler: src/typescript-handler.default

@@ -12,4 +12,8 @@
 npm run postinstall
 npm run build
 
-docker run -v "$PWD/integration-test":/var/task -v "$PWD/dist":/var/task/dist lambci/lambda:nodejs6.10 handler.run
+docker run \
+  -v "$PWD/integration-test":/var/task \
+  -v "$PWD/dist":/var/task/dist \
+  lambci/lambda:nodejs6.10 \
+  handler.run

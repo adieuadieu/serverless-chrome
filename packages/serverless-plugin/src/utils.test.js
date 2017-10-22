@@ -59,9 +59,7 @@ test('throwIfWrongPluginOrder()', (t) => {
 })
 
 test('getHandlerFileAndExportName()', (t) => {
-  const { filePath, fileName, exportName } = getHandlerFileAndExportName(
-    'nested/test/handler.foobar.test'
-  )
+  const { filePath, fileName, exportName } = getHandlerFileAndExportName('nested/test/handler.foobar.test')
 
   t.is(filePath, 'nested/test')
   t.is(fileName, 'handler.foobar.js')

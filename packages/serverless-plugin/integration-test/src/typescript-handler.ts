@@ -1,6 +1,6 @@
-const CDP = require('chrome-remote-interface')
+import * as CDP from 'chrome-remote-interface'
 
-module.exports.default = (event, context, callback, chrome) => {
+export default async function (event, context, callback, chrome) {
   CDP.Version()
     .then((versionInfo) => {
       callback(null, {

@@ -21,13 +21,9 @@
   ],
   "scripts": {
     "clean": "rm -Rf dist/",
-    "test": "npm run lint && nyc ava",
-    "test:docker": "docker run -v \"$PWD\":/var/task lambci/lambda:nodejs6.10 test/handler.test",
+    "test": "npm run test:integration",
+    "test:integration": "scripts/test-integration.sh",
     "watch:test": "ava --watch",
-    "ava": "ava",
-    "lint": "npm run lint:eslint -s",
-    "lint:eslint": "eslint $npm_package_config_jsSrc",
-    "coverage": "nyc report",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "prepublish": "npm run clean && yarn build",
@@ -49,7 +45,6 @@
     "globby": "6.1.0"
   },
   "devDependencies": {
-    "ava": "0.22.0",
     "babel-core": "6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
@@ -57,10 +52,6 @@
     "rollup": "0.50.0",
     "rollup-plugin-babel": "3.0.2",
     "rollup-plugin-node-resolve": "3.0.0"
-  },
-  "ava": {
-    "require": "babel-register",
-    "babel": "inherit"
   },
   "babel": {
     "sourceMaps": true,

@@ -21,20 +21,33 @@ jobs:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
       - run:
           name: Integration test
-          command: cd packages/lambda && npm run test:integration
+          command: cd packages/lambda && npm test
 
-  test_serverless_plugin:
+  build_serverless_plugin:
     docker:
       - image: circleci/node:6.10.3
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - run: cd packages/serverless-plugin && npm install
+      - run: cd packages/serverless-plugin/integration-test && npm install
       - save_cache:
-          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
           paths:
             - packages/serverless-plugin/node_modules
+            - packages/serverless-plugin/integration-test/node_modules
+
+  test_serverless_plugin:
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - run:
+          name: Integration test
+          command: cd packages/serverless-plugin && npm test
+
   test_serverless_example:
     docker:
       - image: circleci/node:6.10.3
@@ -58,7 +71,10 @@ workflows:
             - build_lambda
   serverless_plugin:
     jobs:
-      - test_serverless_plugin
+      - build_serverless_plugin    
+      - test_serverless_plugin:
+          requires:
+            - build_serverless_plugin
   examples:
     jobs:
       - test_serverless_example

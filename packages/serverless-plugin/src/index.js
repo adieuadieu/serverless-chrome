@@ -110,43 +110,39 @@ export default class ServerlessChrome {
     // Add our node_modules dependencies to the package includes
     service.package.include = [...service.package.include, ...INCLUDES]
 
-    await Promise.all(
-      functionsToWrap.map(async (functionName) => {
-        const { handler } = service.getFunction(functionName)
-        const { filePath, fileName, exportName } = getHandlerFileAndExportName(handler)
-        const handlerCodePath = path.join(config.servicePath, filePath)
+    await Promise.all(functionsToWrap.map(async (functionName) => {
+      const { handler } = service.getFunction(functionName)
+      const { filePath, fileName, exportName } = getHandlerFileAndExportName(handler)
+      const handlerCodePath = path.join(config.servicePath, filePath)
 
-        const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
+      const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
 
-        const chromeFlags =
+      const chromeFlags =
           (service.custom && service.custom.chromeFlags) || // chromeFlags is deprecated.
           (service.custom && service.custom.chrome && service.custom.flags) ||
           []
 
-        // Read in the wrapper handler code template
-        const wrapperTemplate = await utils.readFile(
-          path.resolve(__dirname, '..', 'src', `wrapper-${providerName}-${runtime}.js`)
-        )
+      // Read in the wrapper handler code template
+      const wrapperTemplate = await utils.readFile(path.resolve(__dirname, '..', 'src', `wrapper-${providerName}-${runtime}.js`))
 
-        // Include the original handler via require
-        const wrapperCode = wrapperTemplate
-          .replace("'REPLACE_WITH_HANDLER_REQUIRE'", `require('./${originalFileRenamed}')`)
-          .replace(
-            "'REPLACE_WITH_OPTIONS'",
-            `{ ${chromeFlags.length ? `flags: ['${chromeFlags.join("', '")}']` : ''} }`
-          )
-          .replace(/REPLACE_WITH_EXPORT_NAME/gm, exportName)
+      // Include the original handler via require
+      const wrapperCode = wrapperTemplate
+        .replace("'REPLACE_WITH_HANDLER_REQUIRE'", `require('./${originalFileRenamed}')`)
+        .replace(
+          "'REPLACE_WITH_OPTIONS'",
+          `{ ${chromeFlags.length ? `flags: ['${chromeFlags.join("', '")}']` : ''} }`
+        )
+        .replace(/REPLACE_WITH_EXPORT_NAME/gm, exportName)
 
         // Move the original handler's file aside
-        await fs.move(
-          path.resolve(handlerCodePath, fileName),
-          path.resolve(handlerCodePath, originalFileRenamed)
-        )
+      await fs.move(
+        path.resolve(handlerCodePath, fileName),
+        path.resolve(handlerCodePath, originalFileRenamed)
+      )
 
-        // Write the wrapper code to the function's handler path
-        await utils.writeFile(path.resolve(handlerCodePath, fileName), wrapperCode)
-      })
-    )
+      // Write the wrapper code to the function's handler path
+      await utils.writeFile(path.resolve(handlerCodePath, fileName), wrapperCode)
+    }))
   }
 
   async afterCreateDeploymentArtifacts () {
