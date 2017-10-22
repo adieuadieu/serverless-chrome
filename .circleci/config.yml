@@ -1,10 +1,30 @@
 version: 2
 jobs:
-  test_lambda:
+  build_lambda:
+    working_directory: ~/packages/lambda
     machine: true
     steps:
       - checkout
-      - run: cd packages/lambda && npm install
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install npm wee
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Integration test
+          command: cd packages/lambda && npm run test:integration
+          
+  test_lambda:
+    working_directory: ~/packages/lambda
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: Integration test
           command: cd packages/lambda && npm run test:integration
@@ -25,11 +45,15 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  lambda:
     jobs:
-      - test_lambda
+      - build_lambda
+      - test_lambda:
+          requires:
+            - build_lambda
+  serverless_plugin:
+    jobs:
       - test_serverless_plugin
+  examples:
+    jobs:
       - test_serverless_example
-      # - test:
-      #     requires:
-      #       - build
