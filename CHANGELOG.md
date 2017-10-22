@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- Build and release tooling shell scripts and Dockerfile
+- Integration tests and CircleCI setup
+- HeadlessChrome/62.0.3202.62 built for AWS Lambda 2017.03
 - serverless-plugin-chrome: support for limiting Chrome to only select service functions with the `custom.chrome.functions` parameter.
 - @serverless-chrome/lambda NPM package
 - serverless-plugin-chrome NPM package for Serverless-framework
 - CHANGELOG.md.
-- Dockerfile
-- build and release tooling
-- Headless Chrome headless_shell binary version 64.0.3242.2 built for AWS Lambda 
 
 ### Changed
 - example Serverless-framework printToPdf function handler to use the Serverless plugin

@@ -8,8 +8,6 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 
 
 [![CircleCI](https://img.shields.io/circleci/project/github/adieuadieu/serverless-chrome/master.svg?style=flat-square)](https://circleci.com/gh/adieuadieu/serverless-chrome)
-[![Coveralls](https://img.shields.io/coveralls/adieuadieu/serverless-chrome/master.svg?style=flat-square)](https://coveralls.io/github/adieuadieu/serverless-chrome)
-[![Codacy grade](https://img.shields.io/codacy/grade/cd743cc370104d49a508cc4b7689c1aa.svg?style=flat-square)](https://www.codacy.com/app/adieuadieu/serverless-chrome)
 [![David](https://img.shields.io/david/adieuadieu/serverless-chrome.svg?style=flat-square)]()
 [![David](https://img.shields.io/david/dev/adieuadieu/serverless-chrome.svg?style=flat-square)]()
 [![GitHub release](https://img.shields.io/github/release/adieuadieu/serverless-chrome.svg?style=flat-square)](https://github.com/adieuadieu/serverless-chrome)
@@ -33,14 +31,16 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 
 This project contains:
 
-- **[@serverless-chrome/lambda](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda)** Node package<br/>
-  A standalone module for AWS Lambda which bundles and launches Headless Chrome with support for local development. For use with—but not limited to—tools like [Apex](https://github.com/apex/apex), or [Claudia.js](https://github.com/claudiajs/claudia).
-- **[serverless-plugin-chrome](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin)** Node package<br/>
+- **[@serverless-chrome/lambda](packages/lambda)** NPM package<br/>
+  A standalone module for AWS Lambda which bundles and launches Headless Chrome with support for local development. For use with—but not limited to—tools like [Apex](https://github.com/apex/apex), [Claudia.js](https://github.com/claudiajs/claudia), or [Serverless](https://serverless.com/).
+  [![npm](https://img.shields.io/npm/v/@serverless-chrome/lambda.svg?style=flat-square)](https://www.npmjs.com/package/@serverless-chrome/lambda)
+- **[serverless-plugin-chrome](packages/serverless-plugin)** NPM package<br/>
   A plugin for [Serverless-framework](https://serverless.com/) services which takes care of everything for you. You just write the code to drive Chrome.
-- **[Example functions](https://github.com/adieuadieu/serverless-chrome/tree/master/examples)**
+  [![npm](https://img.shields.io/npm/v/serverless-plugin-chrome.svg?style=flat-square)](https://www.npmjs.com/package/serverless-plugin-chrome)
+- **[Example functions](examples/serverless-framework/aws)**
   - [Serverless-framework](https://serverless.com/) AWS Lambda Node.js functions using `serverless-plugin-chrome`
 - **Docker Stuff**<br/>
-  For building Headless Chrome
+   Build and release tooling shell scripts and Dockerfile for automating the build/release of headless Chrome for serverless environments (AWS Lambda)
 
 
 ## Quick Start
@@ -80,7 +80,7 @@ Then, to deploy the service and all of its functions:
 serverless deploy
 ```
 
-Further details are available in the [Serverless Lambda example](https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws).
+Further details are available in the [Serverless Lambda example](examples/serverless-framework/aws).
 
 
 ## Examples
@@ -89,7 +89,7 @@ A collection of example functions for different providers and frameworks.
 
 ### Serverless-framework
 
-- [Serverless-framework](https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws)
+- [Serverless-framework](examples/serverless-framework/aws)
   Some simple functions for the [Serverless-framework](https://serverless.com/) on AWS Lambda. It includes the following example functions:
 
   - Print to PDF
@@ -97,20 +97,9 @@ A collection of example functions for different providers and frameworks.
   - Page-load Request Logger
 
 
-## Chrome Version
-
-The current Chrome build is:
-
-- **Browser**: HeadlessChrome/61.0.3135.0
-- **Protocol-Version**: 1.2
-- **User-Agent**: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/61.0.3135.0 Safari/537.36
-- **V8-Version**: 6.1.201
-- **WebKit-Version**: 537.36 (@c671506faf285787f1c0377f90c8129a1a40a347)
-
-
 ## Testing
 
-Test with `yarn test` or just `yarn ava` to skip the linter.
+Test with `npm test`. Each package also contains it's own integration tests which can be run with `npm run test:integration`.
 
 
 ## Known Issues / Limitations
@@ -134,8 +123,8 @@ Test with `yarn test` or just `yarn ava` to skip the linter.
 
 *Future*
 
-1. Support for Azure Functions (Once Headless Chrome supports Windows)
-
+1. Support for Azure Functions
+1. Headless Firefox
 
 
 ## Projects & Companies using serverless-chrome
@@ -145,7 +134,7 @@ Tell us about your project on the [Wiki](https://github.com/adieuadieu/serverles
 
 ## Change log
 
-See the [CHANGELOG](https://github.com/adieuadieu/serverless-chrome/blob/master/CHANGELOG.md)
+See the [CHANGELOG](CHANGELOG.md)
 
 
 ## Prior Art
