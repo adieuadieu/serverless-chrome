@@ -1,8 +1,7 @@
 version: 2
 jobs:
   test_lambda:
-    docker:
-      - image: circleci/node:6.10.3
+    machine: true
     steps:
       - checkout
       - run: cd packages/lambda && npm install
