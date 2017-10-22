@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-chrome",
-  "version": "1.0.0-11",
+  "version": "1.0.0-12",
   "description": "A Serverless-framework plugin that takes care of running headless Chrome so that you can move on with getting things done.",
   "keywords": [
     "serverless",
@@ -29,7 +29,8 @@
     "coverage": "nyc report",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "prepublish": "rm -Rf dist/ && yarn build"
+    "prepublish": "rm -Rf dist/ && yarn build",
+    "upgrade-dependencies": "yarn upgrade-interactive --latest --exact"
   },
   "repository": {
     "type": "git",
@@ -42,20 +43,20 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin",
   "dependencies": {
-    "@serverless-chrome/lambda": "^1.0.0-5",
-    "fs-p": "^2.0.0",
-    "globby": "^6.1.0"
+    "@serverless-chrome/lambda": "1.0.0-6",
+    "fs-p": "2.0.0",
+    "globby": "6.1.0"
   },
   "devDependencies": {
-    "ava": "^0.22.0",
-    "babel-preset-env": "^1.6.0",
-    "babel-register": "^6.26.0",
-    "chrome-launcher": "^0.3.1",
-    "prettier": "^1.5.3",
-    "prettier-eslint": "^6.4.2",
-    "rollup": "^0.48.2",
-    "rollup-plugin-babel": "^3.0.2",
-    "rollup-plugin-node-resolve": "^3.0.0"
+    "ava": "0.22.0",
+    "babel-preset-env": "1.6.0",
+    "babel-register": "6.26.0",
+    "chrome-launcher": "0.3.1",
+    "prettier": "1.5.3",
+    "prettier-eslint": "6.4.2",
+    "rollup": "0.48.2",
+    "rollup-plugin-babel": "3.0.2",
+    "rollup-plugin-node-resolve": "3.0.0"
   },
   "ava": {
     "require": "babel-register",
