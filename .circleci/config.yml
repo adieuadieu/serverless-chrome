@@ -1,20 +1,17 @@
 version: 2
 jobs:
   build_lambda:
-    machine: true
+    docker:
+      - image: circleci/node:6.10.3
     steps:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
-      - run: pwd
       - run: cd packages/lambda && npm install
       - save_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
           paths:
             - packages/lambda/node_modules
-      - run:
-          name: Integration test
-          command: cd packages/lambda && npm run test:integration
 
   test_lambda:
     machine: true
