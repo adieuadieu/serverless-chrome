@@ -17,9 +17,7 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [The Project](#the-project)
 1. [Quick Start](#quick-start)
 1. [Examples](#examples)
-1. [Chrome Version](#chrome-version)
 1. [Testing](#testing)
-1. [Configuration and Deployment](#configuration-and-deployment)
 1. [Known Issues / Limitations](#known-issues--limitations)
 1. [Roadmap](#roadmap)
 1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
@@ -33,11 +31,9 @@ This project contains:
 
 - **[@serverless-chrome/lambda](packages/lambda)** NPM package<br/>
   A standalone module for AWS Lambda which bundles and launches Headless Chrome with support for local development. For use with—but not limited to—tools like [Apex](https://github.com/apex/apex), [Claudia.js](https://github.com/claudiajs/claudia), or [Serverless](https://serverless.com/).
-  [![npm](https://img.shields.io/npm/v/@serverless-chrome/lambda.svg?style=flat-square)](https://www.npmjs.com/package/@serverless-chrome/lambda)
 - **[serverless-plugin-chrome](packages/serverless-plugin)** NPM package<br/>
   A plugin for [Serverless-framework](https://serverless.com/) services which takes care of everything for you. You just write the code to drive Chrome.
-  [![npm](https://img.shields.io/npm/v/serverless-plugin-chrome.svg?style=flat-square)](https://www.npmjs.com/package/serverless-plugin-chrome)
-- **[Example functions](examples/serverless-framework/aws)**
+- **[Example functions](examples/)**
   - [Serverless-framework](https://serverless.com/) AWS Lambda Node.js functions using `serverless-plugin-chrome`
 - **Docker Stuff**<br/>
    Build and release tooling shell scripts and Dockerfile for automating the build/release of headless Chrome for serverless environments (AWS Lambda)
@@ -50,13 +46,9 @@ Using AWS Lambda, the quickest way to get started is with the [Serverless-framew
 First, install `serverless` globally:
 
 ```bash
-npm install serverless -g
-```
-
-Then pull down the example service:
-
-```bash
-serverless install -u https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws
+git clone
+cd serverless-chrome/examples/serverless-framework/aws
+npm install
 ```
 
 Then, you must configure your AWS credentials either by defining `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environmental variables, or using an AWS profile. You can read more about this on the [Serverless Credentials Guide](https://serverless.com/framework/docs/providers/aws/guide/credentials/).
@@ -77,7 +69,7 @@ export AWS_SECRET_ACCESS_KEY=<your-secret-key-here>
 Then, to deploy the service and all of its functions:
 
 ```bash
-serverless deploy
+npm run deploy
 ```
 
 Further details are available in the [Serverless Lambda example](examples/serverless-framework/aws).
