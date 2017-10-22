@@ -7,12 +7,12 @@ provider:
   region: us-east-1
   environment:
     DEBUG: "*"
-    PAGE_LOAD_TIMEOUT: 30000
+    PAGE_LOAD_TIMEOUT: 20000
     LOGGING: true
 
 plugins:
   - serverless-plugin-chrome
-  #- serverless-webpack
+  - serverless-webpack
 
 custom:
   chromeFlags:

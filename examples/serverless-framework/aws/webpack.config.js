@@ -1,24 +1,27 @@
+const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
+const yaml = require('js-yaml')
+
+const { functions: slsFunctions } = yaml.load(
+  fs.readFileSync('./serverless.yml')
+)
 
 module.exports = {
-  entry: {
-    captureScreenshotHtml: './src/captureScreenshotHtml',
-    captureScreenshotBinary: './src/captureScreenshotBinary',
-    experimental: './src/experimental',
-    printToPdfHtml: './src/printToPdfHtml',
-    printToPdfBinary: './src/printToPdfBinary',
-    requestLogger: './src/requestLogger',
-    versionInfo: './src/versionInfo',
-  },
+  devtool: 'source-map',
   target: 'node',
+  node: {
+    __dirname: true,
+  },
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: __dirname,
         exclude: /node_modules/,
+        options: {
+          cacheDirectory: true,
+        },
       },
       { test: /\.json$/, loader: 'json-loader' },
     ],
@@ -32,5 +35,18 @@ module.exports = {
     filename: '[name].js',
   },
   externals: ['aws-sdk'],
-  plugins: [],
+  plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
+    }),
+  ],
+  entry: Object.keys(slsFunctions)
+    .reduce((functions, key) => [...functions, slsFunctions[key]], [])
+    .reduce((entries, lambdaFunction) => {
+      const handler = lambdaFunction.handler.split('.')[0]
+
+      return Object.assign(entries, {
+        [handler]: path.resolve(`${handler}.js`),
+      })
+    }, {}),
 }

@@ -45,12 +45,12 @@
     "chrome-remote-interface": "0.25.2"
   },
   "devDependencies": {
-    "ava": "0.22.0",
     "babel-core": "6.26.0",
     "babel-loader": "7.1.2",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
+    "js-yaml": "3.10.0",
     "serverless": "1.23.0",
     "serverless-plugin-chrome": "1.0.0-12",
     "serverless-webpack": "3.1.2",

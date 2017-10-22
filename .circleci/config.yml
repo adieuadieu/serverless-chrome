@@ -40,6 +40,7 @@ jobs:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - restore_cache:
           key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }} 
+      # @TODO: should probably use our own headless-chrome binary..
       - run: docker run -d --rm --name chrome --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless-browser
       - run: npm run ava
 

@@ -23,22 +23,25 @@ const defaultPrintOptions = {
   pageRanges: '',
 }
 
-function cleanPrintOptionValue (type, value) {
+function cleanPrintOptionValue(type, value) {
   const types = { string: String, number: Number, boolean: Boolean }
   return types[type](value)
 }
 
-export function makePrintOptions (options = {}) {
+export function makePrintOptions(options = {}) {
   return Object.entries(options).reduce(
     (printOptions, [option, value]) => ({
       ...printOptions,
-      [option]: cleanPrintOptionValue(typeof defaultPrintOptions[option], value),
+      [option]: cleanPrintOptionValue(
+        typeof defaultPrintOptions[option],
+        value
+      ),
     }),
     defaultPrintOptions
   )
 }
 
-export default async function printUrlToPdf (url, printOptions = {}) {
+export default async function printUrlToPdf(url, printOptions = {}) {
   const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 20
   let result
   const requestQueue = [] // @TODO: write a better quite, which waits a few seconds when reaching 0 before emitting "empty"
@@ -57,7 +60,7 @@ export default async function printUrlToPdf (url, printOptions = {}) {
 
   const { Network, Page } = client
 
-  Network.requestWillBeSent((data) => {
+  Network.requestWillBeSent(data => {
     // only add requestIds which aren't already in the queue
     // why? if a request to http gets redirected to https, requestId remains the same
     if (!requestQueue.find(item => item === data.requestId)) {
@@ -67,11 +70,14 @@ export default async function printUrlToPdf (url, printOptions = {}) {
     log('Chrome is sending request for:', data.requestId, data.request.url)
   })
 
-  Network.responseReceived(async (data) => {
+  Network.responseReceived(async data => {
     // @TODO: handle this better. sometimes images, fonts, etc aren't done loading before we think loading is finished
     // is there a better way to detect this? see if there's any pending js being executed? paints? something?
     await sleep(100) // wait here, in case this resource has triggered more resources to load.
-    requestQueue.splice(requestQueue.findIndex(item => item === data.requestId), 1)
+    requestQueue.splice(
+      requestQueue.findIndex(item => item === data.requestId),
+      1
+    )
     log('Chrome received response for:', data.requestId, data.response.url)
   })
 
@@ -102,6 +108,8 @@ export default async function printUrlToPdf (url, printOptions = {}) {
     log('We think the page has finished loading. Printing PDF.')
 
     // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
+    // TODO: resize the chrome "window" so we capture the full height of the page
+    // document.body.scrollHeight
     const pdf = await Page.printToPDF(printOptions)
     result = pdf.data
   } catch (error) {
