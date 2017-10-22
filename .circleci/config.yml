@@ -29,8 +29,7 @@ jobs:
       - run: npm run lint
 
   unit_test:
-    docker:
-      - image: circleci/node:6.10.3
+    machine: true
     steps:
       - checkout
       - restore_cache:
@@ -40,7 +39,8 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - restore_cache:
-          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}    
+          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }} 
+      - run: docker run -d --rm --name chrome --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless-browser
       - run: npm run ava
 
   build_lambda:
