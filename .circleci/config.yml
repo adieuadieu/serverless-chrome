@@ -22,7 +22,7 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm run lint
 
-  test:
+  unit_test:
     docker:
       - image: circleci/node:6.10.3
     steps:
@@ -44,7 +44,7 @@ jobs:
           paths:
             - packages/lambda/node_modules
 
-  test_lambda:
+  integration_test_lambda:
     machine: true
     steps:
       - checkout
@@ -69,7 +69,7 @@ jobs:
             - packages/serverless-plugin/node_modules
             - packages/serverless-plugin/integration-test/node_modules
 
-  test_serverless_plugin:
+  integration_test_serverless_plugin:
     machine: true
     steps:
       - checkout
@@ -79,7 +79,7 @@ jobs:
           name: Integration test
           command: cd packages/serverless-plugin && npm test
 
-  test_serverless_example:
+  build_serverless_example:
     docker:
       - image: circleci/node:6.10.3
     steps:
@@ -94,31 +94,30 @@ jobs:
 
 workflows:
   version: 2
-  project:
+  build_test:
     jobs:
       - build
+      - build_lambda
+      - build_serverless_plugin
+      - build_serverless_example
+
       - lint:
           requires:
             - build  
             - build_lambda
             - build_serverless_plugin
-      - test:
+            - build_serverless_example
+      - unit_test:
           requires:
             - build
             - build_lambda
             - build_serverless_plugin
-  lambda:
-    jobs:
-      - build_lambda
-      - test_lambda:
+            - build_serverless_example
+
+      - integration_test_lambda:
           requires:
             - build_lambda
-  serverless_plugin:
-    jobs:
-      - build_serverless_plugin    
-      - test_serverless_plugin:
+
+      - integration_test_serverless_plugin:
           requires:
             - build_serverless_plugin
-  examples:
-    jobs:
-      - test_serverless_example
