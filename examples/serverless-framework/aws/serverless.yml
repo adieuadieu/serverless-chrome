@@ -44,7 +44,7 @@ functions:
   screenshot-binary:
     description: Headless Chrome Serverless-framework screenshot example (returns binary)
     memorySize: 1536
-    timeout: 120
+    timeout: 30
     handler: src/captureScreenshotBinary.handler
     events:
       - http:
@@ -55,7 +55,7 @@ functions:
   screenshot-html:
     description: Headless Chrome Serverless-framework screenshot example (returns html)
     memorySize: 1536
-    timeout: 120
+    timeout: 30
     handler: src/captureScreenshotHtml.handler
     events:
       - http:
@@ -65,7 +65,7 @@ functions:
   pdf-binary:
     description: Headless Chrome Serverless-framework pdf example (returns binary)
     memorySize: 1536
-    timeout: 120
+    timeout: 30
     handler: src/printToPdfBinary.handler
     events:
       - http:
@@ -76,7 +76,7 @@ functions:
   pdf-html:
     description: Headless Chrome Serverless-framework pdf example (returns html)
     memorySize: 1536
-    timeout: 120
+    timeout: 30
     handler: src/printToPdfHtml.handler
     events:
       - http:
