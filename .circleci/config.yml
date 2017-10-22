@@ -8,6 +8,7 @@ jobs:
       - run: cd packages/serverless-plugin && npm install
       - run: cd examples/serverless-framework/aws && npm install
   test:
+    machine: true
     steps:
       - checkout
       - run:
