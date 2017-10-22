@@ -3,9 +3,9 @@ import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
 
 export default {
-  entry: 'src/index.js',
-  targets: [{ dest: 'dist/index.js', format: 'cjs' }, { dest: 'dist/index.es.js', format: 'es' }],
-  sourceMap: true,
+  input: 'src/index.js',
+  output: [{ file: 'dist/index.js', format: 'cjs' }, { file: 'dist/index.es.js', format: 'es' }],
+  sourcemap: true,
   plugins: [
     resolve({
       // module: true, // Default: true

@@ -4,7 +4,7 @@
   "description": "",
   "main": "handler.js",
   "dependencies": {
-    "serverless": "^1.23.0"
+    "serverless": "1.23.0"
   },
   "devDependencies": {},
   "scripts": {

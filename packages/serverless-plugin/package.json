@@ -20,6 +20,7 @@
     "README.md"
   ],
   "scripts": {
+    "clean": "rm -Rf dist/",
     "test": "npm run lint && nyc ava",
     "test:docker": "docker run -v \"$PWD\":/var/task lambci/lambda:nodejs6.10 test/handler.test",
     "watch:test": "ava --watch",
@@ -29,7 +30,7 @@
     "coverage": "nyc report",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "prepublish": "rm -Rf dist/ && yarn build",
+    "prepublish": "npm run clean && yarn build",
     "upgrade-dependencies": "yarn upgrade-interactive --latest --exact"
   },
   "repository": {
@@ -43,18 +44,17 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin",
   "dependencies": {
-    "@serverless-chrome/lambda": "1.0.0-5",
+    "@serverless-chrome/lambda": "1.0.0-6",
     "fs-p": "2.0.0",
     "globby": "6.1.0"
   },
   "devDependencies": {
     "ava": "0.22.0",
-    "babel-preset-env": "1.6.0",
+    "babel-core": "6.26.0",
+    "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
-    "chrome-launcher": "0.3.1",
-    "prettier": "1.5.3",
-    "prettier-eslint": "6.4.2",
-    "rollup": "0.48.2",
+    "chrome-launcher": "0.8.1",
+    "rollup": "0.50.0",
     "rollup-plugin-babel": "3.0.2",
     "rollup-plugin-node-resolve": "3.0.0"
   },

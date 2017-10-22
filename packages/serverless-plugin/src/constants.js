@@ -7,5 +7,5 @@ export const SUPPORTED_RUNTIMES = ['nodejs6.10']
 export const INCLUDES = [
   'node_modules/@serverless-chrome/lambda/package.json',
   'node_modules/@serverless-chrome/lambda/dist/bundle.cjs.js',
-  'node_modules/@serverless-chrome/lambda/dist/headless_shell',
+  'node_modules/@serverless-chrome/lambda/dist/headless-chromium',
 ]
