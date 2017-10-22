@@ -1,27 +1,36 @@
 version: 2
 jobs:
-  build:
+  test_lambda:
     docker:
       - image: circleci/node:6.10.3
     steps:
       - checkout
       - run: cd packages/lambda && npm install
-      - run: cd packages/serverless-plugin && npm install
-      - run: cd examples/serverless-framework/aws && npm install
-  test:
+      - run:
+          name: Integration test
+          command: cd packages/lambda && npm run test:integration
+
+  test_serverless_plugin:
     docker:
       - image: circleci/node:6.10.3
     steps:
       - checkout
-      - run:
-          name: AWS Lambda binary integration test
-          command: cd packages/lambda && npm run test:integration
+      - run: cd packages/serverless-plugin && npm install
+
+  test_serverless_example:
+    docker:
+      - image: circleci/node:6.10.3
+    steps:
+      - checkout
+      - run: cd packages/serverless-plugin && npm install
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - test_lambda
+      - test_serverless_plugin
+      - test_serverless_example
+      # - test:
+      #     requires:
+      #       - build
