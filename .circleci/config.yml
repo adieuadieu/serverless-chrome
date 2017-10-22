@@ -28,14 +28,25 @@ jobs:
       - image: circleci/node:6.10.3
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}
       - run: cd packages/serverless-plugin && npm install
-
+      - save_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}
+          paths:
+            - packages/serverless-plugin/node_modules
   test_serverless_example:
     docker:
       - image: circleci/node:6.10.3
     steps:
       - checkout
-      - run: cd packages/serverless-plugin && npm install
+      - restore_cache:
+          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
+      - run: cd examples/serverless-framework/aws && npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
+          paths:
+            - examples/serverless-framework/aws/node_modules      
 
 workflows:
   version: 2
