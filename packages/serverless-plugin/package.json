@@ -43,7 +43,7 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin",
   "dependencies": {
-    "@serverless-chrome/lambda": "1.0.0-6",
+    "@serverless-chrome/lambda": "1.0.0-5",
     "fs-p": "2.0.0",
     "globby": "6.1.0"
   },
