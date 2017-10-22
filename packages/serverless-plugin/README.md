@@ -31,7 +31,6 @@ Requires Node 6.10 runtime.
 
 ## Setup
 
-
 Add the following plugin to your `serverless.yml`:
 
 ```yaml
@@ -68,10 +67,12 @@ module.exports.hello = (event, context, callback, chrome) => {
 }
 ```
 
+Further details are available in the [Serverless Lambda example](/examples/serverless-framework/aws).
+
 
 ## Examples
 
-Example functions are available [here](https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework). They include:
+Example functions are available [here](/examples/serverless-framework). They include:
 
 - Screenshot capturing handler: takes a picture of a URL
 - print-to-PDF handler: turns a URL into a PDF

@@ -8,12 +8,8 @@ Standalone package to run Headless Chrome on AWS Lambda's Node.js (6.10+) runtim
 ## Contents
 1. [Installation](#installation)
 1. [Setup](#setup)
-1. [Testing](#testing)
-1. [Configuration and Deployment](#configuration-and-deployment)
-1. [Known Issues / Limitations](#known-issues-limitations)
-1. [Roadmap](#roadmap)
-1. [Troubleshooting](#troubleshooting)
-
+1. [Local Development](#local-development)
+1. [Framework Plugins](#framework-plugins)
 
 ## Installation
 Install with yarn:
@@ -39,7 +35,6 @@ npm install --save-dev chrome-launcher
 Use in your AWS Lambda function. Requires Node 6.10.
 
 
-todo: check that this code works:
 ```js
 const launchChrome = require('@serverless-chrome/lambda')
 const CDP = require('chrome-remote-interface')
