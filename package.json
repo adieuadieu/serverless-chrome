@@ -6,15 +6,12 @@
   "engines": {
     "node": ">= 6.10.0"
   },
-  "config": {
-    "jsSrc": "src/"
-  },
   "scripts": {
     "test": "npm run lint && nyc ava",
     "watch:test": "ava --watch",
     "ava": "ava",
-    "lint": "npm run lint:eslint -s",
-    "lint:eslint": "eslint $npm_package_config_jsSrc",
+    "lint": "npm run lint:eslint",
+    "lint:eslint": "eslint --cache --ext .js .",
     "coverage": "nyc report",
     "upgrade-dependencies": "yarn upgrade-interactive --latest --exact",
     "prettier": "prettier --no-semi --single-quote --trailing-comma es5 --write",
@@ -56,6 +53,7 @@
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-ava": "4.2.2",
     "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-node": "^5.2.0",
     "eslint-plugin-promise": "3.6.0",
     "eslint-tap": "2.0.1",
     "husky": "0.14.3",
@@ -121,6 +119,10 @@
       ]
     }
   },
+  "eslintIgnore": [
+    "node_modules",
+    "dist"
+  ],
   "prettier": {
     "eslintIntegration": true,
     "jsonEnable": [],

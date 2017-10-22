@@ -1,5 +1,36 @@
 version: 2
 jobs:
+  build:
+    docker:
+      - image: circleci/node:6.10.3
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+  lint:
+    docker:
+      - image: circleci/node:6.10.3
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm run lint
+
+  test:
+    docker:
+      - image: circleci/node:6.10.3
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm run ava
+
   build_lambda:
     docker:
       - image: circleci/node:6.10.3
@@ -63,6 +94,15 @@ jobs:
 
 workflows:
   version: 2
+  project:
+    jobs:
+      - build
+      - lint:
+          requires:
+            - build  
+      - test:
+          requires:
+            - build
   lambda:
     jobs:
       - build_lambda

@@ -3,13 +3,13 @@ const webpack = require('webpack')
 
 module.exports = {
   entry: {
-    captureScreenshotHtml:'./src/captureScreenshotHtml',
-    captureScreenshotBinary:'./src/captureScreenshotBinary',
-    experimental:'./src/experimental',
-    printToPdfHtml:'./src/printToPdfHtml',
-    printToPdfBinary:'./src/printToPdfBinary',
-    requestLogger:'./src/requestLogger',
-    versionInfo:'./src/versionInfo',
+    captureScreenshotHtml: './src/captureScreenshotHtml',
+    captureScreenshotBinary: './src/captureScreenshotBinary',
+    experimental: './src/experimental',
+    printToPdfHtml: './src/printToPdfHtml',
+    printToPdfBinary: './src/printToPdfBinary',
+    requestLogger: './src/requestLogger',
+    versionInfo: './src/versionInfo',
   },
   target: 'node',
   module: {
@@ -24,14 +24,13 @@ module.exports = {
     ],
   },
   resolve: {
-    symlinks: false
+    symlinks: false,
   },
   output: {
     libraryTarget: 'commonjs',
-    path: __dirname+'/.webpack',
-    filename: '[name].js'
+    path: `${__dirname}/.webpack`,
+    filename: '[name].js',
   },
   externals: ['aws-sdk'],
-  plugins: [
-  ],
+  plugins: [],
 }
