@@ -100,9 +100,13 @@ workflows:
       - lint:
           requires:
             - build  
+            - build_lambda
+            - build_serverless_plugin
       - test:
           requires:
             - build
+            - build_lambda
+            - build_serverless_plugin
   lambda:
     jobs:
       - build_lambda
