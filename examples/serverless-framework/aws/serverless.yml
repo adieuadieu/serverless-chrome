@@ -6,9 +6,9 @@ provider:
   stage: dev
   region: us-east-1
   environment:
-    DEBUG: "*" # you'll see logs in CloudWatch, or $ serverless logs -f functionName
+    DEBUG: "*"
     PAGE_LOAD_TIMEOUT: 30000
-    LOGGING: 'TRUE'
+    LOGGING: true
 
 plugins:
   - serverless-plugin-chrome

@@ -16,7 +16,8 @@
     "ava": "ava",
     "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint $npm_package_config_jsSrc",
-    "deploy": "serverless deploy -v"
+    "deploy": "serverless deploy -v",
+    "upgrade-dependencies": "yarn upgrade-interactive --latest --exact"
   },
   "repository": {
     "type": "git",
@@ -38,22 +39,20 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/functions/serverless-framework",
   "dependencies": {
-    "chrome-remote-interface": "^0.24.0"
+    "chrome-remote-interface": "0.25.2"
   },
   "devDependencies": {
-    "ava": "^0.20.0",
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-env": "^1.6.0",
-    "babel-register": "^6.24.1",
-    "prettier": "^1.5.2",
-    "prettier-eslint": "^6.4.2",
-    "serverless": "^1.18.0",
-    "serverless-apigwy-binary": "^0.1.0",
-    "serverless-plugin-chrome": "^1.0.0-9",
-    "serverless-webpack": "^2.0.0",
-    "webpack": "^3.1.0"
+    "ava": "0.22.0",
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "serverless": "1.23.0",
+    "serverless-apigwy-binary": "0.1.0",
+    "serverless-plugin-chrome": "1.0.0-12",
+    "serverless-webpack": "3.1.2",
+    "webpack": "3.8.1"
   },
   "ava": {
     "require": "babel-register",
