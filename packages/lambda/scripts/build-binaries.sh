@@ -46,6 +46,10 @@ build() {
     zip -9 -D "$ZIPFILE_PATH" "headless-$BUILD_NAME"
     cd ../../
 
+    # stick a copy in packages' dist/ for tests and local dev
+    mkdir -p "$PACKAGE_DIRECTORY/dist"
+    cp "$BUILD_PATH/headless-$BUILD_NAME" "$PACKAGE_DIRECTORY/dist"
+
     # Cleanup
     rm -Rf "$BUILD_PATH"
     

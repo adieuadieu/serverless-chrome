@@ -1,6 +1,8 @@
 # Original Dockferfile from JeongHoon Byun (aka Outsider)
 # via https://github.com/outsideris/headless-chrome-for-lambda
 # Thank you, JeongHoon!
+#
+# docker run -i -t --rm --entrypoint /bin/bash  serverless-chrome-chromium
 
 FROM amazonlinux:2017.03
 
@@ -72,9 +74,24 @@ RUN mkdir -p out/Headless && \
 # build chromium headless shell
 RUN ninja -C out/Headless headless_shell
 
+RUN cp /build/Chromium/src/out/Headless/headless_shell /build/headless-chromium-unstripped
+
 WORKDIR /build
 
-RUN cp /build/Chromium/src/out/Headless/headless_shell /build/headless-chromium
 
-# strip? http://sourceware.org/binutils/docs-2.16/binutils/strip.html
-# RUN strip out/Headless/headless_shell
+# Use UPX to package headless chromium
+# this adds 1-1.5 seconds of startup time so generally
+# not so great for use in AWS Lambda so we don't actually use it 
+# but left here in case someone finds it useful
+RUN yum install -y ucl ucl-devel --enablerepo=epel
+RUN git clone https://github.com/upx/upx.git
+WORKDIR /build/upx
+RUN git submodule update --init --recursive
+RUN make all
+RUN cp /build/Chromium/src/out/Headless/headless_shell /build/headless-chromium-packaged
+RUN src/upx.out /build/headless-chromium-packaged
+
+WORKDIR /build
+
+# strip symbols
+RUN strip -o /build/headless-chromium /build/Chromium/src/out/Headless/headless_shell
