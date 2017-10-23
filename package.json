@@ -16,7 +16,8 @@
     "upgrade-dependencies": "yarn upgrade-interactive --latest --exact",
     "precommit": "lint-staged",
     "prettier": "prettier --no-semi --single-quote --trailing-comma es5 --write",
-    "release": "scripts/release.sh"
+    "release": "scripts/release.sh",
+    "postversion": "scripts/sync-package-versions.sh"
   },
   "repository": {
     "type": "git",

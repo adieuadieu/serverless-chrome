@@ -19,6 +19,7 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
+
 ORIGIN_URL=$(git config --get remote.origin.url)
 GITHUB_ORG=$(echo "$ORIGIN_URL" | sed 's|.*:||;s|/.*$||')
 GITHUB_REPO=$(echo "$ORIGIN_URL" | sed 's|.*/||;s|\.[^\.]*$||')
@@ -125,3 +126,8 @@ for BUILD in */Dockerfile; do
 done
 
 update_release_body "$RELEASE_ID"
+
+
+
+# @TODO
+# publish npm packages with new versions

@@ -135,9 +135,26 @@ jobs:
       - checkout
       - run: scripts/update-browser-versions.sh
 
+  release:
+    docker:
+      - image: circleci/node:6.10.3
+    branch:
+      - develop # @TODO remove
+      - master
+    steps:
+      - checkout
+      - restore_cache:
+          key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
+      - run: scripts/release.sh
+
+
+#
+# Workflows
+#
+
 workflows:
   version: 2
-  build_test:
+  build_test_release:
     jobs:
       - build
       - build_lambda
@@ -156,22 +173,37 @@ workflows:
             - build_lambda
             - build_serverless_plugin
             - build_serverless_example
-
+      - build_lambda_chromium:
+          filters:
+            branches:
+              only:
+                - develop # @TODO remove
+                - master
       - integration_test_lambda:
           requires:
             - build_lambda
-
+            - build_lambda_chromium
       - integration_test_serverless_plugin:
           requires:
             - build_serverless_plugin
-  release:
-    jobs:
-      - build_lambda_chromium
+            - build_lambda_chromium
+      - release:
+          filters:
+            tags:
+              # semver https://github.com/sindresorhus/semver-regex/blob/master/index.js
+              only: /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig
+            branches:
+              ignore: /.*/
+          requires:
+            - lint
+            - unit_test
+            - integration_test_lambda
+            - integration_test_serverless_plugin
 
-  browsers_up_to_date:
+  nightly:
      triggers:
        - schedule:
-           cron: "0 * * * *"
+           cron: "0 0 * * *"
            filters:
              branches:
                only:

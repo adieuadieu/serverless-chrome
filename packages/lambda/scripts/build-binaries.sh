@@ -50,11 +50,7 @@ build() {
     cp "$BUILD_PATH/headless-$BUILD_NAME" "$PACKAGE_DIRECTORY/dist"
 
     # Cleanup
-    rm -Rf "$BUILD_PATH"
-
-    # Update version info
-    JSON=$(jq -r ".stable |= \"$VERSION\"" version.json) && echo "$JSON" > version.json
-    
+    rm -Rf "$BUILD_PATH"    
   else
     echo "$BUILD_NAME version $VERSION was previously built. Skipping build."
   fi
