@@ -147,5 +147,6 @@ workflows:
       - integration_test_serverless_plugin:
           requires:
             - build_serverless_plugin
-    release:
+  release:
+    jobs:
       - build_lambda_chromium:
