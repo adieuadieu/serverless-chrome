@@ -201,13 +201,13 @@ workflows:
             - integration_test_serverless_plugin
 
   nightly:
-     triggers:
-       - schedule:
-           cron: "0 0 * * *"
-           filters:
-             branches:
-               only:
-                 # - master
-                 - develop
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                # - master
+                - develop
     jobs:
       - update_browser_versions
