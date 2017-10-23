@@ -149,4 +149,4 @@ workflows:
             - build_serverless_plugin
   release:
     jobs:
-      - build_lambda_chromium:
+      - build_lambda_chromium
