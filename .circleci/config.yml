@@ -41,7 +41,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }} 
       # @TODO: should probably use our own headless-chrome binary..
-      - run: docker run -d --rm --name chrome --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless-browser
+      - run: docker run -d --rm --name chrome-headless --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless
       - run: npm run ava
 
   build_lambda:
@@ -105,6 +105,19 @@ jobs:
           paths:
             - examples/serverless-framework/aws/node_modules      
 
+  build_lambda_chromium:
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
+      - run: packages/lambda/scripts/build-binaries.sh chromium
+      - save_cache:
+          key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
+          paths:
+            - packages/lambda/builds/chromium/version.json
+            - packages/lambda/builds/chromium/build             
+
 workflows:
   version: 2
   build_test:
@@ -134,3 +147,5 @@ workflows:
       - integration_test_serverless_plugin:
           requires:
             - build_serverless_plugin
+    release:
+      - build_lambda_chromium:

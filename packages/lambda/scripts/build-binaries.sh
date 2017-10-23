@@ -52,6 +52,9 @@ build() {
 
     # Cleanup
     rm -Rf "$BUILD_PATH"
+
+    # Update version info
+    JSON=$(jq -r ".stable |= \"$VERSION\"" version.json) && echo "$JSON" > version.json
     
   else
     echo "$BUILD_NAME version $VERSION was previously built. Skipping build."
