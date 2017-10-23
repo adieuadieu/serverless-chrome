@@ -116,7 +116,7 @@ jobs:
       - restore_cache:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
       - run: 
-          name: Building headless Chromium for AWS Lambda
+          name: Build headless Chromium for AWS Lambda
           command: packages/lambda/scripts/build-binaries.sh chromium
           no_output_timeout: 6h
       - save_cache:
@@ -124,6 +124,16 @@ jobs:
           paths:
             - packages/lambda/builds/chromium/version.json
             - packages/lambda/builds/chromium/build             
+
+  update_browser_versions:
+    docker:
+      - image: circleci/node:6.10.3
+    branch:
+      - develop # @TODO remove
+      # - master
+    steps:
+      - checkout
+      - run: scripts/update-browser-versions.sh
 
 workflows:
   version: 2
@@ -157,3 +167,15 @@ workflows:
   release:
     jobs:
       - build_lambda_chromium
+
+  browsers_up_to_date:
+     triggers:
+       - schedule:
+           cron: "0 * * * *"
+           filters:
+             branches:
+               only:
+                 # - master
+                 - develop
+    jobs:
+      - update_browser_versions

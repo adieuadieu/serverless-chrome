@@ -21,12 +21,11 @@ build() {
   cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
   
   DOCKER_IMAGE=serverless-chrome-$BUILD_NAME
-  # VERSION=$(jq -r .config."$BUILD_NAME"Version "$PACKAGE_DIRECTORY"/package.json)
-  VERSION=$(./latest.sh)
+  VERSION=$(jq -r ".stable" version.json)
   BUILD_PATH="build/$BUILD_NAME"
-  ZIPFILE_PATH="../headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
-    
-  if [ ! -f "$ZIPFILE_PATH" ]; then
+  ZIPFILE_PATH="headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
+
+  if [ ! -f "build/$ZIPFILE_PATH" ]; then
     export VERSION
 
     echo "Building $BUILD_NAME version $VERSION"
@@ -43,7 +42,7 @@ build() {
 
     # Package
     cd "$BUILD_PATH"
-    zip -9 -D "$ZIPFILE_PATH" "headless-$BUILD_NAME"
+    zip -9 -D "../$ZIPFILE_PATH" "headless-$BUILD_NAME"
     cd ../../
 
     # stick a copy in packages' dist/ for tests and local dev
