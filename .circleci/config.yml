@@ -107,11 +107,18 @@ jobs:
 
   build_lambda_chromium:
     machine: true
+    resource_class: xlarge
+    branch:
+      - develop # @TODO remove
+      - master
     steps:
       - checkout
       - restore_cache:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
-      - run: packages/lambda/scripts/build-binaries.sh chromium
+      - run: 
+          name: Building headless Chromium for AWS Lambda
+          command: packages/lambda/scripts/build-binaries.sh chromium
+          no_output_timeout: 6h
       - save_cache:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
           paths:
