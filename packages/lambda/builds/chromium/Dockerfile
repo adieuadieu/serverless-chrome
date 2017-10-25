@@ -1,4 +1,15 @@
+# Based on Dockferfile from JeongHoon Byun (aka Outsider)
+# via https://github.com/outsideris/headless-chrome-for-lambda
+# Thank you, JeongHoon!
+#
+# Launch headless Chromium with:
+# docker run -d --rm --name headless-chromium -p 9222:9222 adieuadieu/chromium-for-amazonlinux
+#
+
 FROM adieuadieu/chromium-for-amazonlinux-base
+
+LABEL maintainer="Marco Lüthy <marco.luethy@gmail.com>"
+LABEL chromium="${VERSION}"
 
 # ref: https://chromium.googlesource.com/chromium/src.git/+refs
 ARG VERSION
@@ -17,13 +28,13 @@ RUN sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i src/base/files/file
 
 # specify build flags
 RUN mkdir -p out/Headless && \
-    echo 'import("//build/args/headless.gn")' > out/Headless/args.gn && \
-    echo 'is_debug = false' >> out/Headless/args.gn && \
-    echo 'symbol_level = 0' >> out/Headless/args.gn && \
-    echo 'is_component_build = false' >> out/Headless/args.gn && \
-    echo 'remove_webcore_debug_symbols = true' >> out/Headless/args.gn && \
-    echo 'enable_nacl = false' >> out/Headless/args.gn && \
-    gn gen out/Headless
+  echo 'import("//build/args/headless.gn")' > out/Headless/args.gn && \
+  echo 'is_debug = false' >> out/Headless/args.gn && \
+  echo 'symbol_level = 0' >> out/Headless/args.gn && \
+  echo 'is_component_build = false' >> out/Headless/args.gn && \
+  echo 'remove_webcore_debug_symbols = true' >> out/Headless/args.gn && \
+  echo 'enable_nacl = false' >> out/Headless/args.gn && \
+  gn gen out/Headless
 
 # build chromium headless shell
 RUN ninja -C out/Headless headless_shell
@@ -31,6 +42,9 @@ RUN ninja -C out/Headless headless_shell
 RUN cp /build/chromium/src/out/Headless/headless_shell /build/headless-chromium-unstripped
 
 WORKDIR /build
+
+# strip symbols
+RUN strip -o /build/headless-chromium /build/chromium/src/out/Headless/headless_shell
 
 # Use UPX to package headless chromium
 # this adds 1-1.5 seconds of startup time so generally
@@ -45,5 +59,15 @@ WORKDIR /build
 # RUN src/upx.out /build/headless-chromium-packaged
 # WORKDIR /build
 
-# strip symbols
-RUN strip -o /build/headless-chromium /build/chromium/src/out/Headless/headless_shell
+# nuke the massive git repo
+RUN rm -Rf /build/chromium
+
+EXPOSE 9222
+
+ENTRYPOINT [ \
+  "/build/headless-chromium-unstripped", \
+  "--no-sandbox", \
+  "--hide-scrollbars", \
+  "--remote-debugging-address=0.0.0.0", \
+  "--remote-debugging-port=9222" \
+  ]

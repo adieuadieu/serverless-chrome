@@ -1,10 +1,14 @@
-# Original Dockferfile from JeongHoon Byun (aka Outsider)
+# Based on Dockferfile from JeongHoon Byun (aka Outsider)
 # via https://github.com/outsideris/headless-chrome-for-lambda
 # Thank you, JeongHoon!
 #
+# Jump into the container with:
 # docker run -i -t --rm --entrypoint /bin/bash  serverless-chrome-chromium
+#
 
 FROM amazonlinux:2017.03
+
+LABEL maintainer="Marco Lüthy <marco.luethy@gmail.com>"
 
 # ref: https://medium.com/@marco.luethy/running-headless-chrome-on-aws-lambda-fa82ad33a9eb
 RUN printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
