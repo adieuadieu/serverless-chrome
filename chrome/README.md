@@ -13,10 +13,15 @@ How to build headless_shell (headless Chrome) for the lambda execution environme
 4. SSH into the new instance and run:
 
 ```bash
-sudo printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
+sudo -s
 
-sudo yum install -y git redhat-lsb python bzip2 tar pkgconfig atk-devel alsa-lib-devel bison binutils brlapi-devel bluez-libs-devel bzip2-devel cairo-devel cups-devel dbus-devel dbus-glib-devel expat-devel fontconfig-devel freetype-devel gcc-c++ GConf2-devel glib2-devel glibc.i686 gperf glib2-devel gtk2-devel gtk3-devel java-1.*.0-openjdk-devel libatomic libcap-devel libffi-devel libgcc.i686 libgnome-keyring-devel libjpeg-devel libstdc++.i686 libX11-devel libXScrnSaver-devel libXtst-devel libxkbcommon-x11-devel ncurses-compat-libs nspr-devel nss-devel pam-devel pango-devel pciutils-devel pulseaudio-libs-devel zlib.i686 httpd mod_ssl php php-cli python-psutil wdiff --enablerepo=epel
+printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
+
+yum install -y git redhat-lsb python bzip2 tar pkgconfig atk-devel alsa-lib-devel bison binutils brlapi-devel bluez-libs-devel bzip2-devel cairo-devel cups-devel dbus-devel dbus-glib-devel expat-devel fontconfig-devel freetype-devel gcc-c++ GConf2-devel glib2-devel glibc.i686 gperf glib2-devel gtk2-devel gtk3-devel java-1.*.0-openjdk-devel libatomic libcap-devel libffi-devel libgcc.i686 libgnome-keyring-devel libjpeg-devel libstdc++.i686 libX11-devel libXScrnSaver-devel libXtst-devel libxkbcommon-x11-devel ncurses-compat-libs nspr-devel nss-devel pam-devel pango-devel pciutils-devel pulseaudio-libs-devel zlib.i686 httpd mod_ssl php php-cli python-psutil wdiff --enablerepo=epel
+exit
 ```
+
+You need to elevate priviledges before the printf because the `>>` redirect by default is performed by the current user and can't be elevated by an inline sudo. 
 
 _Yum_ will complain about some packages not existing. Whatever. I haven't looked into them. Didn't seem to stop me from building headless_shell, though. Ignore whiney little _Yum_ and move on. Next:
 
@@ -28,6 +33,8 @@ mkdir Chromium && cd Chromium
 fetch --no-history chromium
 cd src
 ```
+**NOTE** If you need to compile a specific chromium version and not just the HEAD then you must not use `--no-history` and use `fetch chromium` instead.
+If you have already fetched without history you can unshallow the repository by running `git fetch --unshallow` 
 
 **TODO:** add part here about modifying Chrome to not use /dev/shm. See here: https://groups.google.com/a/chromium.org/d/msg/headless-dev/qqbZVZ2IwEw/CPInd55OBgAJ
 
@@ -59,10 +66,27 @@ scp -i path/to/your/key-pair.pem ec2-user@<the-instance-public-ip>:/home/ec2-use
 **TODO:** We don't need `libosmesa.so` cuz we're not using the GPU? See here: https://groups.google.com/a/chromium.org/d/msg/headless-dev/qqbZVZ2IwEw/XMKlEMP3EQAJ
 
 
-## Updating
+## Updating 
+
+Instructions based on https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
 
 ```bash
 git fetch --tags
+git checkout -b name_for_your_branch tags/XX.X.XXXX.X
+gclient sync --with_branch_heads # This step will fail if you have not fetched the full history
+# The rest of the steps are as above
+mkdir -p out/Headless
+echo 'import("//build/args/headless.gn")' > out/Headless/args.gn
+echo 'is_debug = false' >> out/Headless/args.gn
+echo 'symbol_level = 0' >> out/Headless/args.gn
+echo 'is_component_build = false' >> out/Headless/args.gn
+echo 'remove_webcore_debug_symbols = true' >> out/Headless/args.gn
+echo 'enable_nacl = false' >> out/Headless/args.gn
+gn gen out/Headless
+ninja -C out/Headless headless_shell
 ```
+**NOTE:** Replace XX.X.XXXX.X with the exact release tag you want
+
+
 
 https://omahaproxy.appspot.com/
