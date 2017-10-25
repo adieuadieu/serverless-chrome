@@ -20,7 +20,7 @@ build() {
   
   cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
   
-  DOCKER_IMAGE=serverless-chrome-$BUILD_NAME
+  DOCKER_IMAGE=$BUILD_NAME-for-amazonlinux
   VERSION=$(jq -r ".stable" version.json)
   BUILD_PATH="build/$BUILD_NAME"
   ZIPFILE_PATH="headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
