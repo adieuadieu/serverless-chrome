@@ -33,7 +33,8 @@ build() {
     mkdir -p "$BUILD_PATH"
 
     # Build
-    docker build --squash -t "adieuadieu/$DOCKER_IMAGE" --build-arg VERSION="$VERSION" .
+    # @TODO --squash
+    docker build -t "adieuadieu/$DOCKER_IMAGE" --build-arg VERSION="$VERSION" .
 
     # Extract binary from docker image
     docker run -dt --rm --name "$DOCKER_IMAGE" "$DOCKER_IMAGE"
