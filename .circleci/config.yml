@@ -152,7 +152,7 @@ jobs:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
       - run: scripts/release.sh
 
-  update_docker_chromium_base:
+  docker_build_base_image_chromium:
     machine: true
     resource_class: xlarge
     branch:
@@ -167,7 +167,7 @@ jobs:
             sudo service docker restart
       - run: 
           name: Docker build 
-          command: scripts/update-docker-image-base.sh chromium
+          command: scripts/docker-build-base-image.sh chromium
           no_output_timeout: 6h
 
 #
@@ -222,17 +222,18 @@ workflows:
             - integration_test_lambda
             - integration_test_serverless_plugin
 
-  nightly:
+  daily:
     # triggers:
     #   - schedule:
-    #       cron: "0 0 * * *"
+    #       # 07:00 UTC cuz CircleCi seems to have more bandwidth when US is sleeping.
+    #       cron: "0 7 * * *"
     #       filters:
     #         branches:
     #           only:
     #             # - master
     #             - develop
     jobs:
-      - update_docker_chromium_base
+      - docker_build_base_image_chromium
 
       # - update_docker_chromium_lambda
       #     requires:

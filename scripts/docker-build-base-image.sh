@@ -16,11 +16,9 @@ cd "$(dirname "$0")/.."
 PROJECT_DIRECTORY=$(pwd)
 PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
 
-cd "$PACKAGE_DIRECTORY"
-
 # ref: https://stackoverflow.com/a/39731444/845713
 docker_tag_exists() {
-    curl --silent -f -lSL "https://index.docker.io/v1/repositories/$1/tags/$2" > /dev/null
+  curl --silent -f -L "https://index.docker.io/v1/repositories/$1/tags/$2" > /dev/null
 }
 
 build() {
@@ -33,6 +31,7 @@ build() {
 
   if docker_tag_exists "adieuadieu/$DOCKER_IMAGE" "$LATEST_VERSION"; then
     echo "$BUILD_NAME version $LATEST_VERSION was previously built. Skipping build."
+    docker pull "adieuadieu/chromium-for-amazonlinux-base:$LATEST_VERSION"
   else
     echo "Building Docker image $BUILD_NAME version $LATEST_VERSION"
     
@@ -42,7 +41,7 @@ build() {
       -t "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" \
       --build-arg VERSION="$LATEST_VERSION" \
       base/
-    
+
       echo "Pushing image to Docker hub"
       docker push "adieuadieu/chromium-for-amazonlinux-base:$LATEST_VERSION"
   fi
@@ -50,13 +49,10 @@ build() {
 
 # main script
 
-if [ -z "$DOCKER_USER" ] || [ -z "$DOCKER_PASS" ]; then
-  echo "Missing required DOCKER_USER and/or DOCKER_PASS environment variables"
-  exit
-fi  
+cd "$PROJECT_DIRECTORY"
 
-# Log in to Docker Hub
-docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+# Docker Login
+scripts/docker-login.sh
 
 if [ ! -z "$1" ]; then
   build "$1"

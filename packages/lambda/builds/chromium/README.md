@@ -4,7 +4,7 @@ Note: to successfully build the Docker image you may need to increase the size o
 e.g.
 ```
 rm ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2
-qemu-img create -f qcow2 ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2 50Gb
+qemu-img create -f qcow2 ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2 50G
 ```
 warning! this will wipe all of your images/containers.
 
