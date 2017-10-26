@@ -238,6 +238,6 @@ workflows:
       #     requires:
       #       - update_docker_chromium_base
 
-      - update_browser_versions
+      - update_browser_versions:
           requires:
             - update_docker_chromium_lambda
