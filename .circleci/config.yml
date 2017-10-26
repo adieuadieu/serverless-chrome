@@ -166,8 +166,12 @@ jobs:
             sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
             sudo service docker restart
       - run: 
-          name: Docker build 
+          name: Build Docker image
           command: scripts/docker-build-image.sh chromium base
+          no_output_timeout: 6h
+      - run: 
+          name: Pull Docker image
+          command: scripts/docker-pull-image.sh chromium base
           no_output_timeout: 6h
 
   docker_build_image_chromium:
@@ -184,9 +188,13 @@ jobs:
             sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
             sudo service docker restart
       - run: 
-          name: Docker build 
-          command: scripts/docker-build-image.sh chromium base
+          name: Build Docker image
+          command: scripts/docker-build-image.sh chromium
           no_output_timeout: 6h
+      - run: 
+          name: Pull Docker image
+          command: scripts/docker-pull-image.sh chromium
+          no_output_timeout: 6h          
 
 #
 # Workflows
