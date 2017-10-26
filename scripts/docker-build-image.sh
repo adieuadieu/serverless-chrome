@@ -39,7 +39,6 @@ build() {
 
   if docker_tag_exists "adieuadieu/$DOCKER_IMAGE" "$LATEST_VERSION"; then
     echo "$BUILD_NAME version $LATEST_VERSION was previously built. Skipping build."
-    docker pull "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION"
   else
     echo "Building Docker image $BUILD_NAME version $LATEST_VERSION"
     docker build \
