@@ -23,18 +23,24 @@ docker_tag_exists() {
 
 build() {
   BUILD_NAME=$1
-  DO_BASE_BUILD=$2
+  BUILD_STAGE=$2
   
   cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
   
   LATEST_VERSION=$(./latest.sh)
   
-  DOCKER_IMAGE=headless-$BUILD_NAME-for-aws-lambda
-  BUILD_CONTEXT="."
-
-  if [ -n "$DO_BASE_BUILD" ]; then
+  if [ "$BUILD_STAGE" = "base" ]; then
     DOCKER_IMAGE=$BUILD_NAME-for-amazonlinux-base
     BUILD_CONTEXT="base/"
+    DO_PUSH=1
+  elif [ "$BUILD_STAGE" = "build" ]; then
+    DOCKER_IMAGE=$BUILD_NAME-for-amazonlinux-build
+    BUILD_CONTEXT="build/"
+  else 
+    BUILD_STAGE="final"
+    DOCKER_IMAGE=headless-$BUILD_NAME-for-aws-lambda
+    BUILD_CONTEXT="."
+    DO_PUSH=1
   fi
 
   if docker_tag_exists "adieuadieu/$DOCKER_IMAGE" "$LATEST_VERSION"; then
@@ -48,9 +54,18 @@ build() {
       --build-arg VERSION="$LATEST_VERSION" \
       "$BUILD_CONTEXT"
 
-      echo "Pushing image to Docker hub"
-      docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:latest"
-      docker push "adieuadieu/$DOCKER_IMAGE"
+      # Extract headless binary from docker image
+      if [ "$BUILD_STAGE" = "build" ]; then
+        docker run -dt --rm --name "$DOCKER_IMAGE" "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION"
+        docker cp "$DOCKER_IMAGE":/build/headless-"$BUILD_NAME" build/
+        docker stop "$DOCKER_IMAGE"
+      fi
+
+      if [ -n "$DO_PUSH" ]; then
+        echo "Pushing image to Docker hub"
+        docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:latest"
+        docker push "adieuadieu/$DOCKER_IMAGE"
+      fi
   fi
 }
 

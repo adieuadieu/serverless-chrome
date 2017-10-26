@@ -174,10 +174,13 @@ jobs:
           command: scripts/docker-pull-image.sh chromium base
           no_output_timeout: 6h
       - run: 
+          name: Compile Chromium in intermediary Docker image
+          command: scripts/docker-build-image.sh chromium build
+          no_output_timeout: 6h      
+      - run: 
           name: Build Chromium Docker image
           command: scripts/docker-build-image.sh chromium
-          no_output_timeout: 6h      
-
+          no_output_timeout: 6h  
 #
 # Workflows
 #
