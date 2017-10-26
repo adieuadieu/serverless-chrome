@@ -261,7 +261,7 @@ workflows:
     jobs:
       - docker_build_image_chromium_base
 
-      - docker_build_image_chromium
+      - docker_build_image_chromium:
           requires:
             - docker_build_image_chromium_base
 
