@@ -2,11 +2,11 @@
 # shellcheck shell=dash
 
 #
-# Builds specified or all headless browsers (chromium, firefox) version defined in package.json
+# Builds docker images
 #
-# Requires Docker, jq, and zip
+# Requires Docker, jq, and curl
 #
-# Usage: ./build-binaries.sh [chromium|firefox]
+# Usage: ./docker-build-image.sh [chromium|firefox] [base]
 #
 
 set -e
@@ -23,27 +23,34 @@ docker_tag_exists() {
 
 build() {
   BUILD_NAME=$1
+  DO_BASE_BUILD=$2
   
   cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
   
-  DOCKER_IMAGE=$BUILD_NAME-for-amazonlinux-base
   LATEST_VERSION=$(./latest.sh)
+  
+  DOCKER_IMAGE=headless-$BUILD_NAME-for-aws-lambda
+  BUILD_CONTEXT="."
+
+  if [ -n "$DO_BASE_BUILD" ]; then
+    DOCKER_IMAGE=$BUILD_NAME-for-amazonlinux-base
+    BUILD_CONTEXT="base/"
+  fi
 
   if docker_tag_exists "adieuadieu/$DOCKER_IMAGE" "$LATEST_VERSION"; then
     echo "$BUILD_NAME version $LATEST_VERSION was previously built. Skipping build."
-    docker pull "adieuadieu/chromium-for-amazonlinux-base:$LATEST_VERSION"
+    docker pull "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION"
   else
     echo "Building Docker image $BUILD_NAME version $LATEST_VERSION"
-    
     docker build \
       --squash \
       --compress \
       -t "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" \
       --build-arg VERSION="$LATEST_VERSION" \
-      base/
+      "$BUILD_CONTEXT"
 
       echo "Pushing image to Docker hub"
-      docker push "adieuadieu/chromium-for-amazonlinux-base:$LATEST_VERSION"
+      docker push "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION"
   fi
 }
 
@@ -55,11 +62,11 @@ cd "$PROJECT_DIRECTORY"
 scripts/docker-login.sh
 
 if [ ! -z "$1" ]; then
-  build "$1"
+  build "$1" "$2"
 else
   cd "$PACKAGE_DIRECTORY/builds"
 
   for DOCKER_FILE in */Dockerfile; do
-    build "${DOCKER_FILE%%/*}"
+    build "${DOCKER_FILE%%/*}" "$2"
   done
 fi
