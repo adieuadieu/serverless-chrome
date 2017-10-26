@@ -2,15 +2,22 @@
 # via https://github.com/outsideris/headless-chrome-for-lambda
 # Thank you, JeongHoon!
 #
+# Build with:
+# docker build --compress -t adieuadieu/chromium-for-amazonlinux-base:62.0.3202.62 --build-arg VERSION=62.0.3202.62 .
+#
 # Jump into the container with:
-# docker run -i -t --rm --entrypoint /bin/bash  serverless-chrome-chromium
+# docker run -i -t --rm --entrypoint /bin/bash  adieuadieu/chromium-for-amazonlinux-base
 #
 
 FROM amazonlinux:2017.03
 
-LABEL maintainer="Marco Lüthy <marco.luethy@gmail.com>"
+# ref: https://chromium.googlesource.com/chromium/src.git/+refs
+ARG VERSION
+ENV VERSION ${VERSION:-master}
 
-# ref: https://medium.com/@marco.luethy/running-headless-chrome-on-aws-lambda-fa82ad33a9eb
+LABEL maintainer="Marco Lüthy <marco.luethy@gmail.com>"
+LABEL chromium="${VERSION}"
+
 RUN printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
 
 # install dependencies
@@ -28,6 +35,7 @@ RUN yum install -y \
   pam-devel pango-devel pciutils-devel pulseaudio-libs-devel \
   zlib.i686 httpd mod_ssl php php-cli python-psutil wdiff --enablerepo=epel
 
+
 WORKDIR /build
 
 # install dept_tools
@@ -41,9 +49,16 @@ WORKDIR /build/chromium
 # ref: https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
 RUN git clone https://chromium.googlesource.com/chromium/src.git
 
-ADD .gclient /build/chromium/
+WORKDIR /build/chromium/src
+
+# Pull latest in case Docker used a cache in the git clone step (which we want as it takes forever)
+RUN git pull
+
+# checkout the release tag
+RUN git checkout -b build "${VERSION}"
 
 WORKDIR /build/chromium
 
 # Checkout all the submodules at their branch DEPS revisions
+ADD .gclient /build/chromium/
 RUN gclient sync --with_branch_heads --jobs 16

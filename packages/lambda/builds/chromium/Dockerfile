@@ -3,28 +3,22 @@
 # Thank you, JeongHoon!
 #
 # Launch headless Chromium with:
-# docker run -d --rm --name headless-chromium -p 9222:9222 adieuadieu/chromium-for-amazonlinux
+# docker run -d --rm --name headless-chromium -p 9222:9222 adieuadieu/headless-chromium-for-aws-lambda
 #
+ARG VERSION=latest
 
-FROM adieuadieu/chromium-for-amazonlinux-base
+FROM adieuadieu/chromium-for-amazonlinux-base:${VERSION}
+
+ARG VERSION
+ENV VERSION ${VERSION:-master}
 
 LABEL maintainer="Marco Lüthy <marco.luethy@gmail.com>"
 LABEL chromium="${VERSION}"
 
-# ref: https://chromium.googlesource.com/chromium/src.git/+refs
-ARG VERSION
-ENV VERSION ${VERSION:-64.0.3242.2}
-
 WORKDIR /build/chromium/src
 
-# Pull latest in case Docker used a cache in the git clone step (which we want as it takes forever)
-RUN git pull
-
-# checkout the release tag
-RUN git checkout -b build "${VERSION}"
-
 # tweak to disable use of the tmpfs mounted at /dev/shm
-RUN sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i src/base/files/file_util_posix.cc
+RUN sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i base/files/file_util_posix.cc
 
 # specify build flags
 RUN mkdir -p out/Headless && \

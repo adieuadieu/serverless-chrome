@@ -113,6 +113,11 @@ jobs:
       - master
     steps:
       - checkout
+      - run:
+          name: Enable experimental features in Docker daemon
+          command: |
+            sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
+            sudo service docker restart      
       - restore_cache:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
       - run: 

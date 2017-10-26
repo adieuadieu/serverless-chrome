@@ -20,7 +20,7 @@ build() {
   
   cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
   
-  DOCKER_IMAGE=$BUILD_NAME-for-amazonlinux
+  DOCKER_IMAGE=headless-$BUILD_NAME-for-aws-lambda
   VERSION=$(jq -r ".stable" version.json)
   BUILD_PATH="build/$BUILD_NAME"
   ZIPFILE_PATH="headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
@@ -34,7 +34,9 @@ build() {
 
     # Build
     # @TODO --squash
-    docker build -t "adieuadieu/$DOCKER_IMAGE" --build-arg VERSION="$VERSION" .
+    docker build --squash --compress -t "adieuadieu/$DOCKER_IMAGE:$VERSION" --build-arg VERSION="$VERSION" .
+
+    # docker build --compress -t "adieuadieu/$DOCKER_IMAGE:$VERSION" --build-arg VERSION="$VERSION" base/
 
     # Extract binary from docker image
     docker run -dt --rm --name "$DOCKER_IMAGE" "$DOCKER_IMAGE"
