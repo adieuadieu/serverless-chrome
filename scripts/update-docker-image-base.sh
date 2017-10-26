@@ -13,9 +13,11 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-PACKAGE_DIRECTORY=$(pwd)
+PROJECT_DIRECTORY=$(pwd)
 
-cd packages/lambda/builds
+PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
+
+cd "$PACKAGE_DIRECTORY"
 
 build() {
   BUILD_NAME=$1
