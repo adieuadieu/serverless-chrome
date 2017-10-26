@@ -153,7 +153,8 @@ jobs:
       - run: scripts/release.sh
 
   docker_build_image_chromium_base:
-    machine: true
+    machine: 
+      image: circleci/classic:201709-01
     resource_class: xlarge
     branch:
       - develop # @TODO remove
@@ -169,10 +170,10 @@ jobs:
           name: Build base Docker image
           command: scripts/docker-build-image.sh chromium base
           no_output_timeout: 6h
-      - run: 
-          name: Pull Docker image
-          command: scripts/docker-pull-image.sh chromium base
-          no_output_timeout: 6h
+      # - run: 
+      #     name: Pull Docker image
+      #     command: scripts/docker-pull-image.sh chromium base
+      #     no_output_timeout: 6h
       - run: 
           name: Build Docker image
           command: scripts/docker-build-image.sh chromium
