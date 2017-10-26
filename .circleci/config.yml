@@ -117,7 +117,7 @@ jobs:
           name: Enable experimental features in Docker daemon
           command: |
             sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
-            sudo service docker restart      
+            sudo service docker restart     
       - restore_cache:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
       - run: 
@@ -152,6 +152,23 @@ jobs:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
       - run: scripts/release.sh
 
+  update_docker_chromium_base:
+    machine: true
+    resource_class: xlarge
+    branch:
+      - develop # @TODO remove
+      - master
+    steps:
+      - checkout
+      - run:
+          name: Enable experimental features in Docker daemon
+          command: |
+            sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
+            sudo service docker restart
+      - run: 
+          name: Docker build 
+          command: scripts/update-docker-image-base.sh chromium
+          no_output_timeout: 6h
 
 #
 # Workflows
@@ -178,20 +195,20 @@ workflows:
             - build_lambda
             - build_serverless_plugin
             - build_serverless_example
-      - build_lambda_chromium:
-          filters:
-            branches:
-              only:
-                - develop # @TODO remove
-                - master
+      # - build_lambda_chromium:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop # @TODO remove
+      #           - master
       - integration_test_lambda:
           requires:
             - build_lambda
-            - build_lambda_chromium
+            # - build_lambda_chromium
       - integration_test_serverless_plugin:
           requires:
             - build_serverless_plugin
-            - build_lambda_chromium
+            # - build_lambda_chromium
       - release:
           filters:
             tags:
@@ -206,13 +223,21 @@ workflows:
             - integration_test_serverless_plugin
 
   nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                # - master
-                - develop
+    # triggers:
+    #   - schedule:
+    #       cron: "0 0 * * *"
+    #       filters:
+    #         branches:
+    #           only:
+    #             # - master
+    #             - develop
     jobs:
+      - update_docker_chromium_base
+
+      # - update_docker_chromium_lambda
+      #     requires:
+      #       - update_docker_chromium_base
+
       - update_browser_versions
+          requires:
+            - update_docker_chromium_lambda
