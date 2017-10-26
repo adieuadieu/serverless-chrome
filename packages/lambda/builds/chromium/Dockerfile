@@ -7,7 +7,7 @@
 #
 ARG VERSION=latest
 
-FROM adieuadieu/chromium-for-amazonlinux-base:${VERSION}
+FROM adieuadieu/chromium-for-amazonlinux-base:$VERSION
 
 ARG VERSION
 ENV VERSION ${VERSION:-master}
