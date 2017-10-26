@@ -49,7 +49,8 @@ build() {
       "$BUILD_CONTEXT"
 
       echo "Pushing image to Docker hub"
-      docker push "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION"
+      docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:latest"
+      docker push "adieuadieu/$DOCKER_IMAGE"
   fi
 }
 

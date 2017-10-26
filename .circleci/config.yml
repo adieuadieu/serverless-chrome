@@ -40,8 +40,11 @@ jobs:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - restore_cache:
           key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }} 
-      # @TODO: should probably use our own headless-chrome binary..
-      - run: docker run -d --rm --name chrome-headless --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless
+      - run: |
+          docker run -d --rm \
+            --name headless-chromium \
+            -p 9222:9222 \
+            adieuadieu/headless-chromium-for-aws-lambda
       - run: npm run ava
 
   build_lambda:
@@ -112,12 +115,7 @@ jobs:
       - develop # @TODO remove
       - master
     steps:
-      - checkout
-      - run:
-          name: Enable experimental features in Docker daemon
-          command: |
-            sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
-            sudo service docker restart     
+      - checkout  
       - restore_cache:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
       - run: 
@@ -152,7 +150,7 @@ jobs:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
       - run: scripts/release.sh
 
-  docker_build_image_chromium_base:
+  docker_build_image_chromium:
     machine: 
       # we need at least Docker v17.06
       image: circleci/classic:201709-01
@@ -176,31 +174,9 @@ jobs:
           command: scripts/docker-pull-image.sh chromium base
           no_output_timeout: 6h
       - run: 
-          name: Build Docker image
+          name: Build Chromium Docker image
           command: scripts/docker-build-image.sh chromium
-          no_output_timeout: 6h          
-
-  docker_build_image_chromium:
-    machine: true
-    resource_class: xlarge
-    branch:
-      - develop # @TODO remove
-      - master
-    steps:
-      - checkout
-      - run:
-          name: Enable experimental features in Docker daemon
-          command: |
-            sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
-            sudo service docker restart
-      - run: 
-          name: Build Docker image
-          command: scripts/docker-build-image.sh chromium
-          no_output_timeout: 6h
-      - run: 
-          name: Pull Docker image
-          command: scripts/docker-pull-image.sh chromium
-          no_output_timeout: 6h          
+          no_output_timeout: 6h      
 
 #
 # Workflows
@@ -265,12 +241,8 @@ workflows:
     #             # - master
     #             - develop
     jobs:
-      - docker_build_image_chromium_base
+      - docker_build_image_chromium
 
-      - docker_build_image_chromium:
+      - update_browser_versions:
           requires:
-            - docker_build_image_chromium_base
-
-      # - update_browser_versions:
-      #     requires:
-      #       - docker_build_image_chromium
+            - docker_build_image_chromium

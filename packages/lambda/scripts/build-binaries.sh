@@ -32,14 +32,8 @@ build() {
     
     mkdir -p "$BUILD_PATH"
 
-    # Build
-    # @TODO --squash
-    docker build --squash --compress -t "adieuadieu/$DOCKER_IMAGE:$VERSION" --build-arg VERSION="$VERSION" .
-
-    # docker build --compress -t "adieuadieu/$DOCKER_IMAGE:$VERSION" --build-arg VERSION="$VERSION" base/
-
     # Extract binary from docker image
-    docker run -dt --rm --name "$DOCKER_IMAGE" "$DOCKER_IMAGE"
+    docker run -dt --rm --name "$DOCKER_IMAGE" "adieuadieu/$DOCKER_IMAGE:$VERSION"
     docker cp "$DOCKER_IMAGE":/build/headless-"$BUILD_NAME" "$BUILD_PATH"
     docker stop "$DOCKER_IMAGE"
 
