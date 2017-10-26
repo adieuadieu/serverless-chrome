@@ -22,10 +22,10 @@ build() {
   
   DOCKER_IMAGE=headless-$BUILD_NAME-for-aws-lambda
   VERSION=$(jq -r ".stable" version.json)
-  BUILD_PATH="build/$BUILD_NAME"
+  BUILD_PATH="dist/$BUILD_NAME"
   ZIPFILE_PATH="headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
 
-  if [ ! -f "build/$ZIPFILE_PATH" ]; then
+  if [ ! -f "dist/$ZIPFILE_PATH" ]; then
     export VERSION
 
     echo "Building $BUILD_NAME version $VERSION"

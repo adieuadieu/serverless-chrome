@@ -56,8 +56,10 @@ build() {
 
       # Extract headless binary from docker image
       if [ "$BUILD_STAGE" = "build" ]; then
+        mkdir -p dist/
+
         docker run -dt --rm --name "$DOCKER_IMAGE" "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION"
-        docker cp "$DOCKER_IMAGE":/build/headless-"$BUILD_NAME" build/
+        docker cp "$DOCKER_IMAGE":/build/headless-"$BUILD_NAME" dist/
         docker stop "$DOCKER_IMAGE"
       fi
 

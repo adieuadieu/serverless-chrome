@@ -126,7 +126,7 @@ jobs:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
           paths:
             - packages/lambda/builds/chromium/version.json
-            - packages/lambda/builds/chromium/build             
+            - packages/lambda/builds/chromium/dist             
 
   update_browser_versions:
     docker:

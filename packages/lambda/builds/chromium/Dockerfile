@@ -8,7 +8,7 @@ FROM amazonlinux:2017.03
 LABEL maintainer="Marco Lüthy <marco.luethy@gmail.com>"
 LABEL chromium="${VERSION}"
 
-ADD build/headless-chromium /chromium/headless_shell
+ADD dist/headless-chromium /chromium/headless_shell
 
 EXPOSE 9222
 
