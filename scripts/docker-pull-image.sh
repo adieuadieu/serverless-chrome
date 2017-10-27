@@ -16,6 +16,7 @@ cd "$(dirname "$0")/.."
 PROJECT_DIRECTORY=$(pwd)
 PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
 
+# better implementation here: https://github.com/blueimp/shell-scripts/blob/master/bin/docker-image-exists.sh
 # ref: https://stackoverflow.com/a/39731444/845713
 docker_tag_exists() {
   curl --silent -f -L "https://index.docker.io/v1/repositories/$1/tags/$2" > /dev/null
