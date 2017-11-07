@@ -12,9 +12,13 @@ BROWSER="chromium"
 
 yum update -y
 
-yum install -y docker jq
+yum install -y docker jq git
 
-AWS_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | \
+service docker start
+
+EC2_INSTANCE_ID=$(curl -s http://instance-data/latest/meta-data/instance-id)
+
+AWS_REGION=$(curl -s http://instance-data/latest/dynamic/instance-identity/document | \
   jq -r ".region" \
 )
 
@@ -28,7 +32,7 @@ DOCKER_USER=$(aws ssm get-parameter \
 DOCKER_PASS=$(aws ssm get-parameter \
   --region "$AWS_REGION" \
   --with-decryption \
-  --name /serverless-chrome-automation/DOCKER_USER | \
+  --name /serverless-chrome-automation/DOCKER_PASS | \
   jq -r ".Parameter.Value" \
 )
 
@@ -38,9 +42,14 @@ export DOCKER_PASS
 
 git clone "https://github.com/adieuadieu/serverless-chrome.git"
 
-cd ./serverless-chrome || exit 1
+cd serverless-chrome
 
 # TODO: temporary.
 git checkout develop
 
-./scripts/docker-build-images "$BROWSER" "$CHANNEL"
+scripts/docker-build-image.sh "$CHANNEL" "$BROWSER"
+
+# Shutdown (terminate) the instance
+aws ec2 terminate-instances \
+  --region "$AWS_REGION" \
+  --instance-ids "$EC2_INSTANCE_ID"

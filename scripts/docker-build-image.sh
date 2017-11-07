@@ -18,6 +18,11 @@ DO_PUSH=1
 PROJECT_DIRECTORY=$(pwd)
 PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
 
+if [ -z "$1" ]; then
+  echo "Missing required channel argument"
+  exit 1
+fi
+
 CHANNEL=${1:-stable}
 shift
 
