@@ -7,47 +7,50 @@
 
 set -e
 
-CHANNEL="stable"
-BROWSER="chromium"
+# These get replaced with values in ~/scripts/daily.sh
+CHANNEL=INSERT_CHANNEL_HERE
+BROWSER=INSERT_BROWSER_HERE
 
-yum update -y
+if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
+  yum update -y
 
-yum install -y docker jq git
+  yum install -y docker jq git
 
-service docker start
+  service docker start
 
-EC2_INSTANCE_ID=$(curl -s http://instance-data/latest/meta-data/instance-id)
+  EC2_INSTANCE_ID=$(curl -s http://instance-data/latest/meta-data/instance-id)
 
-AWS_REGION=$(curl -s http://instance-data/latest/dynamic/instance-identity/document | \
-  jq -r ".region" \
-)
+  AWS_REGION=$(curl -s http://instance-data/latest/dynamic/instance-identity/document | \
+    jq -r ".region" \
+  )
 
-DOCKER_USER=$(aws ssm get-parameter \
-  --region "$AWS_REGION" \
-  --with-decryption \
-  --name /serverless-chrome-automation/DOCKER_USER | \
-  jq -r ".Parameter.Value" \
-)
+  DOCKER_USER=$(aws ssm get-parameter \
+    --region "$AWS_REGION" \
+    --with-decryption \
+    --name /serverless-chrome-automation/DOCKER_USER | \
+    jq -r ".Parameter.Value" \
+  )
 
-DOCKER_PASS=$(aws ssm get-parameter \
-  --region "$AWS_REGION" \
-  --with-decryption \
-  --name /serverless-chrome-automation/DOCKER_PASS | \
-  jq -r ".Parameter.Value" \
-)
+  DOCKER_PASS=$(aws ssm get-parameter \
+    --region "$AWS_REGION" \
+    --with-decryption \
+    --name /serverless-chrome-automation/DOCKER_PASS | \
+    jq -r ".Parameter.Value" \
+  )
 
-export AWS_REGION
-export DOCKER_USER
-export DOCKER_PASS
+  export AWS_REGION
+  export DOCKER_USER
+  export DOCKER_PASS
 
-git clone "https://github.com/adieuadieu/serverless-chrome.git"
+  git clone "https://github.com/adieuadieu/serverless-chrome.git"
 
-cd serverless-chrome
+  cd serverless-chrome
 
-# TODO: temporary.
-git checkout develop
+  # TODO: temporary.
+  git checkout develop
 
-scripts/docker-build-image.sh "$CHANNEL" "$BROWSER"
+  scripts/docker-build-image.sh "$CHANNEL" "$BROWSER"
+fi
 
 # Shutdown (terminate) the instance
 aws ec2 terminate-instances \

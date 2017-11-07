@@ -34,7 +34,10 @@ launch() {
 
   echo "Launching spot instance to build $BUILD_NAME version $VERSION"
   
-  USER_DATA=$(base64 --input "$PROJECT_DIRECTORY/aws/user-data.sh")
+  USER_DATA=$(sed -e "s/INSERT_CHANNEL_HERE/$CHANNEL/g" "$PROJECT_DIRECTORY/aws/user-data.sh" | \
+    sed -e "s/INSERT_BROWSER_HERE/$BUILD_NAME/g" | \
+    base64 \
+  )
 
   JSON=$(jq -c -r \
     ".LaunchSpecification.UserData |= \"$USER_DATA\" | .LaunchSpecification.IamInstanceProfile.Arn |= \"$AWS_IAM_INSTANCE_ARN\"" \
