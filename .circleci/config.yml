@@ -108,25 +108,30 @@ jobs:
           paths:
             - examples/serverless-framework/aws/node_modules      
 
-  build_lambda_chromium:
-    machine: true
-    resource_class: xlarge
-    branch:
-      - develop # @TODO remove
-      - master
-    steps:
-      - checkout  
-      - restore_cache:
-          key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
-      - run: 
-          name: Build headless Chromium for AWS Lambda
-          command: packages/lambda/scripts/build-binaries.sh chromium
-          no_output_timeout: 6h
-      - save_cache:
-          key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
-          paths:
-            - packages/lambda/builds/chromium/version.json
-            - packages/lambda/builds/chromium/dist             
+
+
+
+
+
+  # build_lambda_chromium:
+  #   machine: true
+  #   resource_class: xlarge
+  #   branch:
+  #     - develop # @TODO remove
+  #     - master
+  #   steps:
+  #     - checkout  
+  #     - restore_cache:
+  #         key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
+  #     - run: 
+  #         name: Build headless Chromium for AWS Lambda
+  #         command: packages/lambda/scripts/build-binaries.sh chromium
+  #         no_output_timeout: 6h
+  #     - save_cache:
+  #         key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
+  #         paths:
+  #           - packages/lambda/builds/chromium/version.json
+  #           - packages/lambda/builds/chromium/dist             
 
   update_browser_versions:
     docker:
@@ -150,37 +155,30 @@ jobs:
           key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
       - run: scripts/release.sh
 
-  docker_build_image_chromium:
-    machine: 
-      # we need at least Docker v17.06
-      image: circleci/classic:201709-01
-    resource_class: xlarge
+  build_new_binaries:
+    docker:
+      - image: circleci/node:6.10.3
     branch:
       - develop # @TODO remove
       - master
     steps:
       - checkout
-      - run:
-          name: Enable experimental features in Docker daemon
-          command: |
-            sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
-            sudo service docker restart
+      # - run:
+      #     name: Enable experimental features in Docker daemon
+      #     command: |
+      #       sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
+      #       sudo service docker restart
       - run: 
-          name: Build base Docker image
-          command: scripts/docker-build-image.sh chromium base
-          no_output_timeout: 6h
-      # - run: 
-      #     name: Pull Docker image
-      #     command: scripts/docker-pull-image.sh chromium base
-      #     no_output_timeout: 6h
+          name: Build stable-channel Chromium
+          command: scripts/ci-daily.sh stable chromium
       - run: 
-          name: Compile Chromium in intermediary Docker image
-          command: scripts/docker-build-image.sh chromium build
-          no_output_timeout: 6h      
+          name: Build beta-channel Chromium
+          command: scripts/ci-daily.sh beta chromium
       - run: 
-          name: Build Chromium Docker image
-          command: scripts/docker-build-image.sh chromium
-          no_output_timeout: 6h  
+          name: Build dev-channel Chromium
+          command: scripts/ci-daily.sh dev chromium
+
+
 #
 # Workflows
 #
@@ -233,19 +231,18 @@ workflows:
             - integration_test_lambda
             - integration_test_serverless_plugin
 
-  daily:
+  daily_build:
     # triggers:
     #   - schedule:
-    #       # 07:00 UTC cuz CircleCi seems to have more bandwidth when US is sleeping.
-    #       cron: "0 7 * * *"
+    #       cron: "0 6 * * *"
     #       filters:
     #         branches:
     #           only:
     #             # - master
     #             - develop
     jobs:
-      - docker_build_image_chromium
+      - build_new_binaries
 
-      - update_browser_versions:
-          requires:
-            - docker_build_image_chromium
+      # - update_browser_versions:
+      #     requires:
+      #       - build_new_binaries

@@ -4,7 +4,7 @@
 #
 # Builds docker images
 #
-# Usage: ./daily.sh stable|beta|dev [chromium|firefox]
+# Usage: ./ci-daily.sh stable|beta|dev [chromium|firefox]
 #
 
 set -e
@@ -44,6 +44,7 @@ launch() {
     "$PROJECT_DIRECTORY/aws/ec2-spot-instance-specification.json"
   )
 
+  # @TODO: adjust instance type/spot-price depending on channel
   aws ec2 request-spot-instances \
       --region "$AWS_REGION" \
       --cli-input-json "$JSON"

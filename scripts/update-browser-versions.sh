@@ -46,7 +46,7 @@ cd "$PACKAGE_DIRECTORY"
 
 # If there are new browser versions we create a new version
 if [ "$UPDATES" != "0" ]; then
-  npm version prerelease --no-git-tag-version # @TODO: change to 'minor'
+  npm version prerelease --no-git-tag-version # @TODO: change to 'minor' if stable-channel, otherwise `pre-release`?
   
   PROJECT_VERSION=$(jq -r ".version" package.json)
   
