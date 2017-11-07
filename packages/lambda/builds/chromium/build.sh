@@ -14,7 +14,7 @@ set -e
 
 BUILD_BASE=$(pwd)
 VERSION=${VERSION:-master}
-CLEAN_UP=${CLEANUP:-false}
+CLEAN_UP=${CLEANUP:-true}
 
 printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
 

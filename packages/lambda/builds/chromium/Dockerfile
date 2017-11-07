@@ -37,7 +37,7 @@ RUN sh /build.sh
 EXPOSE 9222
 
 ENTRYPOINT [ \
-  "/headless_shell", \
+  "/headless-chromium", \
   "--disable-gpu", \
   "--no-sandbox", \
   "--hide-scrollbars", \

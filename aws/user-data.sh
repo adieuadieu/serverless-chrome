@@ -5,8 +5,6 @@
 # Usage: Run as a start-up script on an EC2 instance via user-data cloud-init
 #
 
-set -e
-
 # These get replaced with values in ~/scripts/daily.sh
 CHANNEL=INSERT_CHANNEL_HERE
 BROWSER=INSERT_BROWSER_HERE
@@ -44,7 +42,7 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
 
   git clone "https://github.com/adieuadieu/serverless-chrome.git"
 
-  cd serverless-chrome
+  cd serverless-chrome || return
 
   # TODO: temporary.
   git checkout develop
