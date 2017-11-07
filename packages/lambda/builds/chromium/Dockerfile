@@ -1,3 +1,12 @@
+# Based on Dockferfile from JeongHoon Byun (aka Outsider)
+# via https://github.com/outsideris/headless-chrome-for-lambda
+# Thank you, JeongHoon!
+#
+# Build with:
+# docker build --compress -t adieuadieu/chromium-for-amazonlinux-base:62.0.3202.62 --build-arg VERSION=62.0.3202.62 .
+#
+# Jump into the container with:
+# docker run -i -t --rm --entrypoint /bin/bash  adieuadieu/chromium-for-amazonlinux-base
 #
 # Launch headless Chromium with:
 # docker run -d --rm --name headless-chromium -p 9222:9222 adieuadieu/headless-chromium-for-aws-lambda
@@ -5,20 +14,31 @@
 
 FROM amazonlinux:2017.03
 
+# ref: https://chromium.googlesource.com/chromium/src.git/+refs
+ARG VERSION
+ENV VERSION ${VERSION:-master}
+
+# Used in /build.sh to decide whether to delete the massive
+# Chromium src folder (which, if not deleted, makes the Docker
+# image huuuuge)
+ARG CLEAN_UP
+ENV CLEAN_UP ${CLEAN_UP:-true}
+
 LABEL maintainer="Marco Lüthy <marco.luethy@gmail.com>"
 LABEL chromium="${VERSION}"
 
-# Do everything in a single step so that we don't end up with a huge layer
-# in our image because of the huge size of the Chromium git repository
-# ADD build.sh /build/build.sh
-# RUN sh /build/build.sh
+WORKDIR /
 
-ADD dist/headless-chromium /chromium/headless_shell
+ADD build.sh /
+ADD .gclient /build/chromium/
+
+RUN sh /build.sh
 
 EXPOSE 9222
 
 ENTRYPOINT [ \
-  "/chromium/headless_shell", \
+  "/headless_shell", \
+  "--disable-gpu", \
   "--no-sandbox", \
   "--hide-scrollbars", \
   "--remote-debugging-address=0.0.0.0", \

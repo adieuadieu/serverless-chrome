@@ -6,38 +6,67 @@ const path = require('path')
 const https = require('https')
 const extract = require('extract-zip')
 
+if (
+  process.env.NPM_CONFIG_SERVERLESS_CHROME_SKIP_DOWNLOAD ||
+  process.env.npm_config_serverless_chrome_skip_download
+) {
+  console.warn(
+    'Skipping Chromium download. ' +
+      '"NPM_CONFIG_SERVERLESS_CHROME_SKIP_DOWNLOAD" was set in environment or NPM config.'
+  )
+  return
+}
+
+const CHROMIUM_CHANNEL =
+  process.env.NPM_CONFIG_CHROMIUM_CHANNEL ||
+  process.env.npm_config_chromium_channel ||
+  'stable'
+
+if (CHROMIUM_CHANNEL !== 'stable') {
+  console.warn(
+    `Downloading "${CHROMIUM_CHANNEL}" version of Chromium because` +
+      ' "NPM_CONFIG_CHROMIUM_CHANNEL" was set in environment or NPM config.'
+  )
+}
+
 const RELEASE_DOWNLOAD_URL_BASE =
   'https://github.com/adieuadieu/serverless-chrome/releases/download'
 
-function unlink (path) {
+function unlink(path) {
   return new Promise((resolve, reject) => {
     fs.unlink(path, error => (error ? reject(error) : resolve()))
   })
 }
 
-function rename (from, to) {
+function rename(from, to) {
   return new Promise((resolve, reject) => {
     fs.rename(from, to, error => (error ? reject(error) : resolve()))
   })
 }
 
-function extractFile (file, destination) {
+function extractFile(file, destination) {
   return new Promise((resolve, reject) => {
-    extract(file, { dir: destination }, error => (error ? reject(error) : resolve()))
+    extract(
+      file,
+      { dir: destination },
+      error => (error ? reject(error) : resolve())
+    )
   })
 }
 
-function get (url, destination) {
+function get(url, destination) {
   return new Promise((resolve, reject) => {
     https
-      .get(url, (response) => {
+      .get(url, response => {
         if (response.statusCode >= 300 && response.statusCode <= 400) {
           return get(response.headers.location, destination)
             .then(resolve)
             .catch(reject)
         } else if (response.statusCode !== 200) {
           fs.unlink(destination, () => null)
-          return reject(`HTTP ${response.statusCode}: Could not download ${url}`)
+          return reject(
+            new Error(`HTTP ${response.statusCode}: Could not download ${url}`)
+          )
         }
 
         const file = fs.createWriteStream(destination)
@@ -48,25 +77,30 @@ function get (url, destination) {
           file.close(resolve)
         })
       })
-      .on('error', (error) => {
+      .on('error', error => {
         fs.unlink(destination, () => null)
         reject(error)
       })
   })
 }
 
-function getChromium () {
+function getChromium() {
   const ZIP_FILENAME = 'headless-chromium-amazonlinux-2017-03.zip'
-  const ZIP_URL = `${RELEASE_DOWNLOAD_URL_BASE}/v${process.env.npm_package_version}/${ZIP_FILENAME}`
+  const ZIP_URL = `${RELEASE_DOWNLOAD_URL_BASE}/v${process.env
+    .npm_package_version}/${ZIP_FILENAME}`
   const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
   const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
 
   if (fs.existsSync(DOWNLOAD_PATH)) {
-    console.log('Precompiled headless Chromium binary for AWS Lambda previously downloaded. Skipping download.')
+    console.log(
+      'Precompiled headless Chromium binary for AWS Lambda previously downloaded. Skipping download.'
+    )
     return Promise.resolve()
   }
 
-  console.log('Downloading precompiled headless Chromium binary for AWS Lambda.')
+  console.log(
+    'Downloading precompiled headless Chromium binary for AWS Lambda.'
+  )
 
   return get(ZIP_URL, DOWNLOAD_PATH)
     .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
@@ -74,7 +108,7 @@ function getChromium () {
 }
 
 if (require.main === module) {
-  getChromium().catch((error) => {
+  getChromium().catch(error => {
     console.error(error)
     process.exit(1)
   })
