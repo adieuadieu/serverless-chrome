@@ -37,7 +37,7 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
 
   service docker start
 
-  EC2_INSTANCE_ID=$(curl -s http://instance-data/latest/meta-data/instance-id)
+  # EC2_INSTANCE_ID=$(curl -s http://instance-data/latest/meta-data/instance-id)
 
   AWS_REGION=$(curl -s http://instance-data/latest/dynamic/instance-identity/document | \
     jq -r ".region" \
@@ -81,4 +81,5 @@ fi
 
 echo "User-data script completed. Shutting down instance.."
 
-shutdown -h now
+# Don't shut down immediately so that CloudWatch Agent has time to push logs to AWS
+shutdown -h -t 10 +1

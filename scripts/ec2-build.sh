@@ -16,7 +16,7 @@ AWS_REGION=us-east-1
 PROJECT_DIRECTORY=$(pwd)
 BUILD_NAME=${1:-chromium}
 CHANNEL=${2:-dev}
-VERSION=${1:-master}
+VERSION=${3:-master}
 
 #
 # Check for some required env variables
