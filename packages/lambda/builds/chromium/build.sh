@@ -33,7 +33,8 @@ yum install -y \
   pam-devel pango-devel pciutils-devel pulseaudio-libs-devel \
   zlib.i686 httpd mod_ssl php php-cli python-psutil wdiff --enablerepo=epel
 
-mkdir -p build
+mkdir -p build/chromium
+
 cd build
 
 # install dept_tools
@@ -41,7 +42,6 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
 export PATH="/opt/gtk/bin:$PATH:$BUILD_BASE/build/depot_tools"
 
-mkdir -p chromium
 cd chromium
 
 # fetch chromium source code
@@ -61,15 +61,27 @@ git clone https://chromium.googlesource.com/chromium/src.git
 # Checkout all the submodules at their branch DEPS revisions
 gclient sync --with_branch_heads --jobs 16
 
-cd "$BUILD_BASE/build/chromium/src"
+cd src
 
 # tweak to disable use of the tmpfs mounted at /dev/shm
 sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i base/files/file_util_posix.cc
 
+#
 # tweak to keep Chrome from crashing after 4-5 Lambda invocations
 # see https://github.com/adieuadieu/serverless-chrome/issues/41#issuecomment-340859918
 # Thank you, Geert-Jan Brits (@gebrits)!
-sed -e 's/PLOG(WARNING) << "poll";/PLOG(WARNING) << "poll"; failed_polls = 0;/g' -i content/browser/renderer_host/sandbox_ipc_linux.cc
+#
+# path of sandbox_ipc_linux.cc differs between chromium 62 and 63+
+# this is a temporary workaround to handle both
+SANDBOX_IPC_SOURCE_PATH="content/browser/sandbox_ipc_linux.cc"
+case "$VERSION" in
+  62.*)
+   SANDBOX_IPC_SOURCE_PATH="content/browser/renderer_host/sandbox_ipc_linux.cc"
+  ;;
+esac
+
+sed -e 's/PLOG(WARNING) << "poll";/PLOG(WARNING) << "poll"; failed_polls = 0;/g' -i "$SANDBOX_IPC_SOURCE_PATH"
+
 
 # specify build flags
 mkdir -p out/Headless && \

@@ -14,8 +14,6 @@ cd "$(dirname "$0")/.."
 PROJECT_DIRECTORY=$(pwd)
 PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
 
-AWS_REGION=us-east-1
-
 CHANNEL=${1:-stable}
 
 if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
@@ -28,28 +26,6 @@ if [ -z "$AWS_IAM_INSTANCE_ARN" ]; then
   exit 1
 fi
 
-launch() {
-  BUILD_NAME=$1
-  VERSION=$2
-
-  echo "Launching spot instance to build $BUILD_NAME version $VERSION ($CHANNEL channel)"
-  
-  USER_DATA=$(sed -e "s/INSERT_CHANNEL_HERE/$CHANNEL/g" "$PROJECT_DIRECTORY/aws/user-data.sh" | \
-    sed -e "s/INSERT_BROWSER_HERE/$BUILD_NAME/g" | \
-    base64 \
-  )
-
-  JSON=$(jq -c -r \
-    ".LaunchSpecification.UserData |= \"$USER_DATA\" | .LaunchSpecification.IamInstanceProfile.Arn |= \"$AWS_IAM_INSTANCE_ARN\"" \
-    "$PROJECT_DIRECTORY/aws/ec2-spot-instance-specification.json"
-  )
-
-  # @TODO: adjust instance type/spot-price depending on channel
-  aws ec2 request-spot-instances \
-      --region "$AWS_REGION" \
-      --cli-input-json "$JSON"
-}
-
 launch_if_new() {
   BUILD_NAME=$1
 
@@ -61,7 +37,7 @@ launch_if_new() {
   if "$PROJECT_DIRECTORY/scripts/docker-image-exists.sh" "adieuadieu/$DOCKER_IMAGE" "$LATEST_VERSION"; then
     echo "$BUILD_NAME version $LATEST_VERSION was previously built. Skipping build."
   else
-    launch "$BUILD_NAME" "$LATEST_VERSION"
+    "$PROJECT_DIRECTORY/scripts/ec2-build.sh" "$BUILD_NAME" "$CHANNEL" "$LATEST_VERSION"
   fi
 }
 

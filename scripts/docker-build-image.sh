@@ -54,8 +54,12 @@ build() {
 
       if [ -n "$DO_PUSH" ]; then
         echo "Pushing image to Docker hub"
-        # @TODO: only tag 'stable' channel as latest?
-        docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:latest"
+
+        # Only tag stable channel as latest
+        if [ "$CHANNEL" = "stable" ]; then
+          docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:latest"
+        fi
+
         docker push "adieuadieu/$DOCKER_IMAGE"
       fi
   fi
