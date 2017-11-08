@@ -9,6 +9,20 @@
 CHANNEL=INSERT_CHANNEL_HERE
 BROWSER=INSERT_BROWSER_HERE
 
+# Setup CloudWatch logging
+yum install -y awslogs
+
+printf "
+[cloudinit]
+log_group_name = /serverless-chrome-automation
+log_stream_name = {instance_id}-cloudinit-%s-%s
+file = /var/log/cloud-init-output.log
+  " \
+  "$BROWSER" "$CHANNEL" >> /etc/awslogs/awslogs.conf
+
+service awslogs start
+
+# Go time (if brower and release channel are set.)
 if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
   yum update -y
 
@@ -51,6 +65,9 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
 fi
 
 # Shutdown (terminate) the instance
-aws ec2 terminate-instances \
-  --region "$AWS_REGION" \
-  --instance-ids "$EC2_INSTANCE_ID"
+# @TODO: IAM perissions for this..
+# aws ec2 terminate-instances \
+#   --region "$AWS_REGION" \
+#   --instance-ids "$EC2_INSTANCE_ID"
+
+shutdown -h now

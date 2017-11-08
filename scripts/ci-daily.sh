@@ -32,7 +32,7 @@ launch() {
   BUILD_NAME=$1
   VERSION=$2
 
-  echo "Launching spot instance to build $BUILD_NAME version $VERSION"
+  echo "Launching spot instance to build $BUILD_NAME version $VERSION ($CHANNEL channel)"
   
   USER_DATA=$(sed -e "s/INSERT_CHANNEL_HERE/$CHANNEL/g" "$PROJECT_DIRECTORY/aws/user-data.sh" | \
     sed -e "s/INSERT_BROWSER_HERE/$BUILD_NAME/g" | \

@@ -2,13 +2,13 @@
   "SpotPrice": "0.34",
   "InstanceCount": 1,
   "Type": "one-time",
-  "BlockDurationMinutes": 240,
+  "BlockDurationMinutes": 60,
   "LaunchSpecification": {
     "ImageId": "ami-8c1be5f6",
-    "InstanceType": "c5.2xlarge",
+    "InstanceType": "c5.4xlarge",
     "KeyName": "serverless-chrome-automation",
     "IamInstanceProfile": {
-      "Arn": "arn:aws:iam::000000000000:instance-profile/serverless-chrome-automation"
+      "Arn": "arn:aws:iam:::instance-profile/serverless-chrome-automation"
     },
     "BlockDeviceMappings": [
       {

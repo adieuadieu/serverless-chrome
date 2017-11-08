@@ -8,7 +8,19 @@
         "ssm:GetParameters"
       ],
       "Resource": [
-        "arn:aws:ssm:us-east-1:0000000000:parameter/serverless-chrome-automation/*"
+        "arn:aws:ssm:*:*:parameter/serverless-chrome-automation/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:log-group:/serverless-chrome-automation:log-stream:*"
       ]
     }
   ]
