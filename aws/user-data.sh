@@ -9,9 +9,12 @@
 CHANNEL=INSERT_CHANNEL_HERE
 BROWSER=INSERT_BROWSER_HERE
 
+# --------------------
 # Setup CloudWatch logging
+# ref: http://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/QuickStartEC2Instance.html
 yum install -y awslogs
 
+# config ref: http://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html
 printf "
 [cloudinit]
 log_group_name = /serverless-chrome-automation
@@ -22,6 +25,7 @@ file = /var/log/cloud-init-output.log
 
 service awslogs start
 
+# --------------------
 # Go time (if brower and release channel are set.)
 if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
   yum update -y
@@ -64,6 +68,7 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
   scripts/docker-build-image.sh "$CHANNEL" "$BROWSER"
 fi
 
+# --------------------
 # Shutdown (terminate) the instance
 # @TODO: IAM perissions for this..
 # aws ec2 terminate-instances \

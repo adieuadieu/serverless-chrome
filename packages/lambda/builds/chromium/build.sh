@@ -61,7 +61,7 @@ git clone https://chromium.googlesource.com/chromium/src.git
 # Checkout all the submodules at their branch DEPS revisions
 gclient sync --with_branch_heads --jobs 16
 
-cd src
+cd "$BUILD_BASE/build/chromium/src"
 
 # tweak to disable use of the tmpfs mounted at /dev/shm
 sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i base/files/file_util_posix.cc
