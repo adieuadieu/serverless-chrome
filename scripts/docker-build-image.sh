@@ -50,7 +50,10 @@ build() {
     mkdir -p dist/
 
     # Run the container
-    docker run -dt --rm --name "$DOCKER_IMAGE-build" "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION"
+    docker run -dt --rm \
+      --name "$DOCKER_IMAGE-build" \
+      -p 9222:9222 \
+      "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION"
 
     # Test the build and return if it doesn't run
     if ! curl -fs http://localhost:9222/json/version; then
@@ -59,7 +62,8 @@ build() {
       # @TODO: this is specific to chromium......
       echo "Here's some output:"
       docker run --init --rm \
-        --entrypoint="/headless-chromium" \
+        -p 9222:9222 \
+        --entrypoint="/bin/headless-chromium" \
         "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION" \
         --no-sandbox --disable-gpu http://google.com/
       return
@@ -83,10 +87,14 @@ build() {
 
       # Only tag stable channel as latest
       if [ "$CHANNEL" = "stable" ]; then
-        docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:latest"
+        docker tag \
+          "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" \
+          "adieuadieu/$DOCKER_IMAGE:latest"
       fi
 
-      docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:$CHANNEL"
+      docker tag \
+        "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" \
+        "adieuadieu/$DOCKER_IMAGE:$CHANNEL"
 
       docker push "adieuadieu/$DOCKER_IMAGE"
     fi

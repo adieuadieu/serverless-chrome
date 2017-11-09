@@ -77,9 +77,10 @@ fi
 # 
 # Shutdown (terminate) the instance
 #
-uptime
 
 echo "User-data script completed. Shutting down instance.."
+
+uptime
 
 # Don't shut down immediately so that CloudWatch Agent has time to push logs to AWS
 shutdown -h -t 10 +1
