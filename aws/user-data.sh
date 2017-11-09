@@ -9,6 +9,15 @@
 # These get replaced with values in ~/scripts/daily.sh
 CHANNEL=INSERT_CHANNEL_HERE
 BROWSER=INSERT_BROWSER_HERE
+VERSION=INSERT_VERSION_HERE
+
+
+1 ^^^^ do that. version. then make sure to echo it.
+2. split dockerfile so its not 700mb
+
+
+
+echo "Starting user-data script. $BROWSER $VERSION ($CHANNEL channel)"
 
 # 
 # Setup CloudWatch logging
@@ -20,10 +29,10 @@ yum install -y awslogs
 printf "
 [cloudinit]
 log_group_name = /serverless-chrome-automation
-log_stream_name = {instance_id}-cloudinit-%s-%s
+log_stream_name = {instance_id}-cloudinit-%s-%s-%s
 file = /var/log/cloud-init-output.log
   " \
-  "$BROWSER" "$CHANNEL" >> /etc/awslogs/awslogs.conf
+  "$BROWSER" "$VERSION" "$CHANNEL" >> /etc/awslogs/awslogs.conf
 
 service awslogs start
 
@@ -74,10 +83,7 @@ fi
 # 
 # Shutdown (terminate) the instance
 #
-# @TODO: IAM perissions for this..
-# aws ec2 terminate-instances \
-#   --region "$AWS_REGION" \
-#   --instance-ids "$EC2_INSTANCE_ID"
+uptime
 
 echo "User-data script completed. Shutting down instance.."
 

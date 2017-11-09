@@ -40,28 +40,41 @@ build() {
   else
     echo "Building Docker image $BUILD_NAME version $LATEST_VERSION"
 
+    # Build in Docker
+    docker build \
+      --compress \
+      -t "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION" \
+      --build-arg VERSION="$LATEST_VERSION" \
+      "build"
+
+    mkdir -p dist/
+
+    # Extract the binary produced in the build
+    docker run -dt --rm --name "$DOCKER_IMAGE-build" "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION"
+    docker cp "$DOCKER_IMAGE-build:/bin/headless-$BUILD_NAME" dist/
+    docker stop "$DOCKER_IMAGE-build"
+
+    # Create the public Docker image
+    # We do this because the image in which be build ends up being huge
+    # due to the source code and build dependencies
     docker build \
       --compress \
       -t "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" \
       --build-arg VERSION="$LATEST_VERSION" \
       "."
 
-      mkdir -p dist/
+    if [ -n "$DO_PUSH" ]; then
+      echo "Pushing image to Docker hub"
 
-      docker run -dt --rm --name "$DOCKER_IMAGE" "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION"
-      docker cp "$DOCKER_IMAGE":/headless-"$BUILD_NAME" dist/
-      docker stop "$DOCKER_IMAGE"
-
-      if [ -n "$DO_PUSH" ]; then
-        echo "Pushing image to Docker hub"
-
-        # Only tag stable channel as latest
-        if [ "$CHANNEL" = "stable" ]; then
-          docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:latest"
-        fi
-
-        docker push "adieuadieu/$DOCKER_IMAGE"
+      # Only tag stable channel as latest
+      if [ "$CHANNEL" = "stable" ]; then
+        docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:latest"
       fi
+
+      docker tag "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" "adieuadieu/$DOCKER_IMAGE:$CHANNEL"
+
+      docker push "adieuadieu/$DOCKER_IMAGE"
+    fi
   fi
 }
 

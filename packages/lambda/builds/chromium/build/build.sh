@@ -14,7 +14,6 @@ set -e
 
 BUILD_BASE=$(pwd)
 VERSION=${VERSION:-master}
-CLEAN_UP=${CLEANUP:-true}
 
 printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
 
@@ -96,12 +95,12 @@ mkdir -p out/Headless && \
 # build chromium headless shell
 ninja -C out/Headless headless_shell
 
-cp out/Headless/headless_shell "$BUILD_BASE/headless-chromium-unstripped"
+cp out/Headless/headless_shell "$BUILD_BASE/bin/headless-chromium-unstripped"
 
 cd "$BUILD_BASE"
 
 # strip symbols
-strip -o "$BUILD_BASE/headless-chromium" build/chromium/src/out/Headless/headless_shell
+strip -o "$BUILD_BASE/bin/headless-chromium" build/chromium/src/out/Headless/headless_shell
 
 # Use UPX to package headless chromium
 # this adds 1-1.5 seconds of startup time so generally
@@ -113,10 +112,5 @@ strip -o "$BUILD_BASE/headless-chromium" build/chromium/src/out/Headless/headles
 # cd build/upx
 # git submodule update --init --recursive
 # make all
-# cp "$BUILD_BASE/build/chromium/src/out/Headless/headless_shell" "$BUILD_BASE/headless-chromium-packaged"
-# src/upx.out "$BUILD_BASE/headless-chromium-packaged"
-
-if [ "$CLEAN_UP" = "true" ]; then
-  rm -Rf build/
-  # @TODO: also remove the yum packages we installed?
-fi
+# cp "$BUILD_BASE/build/chromium/src/out/Headless/headless_shell" "$BUILD_BASE/bin/headless-chromium-packaged"
+# src/upx.out "$BUILD_BASE/bin/headless-chromium-packaged"
