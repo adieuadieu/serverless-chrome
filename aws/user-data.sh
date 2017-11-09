@@ -6,16 +6,10 @@
 # ref: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
 #
 
-# These get replaced with values in ~/scripts/daily.sh
+# These get replaced with real values in ~/scripts/ec2-build.sh
 CHANNEL=INSERT_CHANNEL_HERE
 BROWSER=INSERT_BROWSER_HERE
 VERSION=INSERT_VERSION_HERE
-
-
-1 ^^^^ do that. version. then make sure to echo it.
-2. split dockerfile so its not 700mb
-
-
 
 echo "Starting user-data script. $BROWSER $VERSION ($CHANNEL channel)"
 

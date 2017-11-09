@@ -49,8 +49,23 @@ build() {
 
     mkdir -p dist/
 
-    # Extract the binary produced in the build
+    # Run the container
     docker run -dt --rm --name "$DOCKER_IMAGE-build" "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION"
+
+    # Test the build and return if it doesn't run
+    if ! curl -fs http://localhost:9222/json/version; then
+      echo "Unable to correctly run and connect to build via Docker."
+
+      # @TODO: this is specific to chromium......
+      echo "Here's some output:"
+      docker run --init --rm \
+        --entrypoint="/headless-chromium" \
+        "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION" \
+        --no-sandbox --disable-gpu http://google.com/
+      return
+    fi
+
+    # Extract the binary produced in the build
     docker cp "$DOCKER_IMAGE-build:/bin/headless-$BUILD_NAME" dist/
     docker stop "$DOCKER_IMAGE-build"
 

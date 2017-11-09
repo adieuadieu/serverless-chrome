@@ -31,7 +31,6 @@ if [ -z "$AWS_IAM_INSTANCE_ARN" ]; then
   exit 1
 fi
 
-
 echo "Launching EC2 spot instance to build $BUILD_NAME version $VERSION ($CHANNEL channel)"
 
 #
@@ -40,6 +39,7 @@ echo "Launching EC2 spot instance to build $BUILD_NAME version $VERSION ($CHANNE
 #
 USER_DATA=$(sed -e "s/INSERT_CHANNEL_HERE/$CHANNEL/g" "$PROJECT_DIRECTORY/aws/user-data.sh" | \
   sed -e "s/INSERT_BROWSER_HERE/$BUILD_NAME/g" | \
+  sed -e "s/INSERT_VERSION_HERE/$VERSION/g" | \
   base64 \
 )
 
