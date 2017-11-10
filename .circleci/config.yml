@@ -44,7 +44,7 @@ jobs:
           docker run -d --rm \
             --name headless-chromium \
             -p 9222:9222 \
-            adieuadieu/headless-chromium-for-aws-lambda
+            "adieuadieu/headless-chromium-for-aws-lambda:$VERSION"
       - run: npm run ava
 
   build_lambda:
