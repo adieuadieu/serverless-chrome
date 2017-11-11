@@ -1,6 +1,3 @@
-# Based on Dockferfile from JeongHoon Byun (aka Outsider)
-# via https://github.com/outsideris/headless-chrome-for-lambda
-# Thank you, JeongHoon!
 #
 # Build with:
 # docker build --compress -t adieuadieu/chromium-for-amazonlinux-base:62.0.3202.62 --build-arg VERSION=62.0.3202.62 .

@@ -91,7 +91,7 @@ function getChromium() {
   const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
   const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
 
-  if (fs.existsSync(DOWNLOAD_PATH)) {
+  if (fs.existsSync(path.resolve(EXTRACT_PATH, 'headless-chromium'))) {
     console.log(
       'Precompiled headless Chromium binary for AWS Lambda previously downloaded. Skipping download.'
     )
@@ -105,6 +105,7 @@ function getChromium() {
   return get(ZIP_URL, DOWNLOAD_PATH)
     .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
     .then(() => console.log('Completed Headless Chromium download.'))
+    .then(unlink(DOWNLOAD_PATH))
 }
 
 if (require.main === module) {
