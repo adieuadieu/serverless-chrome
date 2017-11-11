@@ -232,14 +232,14 @@ workflows:
             - integration_test_serverless_plugin
 
   daily_build:
-    # triggers:
-    #   - schedule:
-    #       cron: "0 6 * * *"
-    #       filters:
-    #         branches:
-    #           only:
-    #             # - master
-    #             - develop
+    triggers:
+      - schedule:
+          cron: "0 6 * * *"
+          filters:
+            branches:
+              only:
+                # - @TODO: master (instead of develop)
+                - develop
     jobs:
       - build_new_binaries
 
