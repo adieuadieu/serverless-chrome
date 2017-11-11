@@ -11,7 +11,7 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-AWS_REGION=us-east-1
+AWS_REGION=${AWS_REGION:-us-east-1}
 
 PROJECT_DIRECTORY=$(pwd)
 BUILD_NAME=${1:-chromium}

@@ -26,15 +26,9 @@ if (CHROMIUM_CHANNEL !== 'stable') {
 const RELEASE_DOWNLOAD_URL_BASE =
   'https://github.com/adieuadieu/serverless-chrome/releases/download'
 
-function unlink (path) {
+function unlink (filePath) {
   return new Promise((resolve, reject) => {
-    fs.unlink(path, error => (error ? reject(error) : resolve()))
-  })
-}
-
-function rename (from, to) {
-  return new Promise((resolve, reject) => {
-    fs.rename(from, to, error => (error ? reject(error) : resolve()))
+    fs.unlink(filePath, error => (error ? reject(error) : resolve()))
   })
 }
 
