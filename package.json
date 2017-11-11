@@ -15,7 +15,7 @@
     "coverage": "nyc report",
     "upgrade-dependencies": "yarn upgrade-interactive --latest --exact",
     "precommit": "lint-staged",
-    "prettier": "prettier --no-semi --single-quote --trailing-comma es5 --write",
+    "prettier": "prettier-eslint --no-semi --single-quote --trailing-comma es5 --write",
     "release": "scripts/release.sh",
     "postversion": "scripts/sync-package-versions.sh"
   },
@@ -63,6 +63,7 @@
     "nyc": "11.2.1",
     "prettier": "1.7.4",
     "prettier-eslint": "8.2.1",
+    "prettier-eslint-cli": "^4.4.0",
     "tap-xunit": "1.7.0"
   },
   "ava": {

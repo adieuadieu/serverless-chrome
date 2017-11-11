@@ -10,6 +10,8 @@ Standalone package to run Headless Chrome on AWS Lambda's Node.js (6.10+) runtim
 1. [Setup](#setup)
 1. [Local Development](#local-development)
 1. [Framework Plugins](#framework-plugins)
+1. [Specifying Chromium Channel](#specifying-chromium-channel)
+
 
 ## Installation
 Install with yarn:
@@ -29,6 +31,7 @@ If you wish to develop locally, you also need to install `chrome-launcher`:
 ```bash
 npm install --save-dev chrome-launcher
 ```
+
 
 ## Setup
 
@@ -61,6 +64,7 @@ module.exports.handler = function handler (event, context, callback) {
 }
 ```
 
+
 ## Local Development
 
 Local development is supported. In a non-lambda environment, the package will use chrome-launcher to launch a locally installed Chrome. You can also pass your own `chromePath`:
@@ -75,8 +79,34 @@ The behavior of Chrome does vary between platforms. It may be necessary to exper
 
 The package has zero external dependencies required for inclusion in your Lambda function's package.
 
+
 ## Framework Plugins
 
 There are plugins which bundle this package for easy deployment available for the following "serverless" frameworks:
 
 - [serverless-plugin-chrome](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin)
+
+
+## Specifying Chromium Channel
+
+This package will use the latest stable-channel build of Headless Chromium for AWS Lambda. To select a different channel (beta or dev), export either an environment variable `NPM_CONFIG_CHROMIUM_CHANNEL` or add `NPM_CONFIG_CHROMIUM_CHANNEL` to the `config` section of your `package.json`:
+
+Your `package.json`:
+
+```json
+{
+  "name": "my-cool-project",
+  "version": "1.0.0",
+  "config": {
+    "NPM_CONFIG_CHROMIUM_CHANNEL": "dev"  <-- here
+  },
+  "scripts": {
+    ...
+  },
+  "description": {
+    ...
+  }
+}
+```
+
+Note: the `dev` channel is _almost_ `canary`, so use `dev` if you're looking for the Canary channel.
