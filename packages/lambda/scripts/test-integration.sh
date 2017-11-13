@@ -6,14 +6,23 @@
 #
 # Requires Docker
 #
-# Usage: ./integration-test.sh
+# Usage: ./integration-test.sh [stable|beta|dev]
 #
 
-npm run postinstall
-npm run build
+set -e
+
+cd "$(dirname "$0")/.."
+
+CHANNEL=${1:-stable}
+
+if [ ! -d "dist/" ]; then
+  ./scripts/package-binaries.sh chromium $CHANNEL
+  npm run build
+fi
 
 docker run \
   -v "$PWD/integration-test":/var/task \
   -v "$PWD/dist":/var/task/dist \
   lambci/lambda:nodejs6.10 \
-  handler.run
+  handler.run \
+  "{\"channel\": \"$CHANNEL\"}"

@@ -5,6 +5,8 @@
 # Synchronises package version with the version in the project root.
 # Also synchronizes package dependencies
 #
+# Note: probably would be better to use something like Lerna here.........
+#
 # Requires jq.
 #
 # Usage: ./sync-package-versions.sh
@@ -20,7 +22,7 @@ cd packages/
 
 for PACKAGE in */package.json; do
   PACKAGE_NAME="${PACKAGE%%/*}"
-    cd "$PACKAGE_NAME" || exit
+    cd "$PACKAGE_NAME" || exit 1
 
     PACKAGE_VERSION=$(jq -r ".version" package.json)
 
@@ -29,7 +31,6 @@ for PACKAGE in */package.json; do
       
       JSON=$(jq -r ".version |= \"$PROJECT_VERSION\"" package.json)
       echo "$JSON" > package.json
-
       
     else
       echo "$BUILD_NAME version $CURRENT_VERSION is already latest. Nothing to update."

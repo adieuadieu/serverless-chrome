@@ -105,24 +105,34 @@ cd packages/lambda/builds
 
 for BUILD in */Dockerfile; do
   BUILD_NAME="${BUILD%%/*}"
-  
-    cd "$BUILD_NAME" || exit
 
-    VERSION=$(./latest.sh)
-    ZIPFILE=headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip
+  cd "$BUILD_NAME" || exit 1
+
+  CHANNEL_LIST=$(jq -r ". | keys | tostring" ./version.json | sed -e 's/[^A-Za-z,]//g' | tr , '\n')
+  
+  while IFS= read -r CHANNEL; do
+    # Skip empty lines and lines starting with a hash (#):
+    [ -z "$CHANNEL" ] || [ "${CHANNEL#\#}" != "$CHANNEL" ] && continue
+
+    VERSION=$(./latest.sh "$CHANNEL")
+    ZIPFILE=$CHANNEL-headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip
 
     cd build/
 
     if [ ! -f "$ZIPFILE" ]; then
-      echo "$BUILD_NAME version $VERSION has not been built. Building ..."
-      ../../../scripts/build-binaries.sh "$BUILD_NAME"
+      echo "$BUILD_NAME version $VERSION has not been packaged. Packaging ..."
+      ../../../scripts/package-binaries.sh "$BUILD_NAME" "$CHANNEL"
     fi
 
     echo "Uploading $ZIPFILE to GitHub"
 
-    upload_release_asset "$ZIPFILE" "headless-$BUILD_NAME-amazonlinux-2017-03.zip"
+    upload_release_asset "$ZIPFILE" "$CHANNEL-headless-$BUILD_NAME-amazonlinux-2017-03.zip"
   
-    RELEASE_BODY="$RELEASE_BODY$BUILD_NAME $VERSION for amazonlinux:2017.03\n"
+    RELEASE_BODY="$RELEASE_BODY$BUILD_NAME $VERSION ($CHANNEL channel) for amazonlinux:2017.03\n"
+  done << EOL
+$CHANNEL_LIST
+EOL
+
 done
 
 update_release_body "$RELEASE_ID"

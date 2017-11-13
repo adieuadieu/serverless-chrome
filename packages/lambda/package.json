@@ -38,8 +38,7 @@
     "dev": "rollup -c -w",
     "prepublishOnly": "npm run clean && yarn build",
     "postinstall": "node scripts/postinstall.js",
-    "build-binaries": "scripts/build-binaries.sh",
-    "build-binaries:chromium": "scripts/build-binaries.sh chromium",
+    "package-binaries": "scripts/package-binaries.sh",
     "latest-browser-versions": "scripts/latest-versions.sh",
     "upgrade-dependencies": "yarn upgrade-interactive --latest --exact"
   },

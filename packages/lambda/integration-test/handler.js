@@ -2,9 +2,11 @@ const path = require('path')
 const chrome = require('./dist/bundle.cjs.js')
 
 module.exports.run = function run (event, context, callback) {
-  console.log('started')
+  const channel = event.channel || 'stable'
 
-  chrome({ chromePath: path.resolve(__dirname, './dist/headless-chromium') })
+  console.log('started. Channel:', channel)
+
+  chrome({ chromePath: path.resolve(__dirname, `./dist/${channel}-headless-chromium`) })
     .then((instance) => {
       console.log('we got here. sweet.', instance)
 

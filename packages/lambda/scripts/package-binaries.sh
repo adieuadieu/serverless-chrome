@@ -15,26 +15,25 @@ cd "$(dirname "$0")/.."
 
 PACKAGE_DIRECTORY=$(pwd)
 
-build() {
+packageBinary() {
   BUILD_NAME=$1
-  
+  CHANNEL=$2
+
   cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
   
   DOCKER_IMAGE=headless-$BUILD_NAME-for-aws-lambda
-  VERSION=$(jq -r ".stable" version.json)
+  VERSION=$(jq -r ".$CHANNEL" version.json)
   BUILD_PATH="dist/$BUILD_NAME"
-  ZIPFILE_PATH="headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
+  ZIPFILE_PATH="$CHANNEL-headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
 
   if [ ! -f "dist/$ZIPFILE_PATH" ]; then
-    export VERSION
-
-    echo "Building $BUILD_NAME version $VERSION"
+    echo "Packaging $BUILD_NAME version $VERSION ($CHANNEL)"
     
     mkdir -p "$BUILD_PATH"
 
     # Extract binary from docker image
     docker run -dt --rm --name "$DOCKER_IMAGE" "adieuadieu/$DOCKER_IMAGE:$VERSION"
-    docker cp "$DOCKER_IMAGE":/build/headless-"$BUILD_NAME" "$BUILD_PATH"
+    docker cp "$DOCKER_IMAGE":/bin/headless-"$BUILD_NAME" "$BUILD_PATH"
     docker stop "$DOCKER_IMAGE"
 
     # Package
@@ -44,23 +43,25 @@ build() {
 
     # stick a copy in packages' dist/ for tests and local dev
     mkdir -p "$PACKAGE_DIRECTORY/dist"
-    cp "$BUILD_PATH/headless-$BUILD_NAME" "$PACKAGE_DIRECTORY/dist"
+    cp "$BUILD_PATH/headless-$BUILD_NAME" "$PACKAGE_DIRECTORY/dist/$CHANNEL-headless-$BUILD_NAME"
 
     # Cleanup
-    rm -Rf "$BUILD_PATH"    
+    rm -Rf "$BUILD_PATH"
   else
-    echo "$BUILD_NAME version $VERSION was previously built. Skipping build."
+    echo "$BUILD_NAME version $VERSION was previously package. Skipping."
   fi
 }
 
 # main script
 
 if [ ! -z "$1" ]; then
-  build "$1"
+  packageBinary "$1" "$2"
 else
   cd "$PACKAGE_DIRECTORY/builds"
 
   for DOCKER_FILE in */Dockerfile; do
-    build "${DOCKER_FILE%%/*}"
+    packageBinary "${DOCKER_FILE%%/*}" stable
+    packageBinary "${DOCKER_FILE%%/*}" beta
+    packageBinary "${DOCKER_FILE%%/*}" dev
   done
 fi
