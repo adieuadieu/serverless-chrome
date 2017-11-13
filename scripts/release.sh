@@ -13,6 +13,9 @@ set -e
 
 cd "$(dirname "$0")/../"
 
+PROJECT_DIRECTORY=$(pwd)
+PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
+
 if [ -z "$GITHUB_TOKEN" ]; then
   printf "Error: Missing %s environment variable.\n" \
     GITHUB_TOKEN >&2
@@ -51,7 +54,7 @@ RELEASE_TEMPLATE='{
   "draft": %s
 }'
 
-RELEASE_BODY=""
+RELEASE_BODY="This is an automated release.\n\n"
 
 create_draft_release() {
   # shellcheck disable=SC2034
@@ -101,12 +104,12 @@ echo "Creating draft release $TAG"
 create_draft_release
 
 # upload zipped builds
-cd packages/lambda/builds
+cd "$PACKAGE_DIRECTORY/builds"
 
 for BUILD in */Dockerfile; do
   BUILD_NAME="${BUILD%%/*}"
 
-  cd "$BUILD_NAME" || exit 1
+  cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME" || exit 1
 
   CHANNEL_LIST=$(jq -r ". | keys | tostring" ./version.json | sed -e 's/[^A-Za-z,]//g' | tr , '\n')
   
@@ -114,19 +117,21 @@ for BUILD in */Dockerfile; do
     # Skip empty lines and lines starting with a hash (#):
     [ -z "$CHANNEL" ] || [ "${CHANNEL#\#}" != "$CHANNEL" ] && continue
 
-    VERSION=$(./latest.sh "$CHANNEL")
+    VERSION=$(jq -r ".$CHANNEL" version.json)
     ZIPFILE=$CHANNEL-headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip
 
-    cd build/
+    (
+      cd dist/
 
-    if [ ! -f "$ZIPFILE" ]; then
-      echo "$BUILD_NAME version $VERSION has not been packaged. Packaging ..."
-      ../../../scripts/package-binaries.sh "$BUILD_NAME" "$CHANNEL"
-    fi
+      if [ ! -f "$ZIPFILE" ]; then
+        echo "$BUILD_NAME version $VERSION has not been packaged. Packaging ..."
+        ../../../scripts/package-binaries.sh "$BUILD_NAME" "$CHANNEL"
+      fi
 
-    echo "Uploading $ZIPFILE to GitHub"
+      echo "Uploading $ZIPFILE to GitHub"
 
-    upload_release_asset "$ZIPFILE" "$CHANNEL-headless-$BUILD_NAME-amazonlinux-2017-03.zip"
+      upload_release_asset "$ZIPFILE" "$CHANNEL-headless-$BUILD_NAME-amazonlinux-2017-03.zip"
+    )
   
     RELEASE_BODY="$RELEASE_BODY$BUILD_NAME $VERSION ($CHANNEL channel) for amazonlinux:2017.03\n"
   done << EOL

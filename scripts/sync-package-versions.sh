@@ -47,7 +47,7 @@ for PACKAGE in */package.json; do
       fi
 
       echo "$JSON" > package.json
-      
+      yarn
     else
       echo "$BUILD_NAME version $CURRENT_VERSION is already latest. Nothing to update."
     fi
@@ -56,3 +56,4 @@ for PACKAGE in */package.json; do
 done
 
 # @TODO: update integration-test and example dependencies, too
+# @TODO: run yarn to update lockfile
