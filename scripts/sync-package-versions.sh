@@ -29,7 +29,23 @@ for PACKAGE in */package.json; do
     if [ "$PACKAGE_VERSION" != "$PROJECT_VERSION" ]; then
       echo "Updating $PACKAGE_NAME version ..."
       
-      JSON=$(jq -r ".version |= \"$PROJECT_VERSION\"" package.json)
+      JSON=$(jq -r \
+        ".version |= \"$PROJECT_VERSION\"" \
+        package.json
+      )
+
+      HAS_LAMBDA_DEPENDENCY=$(echo "$JSON" | \
+        jq -r \
+        ".dependencies | has(\"@serverless-chrome/lambda\")"
+      )
+
+      if [ "$HAS_LAMBDA_DEPENDENCY" = "true" ]; then
+        JSON=$(echo "$JSON" | \
+          jq -r \
+          ".dependencies.\"@serverless-chrome/lambda\" |= \"$PROJECT_VERSION\""
+        )
+      fi
+
       echo "$JSON" > package.json
       
     else
@@ -39,3 +55,4 @@ for PACKAGE in */package.json; do
     cd ../
 done
 
+# @TODO: update integration-test and example dependencies, too
