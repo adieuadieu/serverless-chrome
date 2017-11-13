@@ -89,7 +89,7 @@ There are plugins which bundle this package for easy deployment available for th
 
 ## Specifying Chromium Channel
 
-This package will use the latest stable-channel build of Headless Chromium for AWS Lambda. To select a different channel (beta or dev), export either an environment variable `NPM_CONFIG_CHROMIUM_CHANNEL` or add `NPM_CONFIG_CHROMIUM_CHANNEL` to the `config` section of your `package.json`:
+This package will use the latest stable-channel build of Headless Chromium for AWS Lambda. To select a different channel (beta or dev), export either an environment variable `NPM_CONFIG_CHROMIUM_CHANNEL` or add `chromium_channel` to the `config` section of your `package.json`:
 
 Your `package.json`:
 
@@ -98,7 +98,7 @@ Your `package.json`:
   "name": "my-cool-project",
   "version": "1.0.0",
   "config": {
-    "NPM_CONFIG_CHROMIUM_CHANNEL": "dev"  <-- here
+    "chromium_channel": "dev"  <-- here
   },
   "scripts": {
     ...
@@ -110,3 +110,5 @@ Your `package.json`:
 ```
 
 Note: the `dev` channel is _almost_ `canary`, so use `dev` if you're looking for the Canary channel.
+
+You can skip download entirely with `NPM_CONFIG_SERVERLESS_CHROME_SKIP_DOWNLOAD` or setting `skip_download` in the `config` section of your `package.json`
