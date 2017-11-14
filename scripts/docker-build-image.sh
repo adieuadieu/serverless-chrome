@@ -55,13 +55,15 @@ build() {
       -p 9222:9222 \
       "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION"
 
+    sleep 10
+
     # Test the build and return if it doesn't run
     if ! curl -fs http://localhost:9222/json/version; then
       echo "Unable to correctly run and connect to build via Docker."
 
       # @TODO: this is specific to chromium......
       echo "Here's some output:"
-      
+
       docker logs "$DOCKER_IMAGE-build"
 
       docker run --init --rm \
