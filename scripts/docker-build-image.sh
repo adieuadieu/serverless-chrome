@@ -61,8 +61,10 @@ build() {
 
       # @TODO: this is specific to chromium......
       echo "Here's some output:"
+      
+      docker logs "$DOCKER_IMAGE-build"
+
       docker run --init --rm \
-        -p 9222:9222 \
         --entrypoint="/bin/headless-chromium" \
         "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION" \
         --no-sandbox --disable-gpu http://google.com/
