@@ -157,12 +157,15 @@ jobs:
 
   build_new_binaries:
     docker:
-      - image: circleci/node:6.10.3
+      - image: amazonlinux:latest
     branch:
       - develop # @TODO remove
       - master
     steps:
       - checkout
+      - run:
+          name: Install JQ
+          command: yum install -y jq
       # - run:
       #     name: Enable experimental features in Docker daemon
       #     command: |
@@ -191,7 +194,8 @@ workflows:
       - build_lambda
       - build_serverless_plugin
       - build_serverless_example
-
+      - build_new_binaries
+      
       - lint:
           requires:
             - build  
