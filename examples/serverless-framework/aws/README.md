@@ -27,7 +27,7 @@ npm install serverless -g
 Then pull down the example service:
 
 ```bash
-serverless install -u https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws
+serverless create -u https://github.com/adieuadieu/serverless-chrome/tree/master/serverless-chrome/examples/serverless-framework/aws
 ```
 
 

@@ -55,6 +55,7 @@ build() {
       -p 9222:9222 \
       "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION"
 
+    # Give the container and browser some time to start up
     sleep 10
 
     # Test the build and return if it doesn't run
