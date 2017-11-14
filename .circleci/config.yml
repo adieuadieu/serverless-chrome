@@ -163,9 +163,10 @@ jobs:
       - master
     steps:
       - checkout
+      # Would be cooler if these dependencies were already apart of the docker image
       - run:
-          name: Install JQ
-          command: yum install -y jq
+          name: Install AWS CLI & JQ
+          command: yum install -y aws-cli jq
       # - run:
       #     name: Enable experimental features in Docker daemon
       #     command: |
@@ -195,7 +196,7 @@ workflows:
       - build_serverless_plugin
       - build_serverless_example
       - build_new_binaries
-      
+
       - lint:
           requires:
             - build  
