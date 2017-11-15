@@ -230,8 +230,8 @@ workflows:
             tags:
               # semver https://github.com/sindresorhus/semver-regex/blob/master/index.js
               only: /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig
-            # branches:
-            #   ignore: /.*/ @TODO: uncomment, only master
+            branches:
+              ignore: /.*/
 
 
   daily_build:
@@ -249,7 +249,7 @@ workflows:
   daily_version_update:
     triggers:
       - schedule:
-          cron: "45 * * * *" # * 14
+          cron: "54 * * * *" # * 14
           filters:
             branches:
               only:
