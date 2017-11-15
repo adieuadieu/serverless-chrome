@@ -47,7 +47,7 @@ for PACKAGE in */package.json; do
       fi
 
       echo "$JSON" > package.json
-      #yarn generate-lock-entry
+      #yarn --ignore-scripts --non-interactive
     else
       echo "$BUILD_NAME version $CURRENT_VERSION is already latest. Nothing to update."
     fi

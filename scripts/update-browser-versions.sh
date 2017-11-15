@@ -86,6 +86,6 @@ if [ "$UPDATES" -eq 1 ]; then
 
   git commit -a -m "v$PROJECT_VERSION"
   git tag "v$PROJECT_VERSION"
-  git push
+  git push --set-upstream origin develop # @TODO: switch this to 'master'
   git push --tags
 fi
