@@ -231,7 +231,7 @@ workflows:
               # semver https://github.com/sindresorhus/semver-regex/blob/master/index.js
               only: /^\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig
             branches:
-              ignore: /.*/
+              ignore: develop # /.*/ # @TODO: remove 'develop'
 
 
   daily_build:
