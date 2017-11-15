@@ -250,7 +250,7 @@ workflows:
   daily_version_update:
     triggers:
       - schedule:
-          cron: "21 * * * *" # 14
+          cron: "22 * * * *" # 14
           filters:
             branches:
               only:
