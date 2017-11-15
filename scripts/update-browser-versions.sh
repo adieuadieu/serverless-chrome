@@ -28,6 +28,8 @@ if [ -z "$(git config user.name)" ] && [ -n "$GIT_USER_NAME" ]; then
     git config --global user.name "$GIT_USER_NAME"
 fi
 
+git checkout develop # @TODO change to 'master'
+
 
 cd "$PACKAGE_DIRECTORY/builds"
 
