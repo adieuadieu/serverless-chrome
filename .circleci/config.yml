@@ -144,15 +144,14 @@ jobs:
       - run: scripts/update-browser-versions.sh
 
   release:
-    docker:
-      - image: circleci/node:6.10.3
+    machine: true
+    # docker:
+    #   - image: circleci/node:6.10.3
     branch:
       - develop # @TODO remove
       - master
     steps:
       - checkout
-      - restore_cache:
-          key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
       - run: scripts/release.sh
 
   build_new_binaries:
@@ -251,7 +250,7 @@ workflows:
   daily_version_update:
     triggers:
       - schedule:
-          cron: "30 * * * *" # * 14
+          cron: "33 * * * *" # * 14
           filters:
             branches:
               only:
