@@ -139,12 +139,12 @@ for BUILD in */Dockerfile; do
     ZIPFILE=$CHANNEL-headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip
 
     (
-      cd dist/
-
-      if [ ! -f "$ZIPFILE" ]; then
+      if [ ! -f "dist/$ZIPFILE" ]; then
         echo "$BUILD_NAME version $VERSION has not been packaged. Packaging ..."
         ../../../scripts/package-binaries.sh "$BUILD_NAME" "$CHANNEL"
       fi
+
+      cd dist/
 
       echo "Uploading $ZIPFILE to GitHub"
 
