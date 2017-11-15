@@ -168,7 +168,7 @@ publish_release "$RELEASE_ID"
 #
 
 # Add NPM token to .npmrc if not logged in
-if [ -z "$NPM_TOKEN" ] && [ -z "$(npm whoami)" ]; then
+if [ -n "$NPM_TOKEN" ] && [ -z "$(npm whoami)" ]; then
   echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc"
 fi
 

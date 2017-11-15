@@ -18,6 +18,17 @@ PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
 
 UPDATES=0
 
+
+# on CircleCI, setup git user email & name
+if [ -z "$(git config user.email)" ] && [ -n "$GIT_USER_EMAIL" ]; then
+    git config --global user.email "$GIT_USER_EMAIL"
+fi
+
+if [ -z "$(git config user.name)" ] && [ -n "$GIT_USER_NAME" ]; then
+    git config --global user.name "$GIT_USER_NAME"
+fi
+
+
 cd "$PACKAGE_DIRECTORY/builds"
 
 for BUILD in */Dockerfile; do

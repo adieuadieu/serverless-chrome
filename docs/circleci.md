@@ -13,6 +13,8 @@ For automated releases, environment requires the following variables:
 - **AWS_IAM_INSTANCE_ARN** - The instance Arn for Spot instances launched when new binaries are to be built. Something like `arn:aws:iam::000000000000:instance-profile/serverless-chrome-automation`
 - **AWS_REGION** - Region in which to launch spot instances
 - **NPM_TOKEN** - NPM token for publishing packages. Use a bot account!
+- **GIT_USER_EMAIL** - email for commits made during Continuous Deployment processes.
+- **GIT_USER_NAME** - user's name for commits made during Continuous Deployment processes
 
 Bla bla:
 
