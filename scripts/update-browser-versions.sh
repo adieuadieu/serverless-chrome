@@ -43,8 +43,8 @@ for BUILD in */Dockerfile; do
         JSON=$(jq -r ".$CHANNEL |= \"$LATEST_VERSION\"" version.json)
         echo "$JSON" > version.json
 
-        #git add version.json
-        #git commit -m "chore ($BUILD_NAME): bump $CHANNEL channel version to $LATEST_VERSION" --no-verify
+        git add version.json
+        git commit -m "chore ($BUILD_NAME): bump $CHANNEL channel version to $LATEST_VERSION" --no-verify
 
         UPDATES=1
       else
@@ -64,13 +64,15 @@ done
 cd "$PROJECT_DIRECTORY"
 
 # If there are new browser versions we create a new version
-# if [ "$UPDATES" -eq 1 ]; then
-#   npm version prerelease --no-git-tag-version # @TODO: change to 'minor' if stable-channel, otherwise `pre-release`?
+if [ "$UPDATES" -eq 1 ]; then
+  npm version prerelease --no-git-tag-version # @TODO: change to 'minor' if stable-channel, otherwise `pre-release`?
   
-#   PROJECT_VERSION=$(jq -r ".version" package.json)
+  PROJECT_VERSION=$(jq -r ".version" package.json)
   
-#   git commit -a -m "v$PROJECT_VERSION"
-#   git tag "v$PROJECT_VERSION"
-#   git push
-#   git push --tags
-# fi
+  ./scripts/sync-package-versions.sh
+
+  git commit -a -m "v$PROJECT_VERSION"
+  git tag "v$PROJECT_VERSION"
+  git push
+  git push --tags
+fi

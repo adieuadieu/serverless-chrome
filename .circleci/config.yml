@@ -44,7 +44,7 @@ jobs:
           docker run -d --rm \
             --name headless-chromium \
             -p 9222:9222 \
-            "adieuadieu/headless-chromium-for-aws-lambda:$VERSION"
+            "adieuadieu/headless-chromium-for-aws-lambda:$VERSION" # @TODO $VERSION is not set
       - run: npm run ava
 
   build_lambda:
@@ -229,16 +229,16 @@ workflows:
               only: /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig
             branches:
               ignore: /.*/
-          requires:
-            - lint
-            - unit_test
-            - integration_test_lambda
-            - integration_test_serverless_plugin
+          # requires:
+          #   - lint
+          #   - unit_test
+          #   - integration_test_lambda
+          #   - integration_test_serverless_plugin
 
   daily_build:
     triggers:
       - schedule:
-          cron: "0 3 * * *"
+          cron: "0 8 * * *"
           filters:
             branches:
               only:
@@ -247,6 +247,14 @@ workflows:
     jobs:
       - build_new_binaries
 
-      # - update_browser_versions:
-      #     requires:
-      #       - build_new_binaries
+  daily_version_update:
+    triggers:
+      - schedule:
+          cron: "35 * * * *" # 14
+          filters:
+            branches:
+              only:
+                # - @TODO: master (instead of develop)
+                - develop
+    jobs:
+      - update_browser_versions

@@ -22,6 +22,11 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
+if [ -z "$(npm whoami)" ] && [ -z "$NPM_TOKEN" ]; then
+  echo "Error: Missing NPM credentials or NPM_TOKEN environment variable." 
+  exit 1
+fi
+
 
 ORIGIN_URL=$(git config --get remote.origin.url)
 GITHUB_ORG=$(echo "$ORIGIN_URL" | sed 's|.*:||;s|/.*$||')
@@ -56,7 +61,7 @@ RELEASE_TEMPLATE='{
 
 RELEASE_BODY="This is an automated release.\n\n"
 
-create_draft_release() {
+create_release_draft() {
   # shellcheck disable=SC2034
   local ouput
   # shellcheck disable=SC2059
@@ -100,8 +105,21 @@ update_release_body() {
     > /dev/null
 }
 
-echo "Creating draft release $TAG"
-create_draft_release
+publish_release() {
+  # shellcheck disable=SC2059
+  curl \
+    --silent \
+    --fail \
+    --request PATCH \
+    --header "Authorization: token $GITHUB_TOKEN" \
+    --header 'Content-Type: application/json' \
+    --data "{\"draft\":false}" \
+    "https://api.github.com/repos/$GITHUB_ORG/$GITHUB_REPO/releases/$1" \
+    > /dev/null
+}
+
+echo "Creating release draft $TAG"
+create_release_draft
 
 # upload zipped builds
 cd "$PACKAGE_DIRECTORY/builds"
@@ -142,7 +160,22 @@ done
 
 update_release_body "$RELEASE_ID"
 
+publish_release "$RELEASE_ID"
 
 
-# @TODO
-# publish npm packages with new versions
+#
+# Publish NPM packages
+#
+
+# Add NPM token to .npmrc if not logged in
+if [ -z "$NPM_TOKEN" ] && [ -z "$(npm whoami)" ]; then
+  echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc"
+fi
+
+while IFS= read -r PACKAGE; do
+  cd "$PROJECT_DIRECTORY/packages/$PACKAGE"
+  npm publish
+done << EOL
+lambda
+serverless-plugin
+EOL
