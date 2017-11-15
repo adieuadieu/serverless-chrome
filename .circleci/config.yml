@@ -189,7 +189,7 @@ jobs:
 
 workflows:
   version: 2
-  build_test:
+  build_test_release:
     jobs:
       - build
       - build_lambda
@@ -221,17 +221,19 @@ workflows:
       - integration_test_serverless_plugin:
           requires:
             - build_serverless_plugin
-            # - build_lambda_chromium
-
-  release:
-    jobs:            
+            # - build_lambda_chromium            
       - release:
           filters:
             tags:
               # semver https://github.com/sindresorhus/semver-regex/blob/master/index.js
               only: /^\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig
-            # branches:
-            #   ignore: /.*/
+            branches:
+              only: develop # @TODO: change to 'master'
+          # requires:
+          #   - lint
+          #   - unit_test
+          #   - integration_test_serverless_plugin
+          #   - integration_test_lambda
 
 
   daily_build:
@@ -249,7 +251,7 @@ workflows:
   daily_version_update:
     triggers:
       - schedule:
-          cron: "19 * * * *" # * 14
+          cron: "30 * * * *" # * 14
           filters:
             branches:
               only:

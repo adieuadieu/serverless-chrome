@@ -141,7 +141,7 @@ for BUILD in */Dockerfile; do
     (
       if [ ! -f "dist/$ZIPFILE" ]; then
         echo "$BUILD_NAME version $VERSION has not been packaged. Packaging ..."
-        ../../../scripts/package-binaries.sh "$BUILD_NAME" "$CHANNEL"
+        ../../scripts/package-binaries.sh "$BUILD_NAME" "$CHANNEL"
       fi
 
       cd dist/
