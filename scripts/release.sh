@@ -22,7 +22,7 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
-if [ -z "$(npm whoami)" ] && [ -z "$NPM_TOKEN" ]; then
+if ! npm whoami && [ -z "$NPM_TOKEN" ]; then
   echo "Error: Missing NPM credentials or NPM_TOKEN environment variable." 
   exit 1
 fi
@@ -168,7 +168,7 @@ publish_release "$RELEASE_ID"
 #
 
 # Add NPM token to .npmrc if not logged in
-if [ -n "$NPM_TOKEN" ] && [ -z "$(npm whoami)" ]; then
+if [ -n "$NPM_TOKEN" ] && ! npm whoami; then
   echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc"
 fi
 
