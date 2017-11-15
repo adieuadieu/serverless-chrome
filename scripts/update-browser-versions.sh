@@ -18,7 +18,7 @@ PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
 
 UPDATES=0
 
-cd "$PACKAGE_DIRECTORY"
+cd "$PACKAGE_DIRECTORY/builds"
 
 for BUILD in */Dockerfile; do
   BUILD_NAME="${BUILD%%/*}"
@@ -43,8 +43,8 @@ for BUILD in */Dockerfile; do
         JSON=$(jq -r ".$CHANNEL |= \"$LATEST_VERSION\"" version.json)
         echo "$JSON" > version.json
 
-        git add version.json
-        git commit -m "chore ($BUILD_NAME): bump $CHANNEL channel version to $LATEST_VERSION" --no-verify
+        # git add version.json
+        # git commit -m "chore ($BUILD_NAME): bump $CHANNEL channel version to $LATEST_VERSION" --no-verify
 
         UPDATES=1
       else
@@ -64,15 +64,15 @@ done
 cd "$PROJECT_DIRECTORY"
 
 # If there are new browser versions we create a new version
-if [ "$UPDATES" -eq 1 ]; then
-  npm version prerelease --no-git-tag-version # @TODO: change to 'minor' if stable-channel, otherwise `pre-release`?
+# if [ "$UPDATES" -eq 1 ]; then
+#   npm version prerelease --no-git-tag-version # @TODO: change to 'minor' if stable-channel, otherwise `pre-release`?
   
-  PROJECT_VERSION=$(jq -r ".version" package.json)
+#   PROJECT_VERSION=$(jq -r ".version" package.json)
   
-  ./scripts/sync-package-versions.sh
+#   ./scripts/sync-package-versions.sh
 
-  git commit -a -m "v$PROJECT_VERSION"
-  git tag "v$PROJECT_VERSION"
-  git push
-  git push --tags
-fi
+#   git commit -a -m "v$PROJECT_VERSION"
+#   git tag "v$PROJECT_VERSION"
+#   git push
+#   git push --tags
+# fi
