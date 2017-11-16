@@ -50,7 +50,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
       - run:
-          name: Add chromium binary on release builds
+          name: Add chromium binary if missing
           command: |
             cd packages/lambda
             if [ ! -f "dist/headless-chromium" ]; then
@@ -64,6 +64,10 @@ jobs:
           paths:
             - packages/lambda/node_modules
             - packages/lambda/dist/headless-chromium
+      - save_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
+          paths:
+            - packages/lambda/dist         
 
   integration_test_lambda:
     machine: true
@@ -73,6 +77,8 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}      
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda               
       - run:
           name: Integration test
           command: cd packages/lambda && npm test
@@ -86,10 +92,12 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}      
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
       - run: ./scripts/link-package.sh "$PWD/packages/serverless-chrome" lambda
       - run: cd packages/serverless-plugin && npm install
       - run: |
-          [ -n "$CIRCLE_TAG" ] && ./scripts/link-package.sh "$PWD/packages/serverless-chrome/integration-test" lambda
+          [ -z "$CIRCLE_TAG" ] || ./scripts/link-package.sh "$PWD/packages/serverless-chrome/integration-test" lambda
       - run: cd packages/serverless-plugin/integration-test && npm install
       - save_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
@@ -105,6 +113,8 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}      
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
       - run:
           name: Integration test
           command: cd packages/serverless-plugin && npm test
