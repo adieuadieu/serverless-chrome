@@ -55,19 +55,20 @@ jobs:
             cd packages/lambda
             if [ ! -f "dist/headless-chromium" ]; then
               ./scripts/package-binaries.sh chromium stable
-              mv dist/stable-headless-chromium dist/headless-chromium
+              cp dist/stable-headless-chromium dist/headless-chromium
             fi
       - run: cd packages/lambda && npm install
-      - run: cd packages/lambda && npm run build
       - save_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
           paths:
             - packages/lambda/node_modules
             - packages/lambda/dist/headless-chromium
+            - packages/lambda/dist/stable-headless-chromium
+      - run: cd packages/lambda && npm run build
       - save_cache:
           key: build-cache-{{ .Revision }}-package-lambda
           paths:
-            - packages/lambda/dist         
+            - packages/lambda/dist  
 
   integration_test_lambda:
     machine: true
@@ -94,7 +95,7 @@ jobs:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}-package-lambda
-      - run: ./scripts/link-package.sh "$PWD/packages/serverless-chrome" lambda
+      - run: ./scripts/link-package.sh serverless-chrome lambda
       - run: cd packages/serverless-plugin && npm install
       - run: |
           [ -z "$CIRCLE_TAG" ] || ./scripts/link-package.sh "$PWD/packages/serverless-chrome/integration-test" lambda
