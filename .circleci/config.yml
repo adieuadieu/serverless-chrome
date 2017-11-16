@@ -63,7 +63,7 @@ jobs:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
           paths:
             - packages/lambda/node_modules
-            - packages/lambda/dist
+            - packages/lambda/dist/headless-chromium
 
   integration_test_lambda:
     machine: true
