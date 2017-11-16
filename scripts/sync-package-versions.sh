@@ -22,37 +22,37 @@ cd packages/
 
 for PACKAGE in */package.json; do
   PACKAGE_NAME="${PACKAGE%%/*}"
-    cd "$PACKAGE_NAME" || exit 1
+  cd "$PACKAGE_NAME" || exit 1
 
-    PACKAGE_VERSION=$(jq -r ".version" package.json)
+  PACKAGE_VERSION=$(jq -r ".version" package.json)
 
-    if [ "$PACKAGE_VERSION" != "$PROJECT_VERSION" ]; then
-      echo "Updating $PACKAGE_NAME version ..."
-      
-      JSON=$(jq -r \
-        ".version |= \"$PROJECT_VERSION\"" \
-        package.json
-      )
+  if [ "$PACKAGE_VERSION" != "$PROJECT_VERSION" ]; then
+    echo "Updating $PACKAGE_NAME version ..."
+    
+    JSON=$(jq -r \
+      ".version |= \"$PROJECT_VERSION\"" \
+      package.json
+    )
 
-      HAS_LAMBDA_DEPENDENCY=$(echo "$JSON" | \
+    HAS_LAMBDA_DEPENDENCY=$(echo "$JSON" | \
+      jq -r \
+      ".dependencies | has(\"@serverless-chrome/lambda\")"
+    )
+
+    if [ "$HAS_LAMBDA_DEPENDENCY" = "true" ]; then
+      JSON=$(echo "$JSON" | \
         jq -r \
-        ".dependencies | has(\"@serverless-chrome/lambda\")"
+        ".dependencies.\"@serverless-chrome/lambda\" |= \"$PROJECT_VERSION\""
       )
-
-      if [ "$HAS_LAMBDA_DEPENDENCY" = "true" ]; then
-        JSON=$(echo "$JSON" | \
-          jq -r \
-          ".dependencies.\"@serverless-chrome/lambda\" |= \"$PROJECT_VERSION\""
-        )
-      fi
-
-      echo "$JSON" > package.json
-      #yarn --ignore-scripts --non-interactive
-    else
-      echo "$BUILD_NAME version $CURRENT_VERSION is already latest. Nothing to update."
     fi
 
-    cd ../
+    echo "$JSON" > package.json
+    #yarn --ignore-scripts --non-interactive
+  else
+    echo "$BUILD_NAME version $CURRENT_VERSION is already latest. Nothing to update."
+  fi
+
+  cd ../
 done
 
 # @TODO: update integration-test and example dependencies, too

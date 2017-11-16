@@ -6,7 +6,7 @@
 #
 # Requires Docker, jq, and zip
 #
-# Usage: ./build-binaries.sh [chromium|firefox]
+# Usage: ./build-binaries.sh [chromium|firefox] [stable|beta|dev]
 #
 
 set -e

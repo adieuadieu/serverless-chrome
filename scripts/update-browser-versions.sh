@@ -59,7 +59,10 @@ for BUILD in */Dockerfile; do
         git add version.json
         git commit -m "chore ($BUILD_NAME): bump $CHANNEL channel version to $LATEST_VERSION" --no-verify
 
-        UPDATES=1
+        # Only create new tag/release when stable channel has new version
+        if [ "$UPDATES" = "stable" ]; then
+          UPDATES=1
+        fi
       else
         echo "Docker image for adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION does not exist. Exiting." && exit 1
       fi
@@ -76,7 +79,7 @@ done
 
 cd "$PROJECT_DIRECTORY"
 
-# If there are new browser versions we create a new version
+# If there are new browser versions (on the stable channel) we create a new version
 if [ "$UPDATES" -eq 1 ]; then
   npm version prerelease --no-git-tag-version # @TODO: change to 'minor' if stable-channel, otherwise `pre-release`?
   
@@ -88,4 +91,6 @@ if [ "$UPDATES" -eq 1 ]; then
   git tag "v$PROJECT_VERSION"
   git push --set-upstream origin develop # @TODO: switch this to 'master'
   git push --tags
+else
+  git push --set-upstream origin develop # @TODO: switch this to 'master'
 fi

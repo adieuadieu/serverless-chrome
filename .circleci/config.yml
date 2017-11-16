@@ -12,7 +12,6 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - node_modules
-            - /usr/local/lib/node_modules # for symlinks made via npm link
 
   lint:
     docker:
@@ -43,14 +42,19 @@ jobs:
       - run: npm run ava
 
   build_lambda:
-    docker:
-      - image: circleci/node:6.10.3
+    machine: true
     steps:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}      
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
+      - run:
+          name: Add chromium binary on release builds
+          command: |
+            cd packages/lambda
+            [ -n "$CIRCLE_TAG" ] && ./scripts/package-binaries.sh chromium stable
+            [ -n "$CIRCLE_TAG" ] && mv dist/stable-headless-chromium dist/headless-chromium
       - run: cd packages/lambda && npm install
       - save_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
@@ -78,7 +82,10 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}      
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - run: ./scripts/link-package.sh "$PWD/packages/serverless-chrome" lambda
       - run: cd packages/serverless-plugin && npm install
+      - run: |
+          [ -n "$CIRCLE_TAG" ] && ./scripts/link-package.sh "$PWD/packages/serverless-chrome/integration-test" lambda
       - run: cd packages/serverless-plugin/integration-test && npm install
       - save_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
