@@ -82,7 +82,7 @@ function getChromium () {
   return get(ZIP_URL, DOWNLOAD_PATH)
     .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
     .then(() => console.log('Completed Headless Chromium download.'))
-    .then(unlink(DOWNLOAD_PATH))
+    .then(() => unlink(DOWNLOAD_PATH))
 }
 
 if (require.main === module) {
