@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/functions/serverless-framework",
   "dependencies": {
-    "chrome-remote-interface": "0.25.2"
+    "chrome-remote-interface": "^0.25.3"
   },
   "devDependencies": {
     "babel-core": "6.26.0",

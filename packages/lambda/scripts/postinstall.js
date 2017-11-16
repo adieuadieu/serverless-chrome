@@ -55,7 +55,7 @@ function get (url, destination) {
 
         response.pipe(file)
 
-        file.on('finish', () => {
+        return file.on('finish', () => {
           file.close(resolve)
         })
       })

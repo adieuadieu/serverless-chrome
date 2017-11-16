@@ -3,9 +3,7 @@ const path = require('path')
 const webpack = require('webpack')
 const yaml = require('js-yaml')
 
-const { functions: slsFunctions } = yaml.load(
-  fs.readFileSync('./serverless.yml')
-)
+const { functions: slsFunctions } = yaml.load(fs.readFileSync('./serverless.yml'))
 
 module.exports = {
   devtool: 'source-map',

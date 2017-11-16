@@ -9,9 +9,11 @@
   - support for enabling chrome only on specific functions?
   - instead of including fs-p dep, use the fs methods from the Utils class provided by Serverless
   - config option to, instead of including chrome in artifact zip, download it on
-    cold-start invocations this could be useful for development, instead of having to upload 50MB each deploy
+    cold-start invocations this could be useful for development, instead of having
+    to upload 50MB each deploy
   - tests.
-  - custom.chrome.functions breaks when a wrapped and non-wrapped function have the same handler.js file
+  - custom.chrome.functions breaks when a wrapped and non-wrapped function have the
+    same handler.js file
 */
 
 import * as path from 'path'

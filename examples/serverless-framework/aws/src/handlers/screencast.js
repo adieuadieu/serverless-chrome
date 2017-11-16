@@ -1,11 +1,9 @@
 // EXPERIMENTAL
 
 /*
-
-@todo: time the duration between screenshot frames, and create ffmpeg video based on duration between framesCaptured
-see: https://github.com/peterc/chrome2gif/blob/master/index.js#L34
-
-
+@todo: time the duration between screenshot frames, and create ffmpeg video
+  based on duration between framesCaptured
+  see: https://github.com/peterc/chrome2gif/blob/master/index.js#L34
 */
 
 import fs from 'fs'
@@ -44,7 +42,10 @@ export async function makeVideo (url, options = {}, invokeid = '') {
   let result
   let loaded = false
   let framesCaptured = 0
-  const requestQueue = [] // @TODO: write a better quite, which waits a few seconds when reaching 0 before emitting "empty"
+
+  // @TODO: write a better queue, which waits a few seconds when reaching 0
+  // before emitting "empty"
+  const requestQueue = []
 
   const loading = async (startTime = Date.now()) => {
     log('Request queue size:', requestQueue.length, requestQueue)
@@ -59,7 +60,7 @@ export async function makeVideo (url, options = {}, invokeid = '') {
   const client = await Cdp({ host: '127.0.0.1', target: tab })
 
   const {
-    Network, Page, Input, DOM, Overlay,
+    Network, Page, Input, DOM,
   } = client
 
   Network.requestWillBeSent((data) => {
@@ -73,8 +74,10 @@ export async function makeVideo (url, options = {}, invokeid = '') {
   })
 
   Network.responseReceived(async (data) => {
-    // @TODO: handle this better. sometimes images, fonts, etc aren't done loading before we think loading is finished
-    // is there a better way to detect this? see if there's any pending js being executed? paints? something?
+    // @TODO: handle this better. sometimes images, fonts, etc aren't done
+    // loading before we think loading is finished
+    // is there a better way to detect this? see if there's any pending js
+    // being executed? paints? something?
     await sleep(100) // wait here, in case this resource has triggered more resources to load.
     requestQueue.splice(requestQueue.findIndex(item => item === data.requestId), 1)
     log('Chrome received response for:', data.requestId, data.response.url)
@@ -83,8 +86,10 @@ export async function makeVideo (url, options = {}, invokeid = '') {
   // @TODO: check for/catch error/failures to load a resource
   // Network.loadingFailed
   // Network.loadingFinished
-  // @TODO: check for results from cache, which don't trigger responseReceived (Network.requestServedFromCache instead)
-  // - if the request is cached you will get a "requestServedFromCache" event instead of "responseReceived" (and no "loadingFinished" event)
+  // @TODO: check for results from cache, which don't trigger responseReceived
+  // (Network.requestServedFromCache instead)
+  // - if the request is cached you will get a "requestServedFromCache" event instead
+  // of "responseReceived" (and no "loadingFinished" event)
   Page.loadEventFired((data) => {
     loaded = true
     log('Page.loadEventFired', data)
@@ -102,7 +107,7 @@ export async function makeVideo (url, options = {}, invokeid = '') {
     Page.screencastFrameAck({ sessionId })
 
     fs.writeFile(filename, data, { encoding: 'base64' }, (error) => {
-      // log('Page.screencastFrame writeFile:', filename, error)
+      log('Page.screencastFrame writeFile:', filename, error)
     })
   })
 
@@ -113,11 +118,7 @@ export async function makeVideo (url, options = {}, invokeid = '') {
   }
 
   try {
-    await Promise.all([
-      Network.enable(), // https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-enable
-      Page.enable(), // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-enable
-      DOM.enable(),
-    ])
+    await Promise.all([Network.enable(), Page.enable(), DOM.enable()])
 
     const interactionStartTime = Date.now()
 
@@ -130,7 +131,7 @@ export async function makeVideo (url, options = {}, invokeid = '') {
       everyNthFrame: options.captureFrameRate,
     })
 
-    await Page.navigate({ url }) // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigate
+    await Page.navigate({ url })
     await loading()
     await sleep(2000)
     await Input.synthesizeScrollGesture({ x: 50, y: 50, yDistance: -2000 })
@@ -146,8 +147,9 @@ export async function makeVideo (url, options = {}, invokeid = '') {
 
   // @TODO: handle this better —
   // If you don't close the tab, an a subsequent Page.navigate() is unable to load the url,
-  // you'll end up printing a PDF of whatever was loaded in the tab previously (e.g. a previous URL)
-  // _unless_ you Cdp.New() each time. But still good to close to clear up memory in Chrome
+  // you'll end up printing a PDF of whatever was loaded in the tab previously
+  // (e.g. a previous URL) _unless_ you Cdp.New() each time. But still good to close to
+  // clear up memory in Chrome
   try {
     log('trying to close tab', tab)
     await Cdp.Close({ id: tab.id })
@@ -189,7 +191,7 @@ export async function makeVideo (url, options = {}, invokeid = '') {
       ffmpeg.on('close', (status) => {
         if (status !== 0) {
           log('ffmpeg closed with status', status)
-          return reject(`ffmpeg closed with status ${status}`)
+          return reject(new Error(`ffmpeg closed with status ${status}`))
         }
 
         return resolve()

@@ -2,7 +2,7 @@ import Cdp from 'chrome-remote-interface'
 import log from '../utils/log'
 import sleep from '../utils/sleep'
 
-export default async function captureScreenshotOfUrl(url) {
+export default async function captureScreenshotOfUrl (url) {
   const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 60
 
   let result
@@ -20,7 +20,7 @@ export default async function captureScreenshotOfUrl(url) {
 
   const { Network, Page } = client
 
-  Network.requestWillBeSent(params => {
+  Network.requestWillBeSent((params) => {
     log('Chrome is sending request for:', params.request.url)
   })
 
@@ -28,15 +28,11 @@ export default async function captureScreenshotOfUrl(url) {
     loaded = true
   })
 
-  const loadEventFired = Page.loadEventFired()
-
   try {
-    await Promise.all([
-      Network.enable(), // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Network/#method-enable
-      Page.enable(), // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-enable
-    ])
+    await Promise.all([Network.enable(), Page.enable()])
 
-    await Page.navigate({ url }) // https://chromedevtools.github.io/debugger-protocol-viewer/tot/Page/#method-navigate
+    await Page.navigate({ url })
+    await Page.loadEventFired()
     await loading()
 
     // TODO: resize the chrome "window" so we capture the full height of the page

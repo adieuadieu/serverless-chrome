@@ -45,6 +45,7 @@
     "globby": "6.1.0"
   },
   "devDependencies": {
+    "ava": "^0.23.0",
     "babel-core": "6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",

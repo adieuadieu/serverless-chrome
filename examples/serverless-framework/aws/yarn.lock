@@ -1046,12 +1046,12 @@ chokidar@^1.7.0:
   optionalDependencies:
     fsevents "^1.0.0"
 
-chrome-remote-interface@0.25.2:
-  version "0.25.2"
-  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.25.2.tgz#f20b9d6e60cab13fcfa43ec8ab212cb9ed9a9d73"
+chrome-remote-interface@^0.25.3:
+  version "0.25.3"
+  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.25.3.tgz#b692ae538cd5af3a6dd285636bfab3d29a7006c1"
   dependencies:
-    commander "2.1.x"
-    ws "3.2.x"
+    commander "2.11.x"
+    ws "3.3.x"
 
 ci-info@^1.1.1:
   version "1.1.1"
@@ -1114,9 +1114,9 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@2.1.x:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.1.0.tgz#d121bbae860d9992a3d517ba96f56588e47c6781"
+commander@2.11.x:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
 commander@^2.9.0:
   version "2.9.0"
@@ -3893,9 +3893,9 @@ write-file-atomic@^2.1.0:
     imurmurhash "^0.1.4"
     slide "^1.1.5"
 
-ws@3.2.x:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-3.2.0.tgz#d5d3d6b11aff71e73f808f40cc69d52bb6d4a185"
+ws@3.3.x:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-3.3.1.tgz#d97e34dee06a1190c61ac1e95f43cb60b78cf939"
   dependencies:
     async-limiter "~1.0.0"
     safe-buffer "~5.1.0"

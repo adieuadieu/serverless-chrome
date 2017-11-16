@@ -10,7 +10,7 @@
     "test": "npm run lint && nyc ava",
     "watch:test": "ava --watch",
     "ava": "ava",
-    "lint": "npm run lint:eslint",
+    "lint": "npm run lint:eslint -s",
     "lint:eslint": "eslint --cache --ext .js .",
     "coverage": "nyc report",
     "upgrade-dependencies": "yarn upgrade-interactive --latest --exact",

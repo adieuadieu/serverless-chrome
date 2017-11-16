@@ -7,7 +7,6 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: npm config get prefix
       - run: npm install
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
@@ -216,6 +215,9 @@ workflows:
       - lint:
           requires:
             - build
+            - build_lambda
+            - build_serverless_plugin
+            - build_serverless_example
       - unit_test:
           requires:
             - build
