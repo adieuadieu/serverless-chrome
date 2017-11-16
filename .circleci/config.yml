@@ -15,7 +15,7 @@ jobs:
 
   lint:
     docker:
-      - image: circleci/node:6.10.3
+      - image: circleci/node:8
     steps:
       - checkout
       - restore_cache:
@@ -34,7 +34,9 @@ jobs:
       - run: npm run lint
 
   unit_test:
-    machine: true
+    docker:
+      - image: circleci/node:8
+      - image: adieuadieu/headless-chromium-for-aws-lambda:stable
     steps:
       - checkout
       - restore_cache:
@@ -45,12 +47,12 @@ jobs:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - restore_cache:
           key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }} 
-      - run: |
-          VERSION=$(jq -r ".stable" packages/lambda/builds/chromium/version.json)
-          docker run -d --rm \
-            --name headless-chromium \
-            -p 9222:9222 \
-            "adieuadieu/headless-chromium-for-aws-lambda:$VERSION"
+      # - run: |
+      #     VERSION=$(jq -r ".stable" packages/lambda/builds/chromium/version.json)
+      #     docker run -d --rm \
+      #       --name headless-chromium \
+      #       -p 9222:9222 \
+      #       "adieuadieu/headless-chromium-for-aws-lambda:stable"
       - run: npm run ava
 
   build_lambda:
