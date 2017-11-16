@@ -152,6 +152,12 @@ jobs:
       - master
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - run: scripts/release.sh
 
   build_new_binaries:
@@ -228,11 +234,14 @@ workflows:
               only: /^\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig
             branches:
               only: develop # @TODO: change to 'master'
-          # requires:
-          #   - lint
-          #   - unit_test
-          #   - integration_test_serverless_plugin
-          #   - integration_test_lambda
+          requires:
+            - build
+            - build_lambda
+            - build_serverless_plugin
+            # - lint
+            # - unit_test            
+            # - integration_test_serverless_plugin
+            # - integration_test_lambda
 
 
   daily_build:
@@ -250,7 +259,7 @@ workflows:
   daily_version_update:
     triggers:
       - schedule:
-          cron: "13 * * * *" # 0 14
+          cron: "36 * * * *" # 0 14
           filters:
             branches:
               only:
