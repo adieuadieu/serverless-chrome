@@ -7,6 +7,7 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm config get prefix
       - run: npm install
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
@@ -53,6 +54,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
+      - restore_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
       - run: cd packages/lambda && npm install
       - save_cache:
@@ -65,6 +68,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
+      - restore_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
       - run:
           name: Integration test
@@ -75,6 +80,8 @@ jobs:
       - image: circleci/node:6.10.3
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - run: cd packages/serverless-plugin && npm install
@@ -90,6 +97,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
+      - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - run:
           name: Integration test
@@ -100,6 +109,8 @@ jobs:
       - image: circleci/node:6.10.3
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
       - restore_cache:
           key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
       - run: cd examples/serverless-framework/aws && npm install
@@ -197,10 +208,16 @@ workflows:
   build_test_release:
     jobs:
       - build
-      - build_lambda
-      - build_serverless_plugin
-      - build_serverless_example
 
+      - build_lambda:
+          requires:
+            - build
+      - build_serverless_plugin:
+          requires:
+            - build_lambda
+      - build_serverless_example:
+          requires:
+            - build_serverless_plugin
       - lint:
           requires:
             - build  
@@ -213,20 +230,12 @@ workflows:
             - build_lambda
             - build_serverless_plugin
             - build_serverless_example
-      # - build_lambda_chromium:
-      #     filters:
-      #       branches:
-      #         only:
-      #           - develop # @TODO remove
-      #           - master
       - integration_test_lambda:
           requires:
             - build_lambda
-            # - build_lambda_chromium
       - integration_test_serverless_plugin:
           requires:
             - build_serverless_plugin
-            # - build_lambda_chromium            
       - release:
           filters:
             tags:
@@ -235,13 +244,10 @@ workflows:
             branches:
               only: develop # @TODO: change to 'master'
           requires:
-            - build
-            - build_lambda
-            - build_serverless_plugin
-            # - lint
-            # - unit_test            
-            # - integration_test_serverless_plugin
-            # - integration_test_lambda
+            - lint
+            - unit_test
+            - integration_test_lambda
+            - integration_test_serverless_plugin
 
 
   daily_build:
