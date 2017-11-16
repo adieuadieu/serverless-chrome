@@ -53,13 +53,17 @@ jobs:
           name: Add chromium binary on release builds
           command: |
             cd packages/lambda
-            [ -n "$CIRCLE_TAG" ] && ./scripts/package-binaries.sh chromium stable
-            [ -n "$CIRCLE_TAG" ] && mv dist/stable-headless-chromium dist/headless-chromium
+            if [ ! -f "dist/headless-chromium" ]; then
+              ./scripts/package-binaries.sh chromium stable
+              mv dist/stable-headless-chromium dist/headless-chromium
+            fi
       - run: cd packages/lambda && npm install
+      - run: cd packages/lambda && npm run build
       - save_cache:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
           paths:
             - packages/lambda/node_modules
+            - packages/lambda/dist
 
   integration_test_lambda:
     machine: true
