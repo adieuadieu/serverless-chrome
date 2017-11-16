@@ -95,10 +95,10 @@ jobs:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}-package-lambda
-      - run: ./scripts/link-package.sh serverless-chrome lambda
+      - run: ./scripts/link-package.sh serverless-plugin lambda
       - run: cd packages/serverless-plugin && npm install
       - run: |
-          [ -z "$CIRCLE_TAG" ] || ./scripts/link-package.sh "$PWD/packages/serverless-chrome/integration-test" lambda
+          [ -z "$CIRCLE_TAG" ] || ./scripts/link-package.sh serverless-plugin/integration-test lambda
       - run: cd packages/serverless-plugin/integration-test && npm install
       - save_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
