@@ -279,11 +279,11 @@ workflows:
             branches:
             #   only: develop # @TODO: change to 'master'
               ignore: /.*/
-          requires:
-            - lint
-            - unit_test
-            - integration_test_lambda
-            - integration_test_serverless_plugin
+        #   requires:
+        #     - lint
+        #     - unit_test
+        #     - integration_test_lambda
+        #     - integration_test_serverless_plugin
 
   daily_build:
     triggers:
