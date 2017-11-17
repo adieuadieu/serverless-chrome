@@ -110,7 +110,7 @@ publish_release() {
     --request PATCH \
     --header "Authorization: token $GITHUB_TOKEN" \
     --header 'Content-Type: application/json' \
-    --data "{\"draft\":false}" \
+    --data "{\"draft\":false, \"tag_name\": \"$TAG\"}" \
     "https://api.github.com/repos/$GITHUB_ORG/$GITHUB_REPO/releases/$1" \
     > /dev/null
 }
