@@ -151,31 +151,6 @@ jobs:
           paths:
             - examples/serverless-framework/aws/node_modules      
 
-
-
-
-
-
-  # build_lambda_chromium:
-  #   machine: true
-  #   resource_class: xlarge
-  #   branch:
-  #     - develop # @TODO remove
-  #     - master
-  #   steps:
-  #     - checkout  
-  #     - restore_cache:
-  #         key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}      
-  #     - run: 
-  #         name: Build headless Chromium for AWS Lambda
-  #         command: packages/lambda/scripts/build-binaries.sh chromium
-  #         no_output_timeout: 6h
-  #     - save_cache:
-  #         key: build-cache-{{ checksum "packages/lambda/builds/chromium/version.json" }}
-  #         paths:
-  #           - packages/lambda/builds/chromium/version.json
-  #           - packages/lambda/builds/chromium/dist             
-
   update_browser_versions:
     docker:
       - image: circleci/node:6.10.3

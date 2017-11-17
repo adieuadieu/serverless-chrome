@@ -16,7 +16,7 @@ cd "$(dirname "$0")/.."
 CHANNEL=${1:-stable}
 
 if [ ! -d "dist/" ]; then
-  ./scripts/package-binaries.sh chromium $CHANNEL
+  ./scripts/package-binaries.sh chromium "$CHANNEL"
   npm run build
 fi
 
