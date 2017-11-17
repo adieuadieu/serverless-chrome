@@ -195,7 +195,7 @@ jobs:
       # we need a newer version of NPM than is available by default, e.g. >=4
       - run:
           name: Update NPM
-          command: sudo npm install -g npm
+          command: npm install -g npm@latest
       - run: scripts/release.sh
 
   build_new_binaries:
@@ -267,11 +267,11 @@ workflows:
           filters:
             branches:
               only: develop # @TODO: change to 'master'
-          requires:
-            - lint
-            - unit_test
-            - integration_test_lambda
-            - integration_test_serverless_plugin
+        #   requires:
+        #     - lint
+        #     - unit_test
+        #     - integration_test_lambda
+        #     - integration_test_serverless_plugin
 
 
   daily_build:
