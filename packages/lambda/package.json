@@ -36,7 +36,7 @@
     "test:integration": "scripts/test-integration.sh",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublish": "npm run clean && npm run build",
     "postinstall": "node scripts/postinstall.js",
     "package-binaries": "scripts/package-binaries.sh",
     "latest-browser-versions": "scripts/latest-versions.sh",

@@ -52,9 +52,9 @@
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
     "js-yaml": "3.10.0",
-    "serverless": "1.23.0",
-    "serverless-plugin-chrome": "1.0.0-12",
-    "serverless-webpack": "3.1.2",
+    "serverless": "1.24.1",
+    "serverless-plugin-chrome": "1.0.0-26",
+    "serverless-webpack": "4.0.0",
     "webpack": "3.8.1"
   },
   "ava": {

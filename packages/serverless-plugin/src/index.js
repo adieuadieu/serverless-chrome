@@ -155,11 +155,11 @@ export default class ServerlessChrome {
         path.join(this.originalServicePath, SERVERLESS_FOLDER)
       )
 
-      this.serverless.service.package.artifact = path.join(
-        this.originalServicePath,
-        SERVERLESS_FOLDER,
-        path.basename(this.serverless.service.package.artifact)
-      )
+      // this.serverless.service.package.artifact = path.join(
+      //   this.originalServicePath,
+      //   SERVERLESS_FOLDER
+      //   path.basename(this.serverless.service.package.artifact)
+      // )
 
       // Cleanup after everything is copied
       await this.cleanup()
