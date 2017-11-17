@@ -114,16 +114,21 @@ jobs:
           key: build-cache-{{ .Revision }}-package-lambda
       # need to set permissions on the npm prefix so that we can npm link packages
       - run: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
-      - run: ./scripts/link-package.sh serverless-plugin lambda
+      - run: ./scripts/link-package.sh packages/serverless-plugin lambda
       - run: cd packages/serverless-plugin && npm install
+      - run: cd packages/serverless-plugin && npm run build
+      - save_cache:
+          key: build-cache-{{ .Revision }}-package-serverless-plugin
+          paths:
+            - packages/serverless-plugin/dist         
       - run: |
-          [ -z "$CIRCLE_TAG" ] || ./scripts/link-package.sh serverless-plugin/integration-test lambda
-      - run: cd packages/serverless-plugin/integration-test && npm install
+          [ -z "$CIRCLE_TAG" ] || ./scripts/link-package.sh packages/serverless-plugin/integration-test lambda
+      - run: cd packages/serverless-plugin/integration-test && npm install      
       - save_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
           paths:
             - packages/serverless-plugin/node_modules
-            - packages/serverless-plugin/integration-test/node_modules
+            - packages/serverless-plugin/integration-test/node_modules           
 
   integration_test_serverless_plugin:
     machine: true
@@ -148,6 +153,13 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}      
       - restore_cache:
           key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-serverless-plugin          
+      # need to set permissions on the npm prefix so that we can npm link packages
+      - run: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}          
+      - run: ./scripts/link-package.sh examples/serverless-framework/aws serverless-plugin          
       - run: cd examples/serverless-framework/aws && npm install
       - save_cache:
           key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
