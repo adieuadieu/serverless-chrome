@@ -179,6 +179,9 @@ jobs:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - run:
+          name: Update NPM
+          command: sudo npm install -g npm
       - run: scripts/release.sh
 
   build_new_binaries:
