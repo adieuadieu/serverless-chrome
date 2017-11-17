@@ -278,7 +278,7 @@ workflows:
     triggers:
       - schedule:
         #   cron: "0 14 * * *"
-          cron: "46 * * * *"
+          cron: "54 * * * *"
           filters:
             branches:
               only:
