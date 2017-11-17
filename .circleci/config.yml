@@ -46,7 +46,9 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       - restore_cache:
-          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }} 
+          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
+      - run: |
+            sudo apt-get -y chromium-browser google-chrome-stable
       # - run: |
       #     VERSION=$(jq -r ".stable" packages/lambda/builds/chromium/version.json)
       #     docker run -d --rm \
