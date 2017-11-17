@@ -217,33 +217,57 @@ workflows:
   version: 2
   build_test_release:
     jobs:
-      - build
+      - build:
+          filters:
+            tags:
+              only: /.*/      
 
       - build_lambda:
+          filters:
+            tags:
+              only: /.*/      
           requires:
             - build
       - build_serverless_plugin:
+          filters:
+            tags:
+              only: /.*/      
           requires:
             - build_lambda
       - build_serverless_example:
+          filters:
+            tags:
+              only: /.*/      
           requires:
             - build_serverless_plugin
       - lint:
+          filters:
+            tags:
+              only: /.*/      
           requires:
             - build
             - build_lambda
             - build_serverless_plugin
             - build_serverless_example
       - unit_test:
+          filters:
+            tags:
+              only: /.*/      
           requires:
             - build
             - build_lambda
             - build_serverless_plugin
             - build_serverless_example
       - integration_test_lambda:
+          filters:
+            tags:
+              only: /.*/      
           requires:
             - build_lambda
       - integration_test_serverless_plugin:
+          filters:
+            tags:
+              only: /.*/      
           requires:
             - build_serverless_plugin
       - release:
