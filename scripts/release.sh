@@ -22,11 +22,10 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
-if ! npm whoami > /dev/null && [ -z "$NPM_TOKEN" ]; then
+if ! npm whoami -s && [ -z "$NPM_TOKEN" ]; then
   echo "Error: Missing NPM credentials or NPM_TOKEN environment variable." 
   exit 1
 fi
-
 
 ORIGIN_URL=$(git config --get remote.origin.url)
 GITHUB_ORG=$(echo "$ORIGIN_URL" | sed 's|.*:||;s|/.*$||')
@@ -34,10 +33,8 @@ GITHUB_REPO=$(echo "$ORIGIN_URL" | sed 's|.*/||;s|\.[^\.]*$||')
 export GITHUB_ORG
 export GITHUB_REPO
 
-echo '--- Fetching tags'
-git fetch origin 'refs/tags/*:refs/tags/*'
-
 # Get the tag for the current commit:
+git fetch origin 'refs/tags/*:refs/tags/*'
 TAG="$(git describe --exact-match --tags 2> /dev/null || true)"
 
 if [ -z "$TAG" ]; then
@@ -168,7 +165,7 @@ publish_release "$RELEASE_ID"
 #
 
 # Add NPM token to .npmrc if not logged in
-if [ -n "$NPM_TOKEN" ] && ! npm whoami > /dev/null; then
+if [ -n "$NPM_TOKEN" ] && ! npm whoami -s; then
   echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc"
 fi
 
