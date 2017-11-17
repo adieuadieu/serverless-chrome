@@ -60,7 +60,7 @@ for BUILD in */Dockerfile; do
         git commit -m "chore ($BUILD_NAME): bump $CHANNEL channel version to $LATEST_VERSION" --no-verify
 
         # Only create new tag/release when stable channel has new version
-        if [ "$UPDATES" = "stable" ]; then
+        if [ "$CHANNEL" = "stable" ]; then
           UPDATES=1
         fi
       else
