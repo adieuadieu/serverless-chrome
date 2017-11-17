@@ -267,11 +267,11 @@ workflows:
           filters:
             branches:
               only: develop # @TODO: change to 'master'
-        #   requires:
-        #     - lint
-        #     - unit_test
-        #     - integration_test_lambda
-        #     - integration_test_serverless_plugin
+          requires:
+            - lint
+            - unit_test
+            - integration_test_lambda
+            - integration_test_serverless_plugin
 
 
   daily_build:
