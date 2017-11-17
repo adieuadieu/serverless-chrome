@@ -67,10 +67,6 @@
     "tap-xunit": "1.7.0"
   },
   "ava": {
-    "files": [
-      "**/*.test.js",
-      "!examples/**"
-    ],
     "require": "babel-register",
     "babel": "inherit"
   },
