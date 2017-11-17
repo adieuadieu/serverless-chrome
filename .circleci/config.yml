@@ -277,7 +277,8 @@ workflows:
   daily_version_update:
     triggers:
       - schedule:
-          cron: "0 14 * * *" # 0 14
+        #   cron: "0 14 * * *"
+          cron: "46 * * * *"
           filters:
             branches:
               only:
