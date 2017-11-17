@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Binary support in AWS Lambda/API Gateway example
 - Build and release tooling shell scripts and Dockerfile's
 - Integration tests and CircleCI setup
-- HeadlessChrome/62.0.3202.62 built for AWS Lambda 2017.03
+- Complete automation of build/test/release workflows
 - serverless-plugin-chrome: support for limiting Chrome to only select service functions with the `custom.chrome.functions` parameter.
 - @serverless-chrome/lambda NPM package
 - serverless-plugin-chrome NPM package for Serverless-framework

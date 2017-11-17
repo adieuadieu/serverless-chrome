@@ -15,7 +15,7 @@ As a contributor, you represent that the code you submit is your original work o
 
 ## Submitting a pull request
 
-Please raise PRs against the `develop` branch.
+Please branch from and raise PRs against the `develop` branch.
 
 0. [Fork][fork] and clone the repository
 0. Create a new branch: `git checkout -b feature/my-new-feature-name develop`
