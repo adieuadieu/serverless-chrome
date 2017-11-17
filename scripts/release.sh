@@ -38,7 +38,7 @@ git fetch origin 'refs/tags/*:refs/tags/*'
 TAG="$(git describe --exact-match --tags 2> /dev/null || true)"
 
 if [ -z "$TAG" ]; then
-  printf "%s: Not a tagged commit\n" Warning
+  echo "Not a tagged commit. Exiting.."
   exit
 fi
 
