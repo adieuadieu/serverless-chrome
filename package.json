@@ -139,7 +139,6 @@
     "*.{js,jsx}": [
       "yarn prettier",
       "yarn lint",
-      "yarn ava",
       "git add"
     ]
   }
