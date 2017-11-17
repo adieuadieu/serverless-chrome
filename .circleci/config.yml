@@ -158,7 +158,8 @@ jobs:
       - restore_cache:
           key: build-cache-{{ .Revision }}-package-serverless-plugin          
       # need to set permissions on the npm prefix so that we can npm link packages
-      - run: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}          
+      - run: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+      - run: ./scripts/link-package.sh packages/serverless-plugin lambda                
       - run: ./scripts/link-package.sh examples/serverless-framework/aws serverless-plugin          
       - run: cd examples/serverless-framework/aws && npm install
       - save_cache:
