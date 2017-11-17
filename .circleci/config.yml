@@ -30,7 +30,7 @@ jobs:
           key: build-cache-{{ .Revision }}-package-lambda
       # need to set permissions on the npm prefix so that we can npm link packages
       - run: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
-      - run: ./scripts/link-package.sh serverless-plugin lambda               
+      - run: ./scripts/link-package.sh packages/serverless-plugin lambda               
       - run: npm run lint
 
   unit_test:
@@ -192,6 +192,7 @@ jobs:
           key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      # we need a newer version of NPM than is available by default, e.g. >=4
       - run:
           name: Update NPM
           command: sudo npm install -g npm
