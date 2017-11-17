@@ -249,7 +249,7 @@ workflows:
       - release:
           filters:
             tags:
-              only: /^v.*/
+              only: /.*/
             #   # semver https://github.com/sindresorhus/semver-regex/blob/master/index.js
             #   only: /^\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig
             branches:
