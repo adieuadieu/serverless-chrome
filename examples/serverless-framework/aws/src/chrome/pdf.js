@@ -103,24 +103,10 @@ export default async function printUrlToPdf (url, printOptions = {}) {
 
     log('We think the page has finished loading. Printing PDF.')
 
-    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
-    // TODO: resize the chrome "window" so we capture the full height of the page
-    // document.body.scrollHeight
     const pdf = await Page.printToPDF(printOptions)
     result = pdf.data
   } catch (error) {
     console.error(error)
-  }
-
-  // @TODO: handle this better —
-  // If you don't close the tab, an a subsequent Page.navigate() is unable to load the url,
-  // you'll end up printing a PDF of whatever was loaded in the tab previously (e.g. a previous URL)
-  // _unless_ you Cdp.New() each time. But still good to close to clear up memory in Chrome
-  try {
-    log('trying to close tab', tab)
-    await Cdp.Close({ id: tab.id })
-  } catch (error) {
-    log('unable to close tab', tab, error)
   }
 
   await client.close()

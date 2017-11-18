@@ -2,7 +2,7 @@ import Cdp from 'chrome-remote-interface'
 import log from '../utils/log'
 import sleep from '../utils/sleep'
 
-export default async function captureScreenshotOfUrl (url) {
+export default async function captureScreenshotOfUrl (url, mobile = false) {
   const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 60
 
   let result
@@ -18,7 +18,9 @@ export default async function captureScreenshotOfUrl (url) {
   const [tab] = await Cdp.List()
   const client = await Cdp({ host: '127.0.0.1', target: tab })
 
-  const { Network, Page } = client
+  const {
+    Network, Page, Runtime, Emulation,
+  } = client
 
   Network.requestWillBeSent((params) => {
     log('Chrome is sending request for:', params.request.url)
@@ -31,14 +33,44 @@ export default async function captureScreenshotOfUrl (url) {
   try {
     await Promise.all([Network.enable(), Page.enable()])
 
+    if (mobile) {
+      await Network.setUserAgentOverride({
+        userAgent:
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_1 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A403 Safari/602.1',
+      })
+    }
+
+    await Emulation.setDeviceMetricsOverride({
+      mobile: !!mobile,
+      deviceScaleFactor: 0,
+      scale: 1, // mobile ? 2 : 1,
+      fitWindow: false,
+      width: mobile ? 375 : 1280,
+      height: 0,
+    })
+
     await Page.navigate({ url })
     await Page.loadEventFired()
     await loading()
 
-    // TODO: resize the chrome "window" so we capture the full height of the page
-    // document.body.scrollHeight
-    // setviewport: with option to set mobile mode
-    const screenshot = await Page.captureScreenshot({ format: 'png', fromSurface: true })
+    const { result: { value: { height } } } = await Runtime.evaluate({
+      expression: `(
+        () => ({ height: document.body.scrollHeight })
+      )();
+      `,
+      returnByValue: true,
+    })
+
+    await Emulation.setDeviceMetricsOverride({
+      mobile: !!mobile,
+      deviceScaleFactor: 0,
+      scale: 1, // mobile ? 2 : 1,
+      fitWindow: false,
+      width: mobile ? 375 : 1280,
+      height,
+    })
+
+    const screenshot = await Page.captureScreenshot({ format: 'png' })
 
     result = screenshot.data
   } catch (error) {
