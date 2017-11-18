@@ -1,13 +1,10 @@
-/* Borrows from serverless-plugin-typescript
-  https://github.com/graphcool/serverless-plugin-typescript/blob/master/src/index.ts
-*/
-
 /*
 @TODO:
   - handle package.individually?
     https://github.com/serverless/serverless/blob/master/lib/plugins/package/lib/packageService.js#L37
   - support for enabling chrome only on specific functions?
   - instead of including fs-p dep, use the fs methods from the Utils class provided by Serverless
+    or use fs-extra directly.
   - config option to, instead of including chrome in artifact zip, download it on
     cold-start invocations this could be useful for development, instead of having
     to upload 50MB each deploy
@@ -17,7 +14,7 @@
 */
 
 import * as path from 'path'
-import * as fs from 'fs-p'
+import * as fs from 'fs-p' // deprecated. use fs-extra?
 import globby from 'globby'
 
 import { SERVERLESS_FOLDER, BUILD_FOLDER, INCLUDES } from './constants'
@@ -137,7 +134,7 @@ export default class ServerlessChrome {
 
       const launcherOptions = {
         ...customPluginOptions,
-        flags: (customPluginOptions.flags || []).join("', '"),
+        flags: customPluginOptions.flags || [],
         chromePath: this.webpack ? '/var/task/headless-chromium' : undefined,
       }
 

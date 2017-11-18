@@ -45,9 +45,9 @@
     "globby": "6.1.0"
   },
   "devDependencies": {
-    "ava": "^0.23.0",
+    "ava": "0.23.0",
     "babel-core": "6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
     "chrome-launcher": "0.8.1",

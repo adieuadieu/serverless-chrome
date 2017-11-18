@@ -38,18 +38,12 @@ export default async function captureScreenshotOfUrl (url) {
     // TODO: resize the chrome "window" so we capture the full height of the page
     // document.body.scrollHeight
     // setviewport: with option to set mobile mode
-    const screenshot = await Page.captureScreenshot()
+    const screenshot = await Page.captureScreenshot({ format: 'png', fromSurface: true })
+
     result = screenshot.data
   } catch (error) {
     console.error(error)
   }
-
-  /* try {
-    log('trying to close tab', tab)
-    await Cdp.Close({ id: tab })
-  } catch (error) {
-    log('unable to close tab', tab, error)
-  } */
 
   await client.close()
 

@@ -2,7 +2,9 @@ import log from '../utils/log'
 import screenshot from '../chrome/screenshot'
 
 export default async function handler (event, context, callback) {
-  const { queryStringParameters: { url } } = event
+  const {
+    queryStringParameters: { url = 'https://github.com/adieuadieu/serverless-chrome' },
+  } = event
   let data
 
   log('Processing screenshot capture for', url)

@@ -9,7 +9,12 @@ import log from '../utils/log'
 import pdf, { makePrintOptions } from '../chrome/pdf'
 
 export default async function handler (event, context, callback) {
-  const { queryStringParameters: { url, ...printParameters } } = event
+  const {
+    queryStringParameters: {
+      url = 'https://github.com/adieuadieu/serverless-chrome',
+      ...printParameters
+    },
+  } = event
   const printOptions = makePrintOptions(printParameters)
   let data
 

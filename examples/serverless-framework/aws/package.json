@@ -8,7 +8,9 @@
     "node": ">= 6.10.0"
   },
   "config": {
-    "jsSrc": "src/"
+    "jsSrc": "src/",
+    "chromiumChannel": "dev",
+    "chromium_channel": "dev"
   },
   "scripts": {
     "test": "npm run lint && npm run ava",
@@ -40,7 +42,7 @@
   "bugs": {
     "url": "https://github.com/adieuadieu/serverless-chrome/issues"
   },
-  "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/functions/serverless-framework",
+  "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws",
   "dependencies": {
     "chrome-remote-interface": "0.25.3"
   },
@@ -50,6 +52,7 @@
     "babel-loader": "7.1.2",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-preset-env": "1.6.1",
+    "babel-preset-stage-3": "6.24.1",
     "babel-register": "6.26.0",
     "js-yaml": "3.10.0",
     "serverless": "1.24.1",
@@ -72,7 +75,8 @@
             "node": "6.10"
           }
         }
-      ]
+      ],
+      "stage-3"
     ],
     "plugins": [
       "transform-object-rest-spread"

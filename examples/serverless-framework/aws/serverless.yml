@@ -15,9 +15,10 @@ plugins:
   - serverless-webpack
 
 custom:
-  chromeFlags:
-    - --window-size=1280x1696 # Letter size
-    - --hide-scrollbars
+  chrome:
+    flags:
+      - --window-size=1280x1696 # Letter size
+      - --hide-scrollbars
 
 functions:
   version-info:
@@ -65,7 +66,14 @@ resources:
     ApiGatewayRestApi:
       Properties:
         BinaryMediaTypes:
-          # - "*/*"
-          # - "*~1*" # on updates, slash / is escaped as ~1 cuz, you know, AWS.
-          - "image/png"
-          - "application/pdf"
+          - "*/*"
+
+    # Enable X-Ray tracing on Lambda functions
+    # ScreenshotLambdaFunction:
+    #   Properties:
+    #     TracingConfig:
+    #       Mode: Active
+    # PdfLambdaFunction:
+    #   Properties:
+    #     TracingConfig:
+    #       Mode: Active

@@ -4,6 +4,9 @@ import Cdp from 'chrome-remote-interface'
 const LOAD_TIMEOUT = 1000 * 30
 
 export default async function handler (event, context, callback) {
+  const {
+    queryStringParameters: { url = 'https://github.com/adieuadieu/serverless-chrome' },
+  } = event
   const requestsMade = []
 
   const [tab] = await Cdp.List()
@@ -22,7 +25,7 @@ export default async function handler (event, context, callback) {
   await Page.enable()
 
   // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigate
-  await Page.navigate({ url: 'https://www.chromium.org/' })
+  await Page.navigate({ url })
 
   // wait until page is done loading, or timeout
   await new Promise((resolve, reject) => {

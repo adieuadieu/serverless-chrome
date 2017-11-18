@@ -16,7 +16,10 @@ if (
 }
 
 const CHROMIUM_CHANNEL =
-  process.env.NPM_CONFIG_CHROMIUM_CHANNEL || process.env.npm_config_chromium_channel || 'stable'
+  process.env.NPM_CONFIG_CHROMIUM_CHANNEL ||
+  process.env.npm_config_chromiumChannel ||
+  process.env.npm_config_chromium_channel ||
+  'stable'
 
 if (CHROMIUM_CHANNEL !== 'stable') {
   console.warn(`Downloading "${CHROMIUM_CHANNEL}" version of Chromium because` +
@@ -77,7 +80,7 @@ function getChromium () {
     return Promise.resolve()
   }
 
-  console.log('Downloading precompiled headless Chromium binary for AWS Lambda.')
+  console.log(`Downloading precompiled headless Chromium binary (${CHROMIUM_CHANNEL} channel) for AWS Lambda.`)
 
   return get(ZIP_URL, DOWNLOAD_PATH)
     .then(() => extractFile(DOWNLOAD_PATH, EXTRACT_PATH))
