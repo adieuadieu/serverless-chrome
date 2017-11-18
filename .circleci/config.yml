@@ -217,7 +217,8 @@ jobs:
   # This step triggers builds of binaries when new versions are available
   # The builds happen on AWS Spot Instances created by this step and are not run
   # on CircleCI due to instance-size/build-time constraints there.
-  # AWS Spot Instances are configured by ~/aws/ec2-spot-instance-specification.json
+  # AWS Spot Instances are configured by ~/aws/ec2-spot-instance-specification.json.
+  # On start up, the spot instances run the user-data script in ~/aws/user-data.sh.
   # Using "amazonlinux:latest" image because it's easy to install aws-cli.
   build_new_binaries:
     docker:
