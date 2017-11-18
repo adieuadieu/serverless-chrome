@@ -17,7 +17,7 @@ GET http://localhost:9222/
 
 
 
-**Note:** to successfully build the Docker image on MacOS, you may need to [increase the size](https://community.hortonworks.com/articles/65901/how-to-increase-the-size-of-the-base-docker-for-ma.html) of the Docker data sparse image. _Warning!: This will wipe out all of your local images/containers.
+**Note:** to successfully build the Docker image on MacOS, you may need to [increase the size](https://community.hortonworks.com/articles/65901/how-to-increase-the-size-of-the-base-docker-for-ma.html) of the Docker data sparse image. *Warning!:* This will wipe out all of your local images/containers.
 
 
 ```bash
