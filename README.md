@@ -71,7 +71,7 @@ This project contains:
   A plugin for [Serverless-framework](https://serverless.com/) services which takes care of everything for you. You just write the code to drive Chrome.
 - **[Example functions](examples/)**
   - [Serverless-framework](https://serverless.com/) AWS Lambda Node.js functions using `serverless-plugin-chrome`
-- **Docker Stuff**<br/>
+- **[Build Automation](docs/automation.md) & (CI/CD)[.circleci/config.yml]**<br/>
    Build and release tooling shell scripts and Dockerfile for automating the build/release of headless Chrome for serverless environments (AWS Lambda)
 
 
