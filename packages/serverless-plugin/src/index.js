@@ -45,10 +45,24 @@ export default class ServerlessChrome {
       'after:package:createDeploymentArtifacts': this.afterCreateDeploymentArtifacts.bind(this),
       'before:invoke:local:invoke': this.beforeCreateDeploymentArtifacts.bind(this),
       'after:invoke:local:invoke': this.cleanup.bind(this),
+
+      'before:webpack:package:packExternalModules': this.webpackPackageBinaries.bind(this),
     }
 
     // only mess with the service path if we're not already known to be within a .build folder
     this.messWithServicePath = !plugins.includes('serverless-plugin-typescript')
+
+    // annoyingly we have to do stuff differently if using serverless-webpack plugin. lame.
+    this.webpack = plugins.includes('serverless-webpack')
+  }
+
+  async webpackPackageBinaries () {
+    const { servicePath } = this.serverless.config
+
+    await fs.copy(
+      path.join(servicePath, 'node_modules/@serverless-chrome/lambda/dist/headless-chromium'),
+      path.resolve(servicePath, '.webpack/service/headless-chromium')
+    )
   }
 
   async beforeCreateDeploymentArtifacts () {
@@ -119,10 +133,13 @@ export default class ServerlessChrome {
 
       const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
 
-      const chromeFlags =
-          (service.custom && service.custom.chromeFlags) || // chromeFlags is deprecated.
-          (service.custom && service.custom.chrome && service.custom.flags) ||
-          []
+      const customPluginOptions = service.custom.chrome || {}
+
+      const launcherOptions = {
+        ...customPluginOptions,
+        flags: (customPluginOptions.flags || []).join("', '"),
+        chromePath: this.webpack ? '/var/task/headless-chromium' : undefined,
+      }
 
       // Read in the wrapper handler code template
       const wrapperTemplate = await utils.readFile(path.resolve(__dirname, '..', 'src', `wrapper-${providerName}-${runtime}.js`))
@@ -130,10 +147,7 @@ export default class ServerlessChrome {
       // Include the original handler via require
       const wrapperCode = wrapperTemplate
         .replace("'REPLACE_WITH_HANDLER_REQUIRE'", `require('./${originalFileRenamed}')`)
-        .replace(
-          "'REPLACE_WITH_OPTIONS'",
-          `{ ${chromeFlags.length ? `flags: ['${chromeFlags.join("', '")}']` : ''} }`
-        )
+        .replace("'REPLACE_WITH_OPTIONS'", JSON.stringify(launcherOptions))
         .replace(/REPLACE_WITH_EXPORT_NAME/gm, exportName)
 
         // Move the original handler's file aside

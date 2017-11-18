@@ -4,7 +4,7 @@ const handler = 'REPLACE_WITH_HANDLER_REQUIRE'
 const options = 'REPLACE_WITH_OPTIONS'
 
 module.exports.REPLACE_WITH_EXPORT_NAME = function ensureHeadlessChrome (event, context, callback) {
-  launch(options)
+  (typeof launch === 'function' ? launch : launch.default)(options)
     .then((instance) => {
       handler.REPLACE_WITH_EXPORT_NAME(event, context, callback, instance)
     })

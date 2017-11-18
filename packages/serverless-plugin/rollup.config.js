@@ -22,6 +22,7 @@ export default {
     // commonjs({}),
     babel({
       babelrc: false,
+      plugins: ['transform-object-rest-spread'],
       presets: [
         [
           'env',

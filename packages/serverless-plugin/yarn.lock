@@ -44,9 +44,9 @@
   dependencies:
     arrify "^1.0.1"
 
-"@serverless-chrome/lambda@1.0.0-24":
-  version "1.0.0-7"
-  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-1.0.0-7.tgz#81e47d9d96773a13b0f35e1b12b35fb04407c1b0"
+"@serverless-chrome/lambda@1.0.0-28":
+  version "1.0.0-28"
+  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-1.0.0-28.tgz#846cb221fc9f2c22bbe6e2f4a51fb6876641a2ca"
   dependencies:
     extract-zip "1.6.6"
 
@@ -486,6 +486,10 @@ babel-plugin-syntax-exponentiation-operator@^6.8.0:
   version "6.13.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-exponentiation-operator/-/babel-plugin-syntax-exponentiation-operator-6.13.0.tgz#9ee7e8337290da95288201a6a57f4170317830de"
 
+babel-plugin-syntax-object-rest-spread@^6.8.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-object-rest-spread/-/babel-plugin-syntax-object-rest-spread-6.13.0.tgz#fd6536f2bce13836ffa3a5458c4903a597bb3bf5"
+
 babel-plugin-syntax-trailing-function-commas@^6.20.0, babel-plugin-syntax-trailing-function-commas@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-trailing-function-commas/-/babel-plugin-syntax-trailing-function-commas-6.22.0.tgz#ba0360937f8d06e40180a43fe0d5616fff532cf3"
@@ -682,6 +686,13 @@ babel-plugin-transform-exponentiation-operator@^6.22.0, babel-plugin-transform-e
     babel-helper-builder-binary-assignment-operator-visitor "^6.24.1"
     babel-plugin-syntax-exponentiation-operator "^6.8.0"
     babel-runtime "^6.22.0"
+
+babel-plugin-transform-object-rest-spread@^6.26.0:
+  version "6.26.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-rest-spread/-/babel-plugin-transform-object-rest-spread-6.26.0.tgz#0f36692d50fef6b7e2d4b3ac1478137a963b7b06"
+  dependencies:
+    babel-plugin-syntax-object-rest-spread "^6.8.0"
+    babel-runtime "^6.26.0"
 
 babel-plugin-transform-regenerator@^6.22.0:
   version "6.24.1"
