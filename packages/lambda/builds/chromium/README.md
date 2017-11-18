@@ -1,13 +1,46 @@
-This is outdated.
+# Build Headless Chromium for AWS Lambda
 
-Note: to successfully build the Docker image you may need to increase the size of the Docker data sparse image: https://community.hortonworks.com/articles/65901/how-to-increase-the-size-of-the-base-docker-for-ma.html
-e.g.
+If you're looking for instructions on how to compile/build Chromium/Chrome for AWS Lambda have a look at the [build script](packages/lambda/builds/chromium/build/build.sh) or the [Dockerfile](packages/lambda/builds/chromium/build/Dockerfile) or simply use the built [Docker image](https://hub.docker.com/r/adieuadieu/headless-chromium-for-aws-lambda/):
+
+```bash
+docker run -d --rm \
+  --name headless-chromium \
+  -p 9222:9222 \
+  adieuadieu/headless-chromium-for-aws-lambda
 ```
+
+Headless Chromium is now running and accessible:
+
+```
+GET http://localhost:9222/
+```
+
+
+
+**Note:** to successfully build the Docker image on MacOS, you may need to [increase the size](https://community.hortonworks.com/articles/65901/how-to-increase-the-size-of-the-base-docker-for-ma.html) of the Docker data sparse image. _Warning!: This will wipe out all of your local images/containers.
+
+
+```bash
 rm ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2
 qemu-img create -f qcow2 ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2 50G
 ```
-warning! this will wipe all of your images/containers.
 
+
+----
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+The rest of this README is outdated.
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+----
 
 # What is this?
 

@@ -84,7 +84,7 @@ The package has zero external dependencies required for inclusion in your Lambda
 
 There are plugins which bundle this package for easy deployment available for the following "serverless" frameworks:
 
-- [serverless-plugin-chrome](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin)
+- [serverless-plugin-chrome](packages/serverless-plugin)
 
 
 ## Specifying Chromium Channel

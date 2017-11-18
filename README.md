@@ -66,12 +66,12 @@ Further details are available in the [Serverless Lambda example](examples/server
 This project contains:
 
 - **[@serverless-chrome/lambda](packages/lambda)** NPM package<br/>
-  A standalone module for AWS Lambda which bundles and launches Headless Chrome with support for local development. For use with—but not limited to—tools like [Apex](https://github.com/apex/apex), [Claudia.js](https://github.com/claudiajs/claudia), or [Serverless](https://serverless.com/).
+  A standalone module for AWS Lambda which bundles and launches Headless Chrome with support for local development. For use with—but not limited to—tools like [Apex](https://github.com/apex/apex), [Claudia.js](https://github.com/claudiajs/claudia), [SAM Local](https://github.com/awslabs/aws-sam-local), or [Serverless](https://serverless.com/).
 - **[serverless-plugin-chrome](packages/serverless-plugin)** NPM package<br/>
   A plugin for [Serverless-framework](https://serverless.com/) services which takes care of everything for you. You just write the code to drive Chrome.
 - **[Example functions](examples/)**
   - [Serverless-framework](https://serverless.com/) AWS Lambda Node.js functions using `serverless-plugin-chrome`
-- **[Build Automation](docs/automation.md) & (CI/CD)[.circleci/config.yml]**<br/>
+- **[Build Automation](docs/automation.md) & [CI/CD](.circleci/config.yml)**<br/>
    Build and release tooling shell scripts and Dockerfile for automating the build/release of headless Chrome for serverless environments (AWS Lambda).
 
 
