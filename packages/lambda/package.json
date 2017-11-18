@@ -51,7 +51,7 @@
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
     "chrome-launcher": "0.8.1",
-    "rollup": "0.51.5",
+    "rollup": "0.51.7",
     "rollup-plugin-babel": "3.0.2",
     "rollup-plugin-node-resolve": "3.0.0"
   },
