@@ -55,7 +55,6 @@ JSON=$(jq -c -r \
 # Request the spot instance / launch
 # ref: http://docs.aws.amazon.com/cli/latest/reference/ec2/request-spot-instances.html
 #
-# @TODO: adjust instance type/spot-price depending on channel?
 aws ec2 request-spot-instances \
   --region "$AWS_REGION" \
   --cli-input-json "$JSON" | \

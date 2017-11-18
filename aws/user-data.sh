@@ -68,8 +68,7 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
 
   cd serverless-chrome || return
 
-  # TODO: temporary.
-  git checkout develop
+  git checkout master
 
   scripts/docker-build-image.sh "$CHANNEL" "$BROWSER"
 fi

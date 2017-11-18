@@ -1,6 +1,6 @@
 # Serverless-framework Headless Chrome Plugin
 
-A [Serverless-framework](https://github.com/serverless/serverless) plugin which bundles the [@serverless-chrome/lambda](https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda) package and ensures that Headless Chrome is running when your function handler is invoked.
+A [Serverless-framework](https://github.com/serverless/serverless) plugin which bundles the [@serverless-chrome/lambda](packages/lambda) package and ensures that Headless Chrome is running when your function handler is invoked.
 
 [![npm](https://img.shields.io/npm/v/serverless-plugin-chrome.svg?style=flat-square)](https://www.npmjs.com/package/serverless-plugin-chrome)
 
@@ -133,7 +133,7 @@ plugins:
 
 Load order is important.
 
-For example, if you're using the [serverless-webpack](https://github.com/elastic-coders/serverless-webpack) plugin, your plugin section should be:
+For example, if you're using the [serverless-webpack](https://github.com/serverless-heaven/serverless-webpack) plugin, your plugin section should be:
 
 ```yaml
 plugins:

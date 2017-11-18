@@ -28,7 +28,7 @@ if [ -z "$(git config user.name)" ] && [ -n "$GIT_USER_NAME" ]; then
     git config --global user.name "$GIT_USER_NAME"
 fi
 
-git checkout develop # @TODO change to 'master'
+git checkout master
 
 
 cd "$PACKAGE_DIRECTORY/builds"
@@ -89,8 +89,8 @@ if [ "$UPDATES" -eq 1 ]; then
 
   git commit -a -m "v$PROJECT_VERSION"
   git tag "v$PROJECT_VERSION"
-  git push --set-upstream origin develop # @TODO: switch this to 'master'
+  git push --set-upstream origin master
   git push --tags
 else
-  git push --set-upstream origin develop # @TODO: switch this to 'master'
+  git push --set-upstream origin master
 fi

@@ -1,5 +1,12 @@
 version: 2
+
+#
+# Jobs
+#
+
 jobs:
+
+  # This job builds the base project directory (e.g. ~/package.json)
   build:
     docker:
       - image: circleci/node:6.10.3
@@ -13,6 +20,7 @@ jobs:
           paths:
             - node_modules
 
+  # This job runs the lint tool on the whole repository
   lint:
     docker:
       - image: circleci/node:8
@@ -33,9 +41,12 @@ jobs:
       - run: ./scripts/link-package.sh packages/serverless-plugin lambda               
       - run: npm run lint
 
+  # This job runs all of the unit tests in the repository
   unit_test:
     docker:
+      # Node 8 so we can avoid transpiling our tests
       - image: circleci/node:8
+      # The unit tests require DevTools on localhost:9222
       - image: adieuadieu/headless-chromium-for-aws-lambda:stable
     steps:
       - checkout
@@ -50,15 +61,11 @@ jobs:
       - run:
           name: Install Chromium for local development Launcher test
           command: sudo apt-get install -y chromium
-      # - run: |
-      #     VERSION=$(jq -r ".stable" packages/lambda/builds/chromium/version.json)
-      #     docker run -d --rm \
-      #       --name headless-chromium \
-      #       -p 9222:9222 \
-      #       "adieuadieu/headless-chromium-for-aws-lambda:stable"
       - run: npm run ava
 
+  # This job builds the @serverless-chrome/lambda package
   build_lambda:
+    # use a machine because we extract binaries from Docker images  
     machine: true
     steps:
       - checkout
@@ -87,7 +94,9 @@ jobs:
           paths:
             - packages/lambda/dist  
 
+  # This job runs the @serverless-chrome/lambda package's integration tests
   integration_test_lambda:
+    # use a machine because we run the integration tests with Docker (lambci/lambda)
     machine: true
     steps:
       - checkout
@@ -101,6 +110,7 @@ jobs:
           name: Integration test
           command: cd packages/lambda && npm test
 
+  # This job builds the serverless-plugin package
   build_serverless_plugin:
     docker:
       - image: circleci/node:6.10.3
@@ -130,7 +140,9 @@ jobs:
             - packages/serverless-plugin/node_modules
             - packages/serverless-plugin/integration-test/node_modules           
 
+  # This job runs the serverless-plugin package's integration tests
   integration_test_serverless_plugin:
+    # use a machine because we run the integration tests with Docker (lambci/lambda)
     machine: true
     steps:
       - checkout
@@ -144,6 +156,7 @@ jobs:
           name: Integration test
           command: cd packages/serverless-plugin && npm test
 
+  # This job builds the serverless-framework AWS example service
   build_serverless_example:
     docker:
       - image: circleci/node:6.10.3
@@ -167,22 +180,24 @@ jobs:
           paths:
             - examples/serverless-framework/aws/node_modules      
 
+  # This job checks for new versions of browsers (chromium)
+  # and updates the repository code when new docker images have been built
   update_browser_versions:
     docker:
       - image: circleci/node:6.10.3
     branch:
-      - develop # @TODO remove
-      # - master
+      - master
     steps:
       - checkout
       - run: scripts/update-browser-versions.sh
 
+  # This job handles release automation. Usually run when new binaries of
+  # browsers have been built. Only stable-channel binaries will trigger a git tag
+  # from which we make releases.
   release:
+    # use a machine because we run Docker containers while preparing the release
     machine: true
-    # docker:
-    #   - image: circleci/node:6.10.3
     branch:
-      - develop # @TODO remove
       - master
     steps:
       - checkout
@@ -193,28 +208,27 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       # we need a newer version of NPM than is available by default, e.g. >=4
+      # because we make use of the "prepublishOnly" package.json script, which was introduces in npm@4
       - run:
           name: Update NPM
           command: npm install -g npm@latest
       - run: scripts/release.sh
 
+  # This step triggers builds of binaries when new versions are available
+  # The builds happen on AWS Spot Instances created by this step and are not run
+  # on CircleCI due to instance-size/build-time constraints there.
+  # AWS Spot Instances are configured by ~/aws/ec2-spot-instance-specification.json
+  # Using "amazonlinux:latest" image because it's easy to install aws-cli.
   build_new_binaries:
     docker:
       - image: amazonlinux:latest
     branch:
-      - develop # @TODO remove
       - master
     steps:
       - checkout
-      # Would be cooler if these dependencies were already apart of the docker image
       - run:
           name: Install AWS CLI & JQ
           command: yum install -y aws-cli jq
-      # - run:
-      #     name: Enable experimental features in Docker daemon
-      #     command: |
-      #       sudo sh -c 'echo '\''DOCKER_OPTS="--experimental=true"'\'' >> /etc/default/docker'
-      #       sudo service docker restart
       - run: 
           name: Build stable-channel Chromium
           command: scripts/ci-daily.sh stable chromium
@@ -232,6 +246,12 @@ jobs:
 
 workflows:
   version: 2
+
+  # Runs on every commit. The jobs install and build dependencies
+  # and also setup test environments and prerequisites for integration tests
+  # On tagged commits on master branch, the "release" job automates publishing 
+  # of NPM packages and making a GitHub release. The release and npm packages are published
+  # by a bot account (botsimo).
   build_test_release:
     jobs:
       - build     
@@ -266,14 +286,17 @@ workflows:
       - release:
           filters:
             branches:
-              only: develop # @TODO: change to 'master'
+              only: master
           requires:
             - lint
             - unit_test
             - integration_test_lambda
             - integration_test_serverless_plugin
 
-
+  # Runs daily at 08:00 UTC. The job checks for new versions of
+  # headless browsers (chromium) and creates an AWS spot-instance-request
+  # on which to compile/build any new versions.
+  # Takes about 2h10m for Chromium 64+ on c5.2xlarge
   daily_build:
     triggers:
       - schedule:
@@ -281,19 +304,21 @@ workflows:
           filters:
             branches:
               only:
-                # - @TODO: master (instead of develop)
-                - develop
+                - master
     jobs:
       - build_new_binaries
 
+  # Runs daily at 11:00 UTC. The job checks if any new versions of
+  # headless browsers (chromium) have been built and updates the repository
+  # code to point at any new versions. A new stable-channel version will
+  # trigger an automated release in the "release" job in the build_test_release workflow
   daily_version_update:
     triggers:
       - schedule:
-          cron: "0 14 * * *"
+          cron: "0 11 * * *"
           filters:
             branches:
               only:
-                # - @TODO: master (instead of develop)
-                - develop
+                - master
     jobs:
       - update_browser_versions

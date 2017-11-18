@@ -72,7 +72,7 @@ This project contains:
 - **[Example functions](examples/)**
   - [Serverless-framework](https://serverless.com/) AWS Lambda Node.js functions using `serverless-plugin-chrome`
 - **[Build Automation](docs/automation.md) & (CI/CD)[.circleci/config.yml]**<br/>
-   Build and release tooling shell scripts and Dockerfile for automating the build/release of headless Chrome for serverless environments (AWS Lambda)
+   Build and release tooling shell scripts and Dockerfile for automating the build/release of headless Chrome for serverless environments (AWS Lambda).
 
 
 ## Examples
@@ -98,7 +98,6 @@ Test with `npm test`. Each package also contains it's own integration tests whic
 
 1. Hack to Chrome code to disable `/dev/shm`. Details [here](https://medium.com/@marco.luethy/running-headless-chrome-on-aws-lambda-fa82ad33a9eb).
 1. `/tmp` size on Lambda is only about 500MB.
-1. For steady/predictable loads, it might not be the most cost efficient to do this on Lambda vs. EC2
 
 
 ## Roadmap

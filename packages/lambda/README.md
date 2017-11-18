@@ -75,7 +75,7 @@ launchChrome({ chromePath: '/my/local/chrome/path' })
 
 **Command line flags (or "switches")**
 
-The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](https://github.com/adieuadieu/serverless-chrome/blob/develop/packages/lambda/src/flags.js) are used, but in development no default flags are used.
+The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](packages/lambda/src/flags.js) are used, but in development no default flags are used.
 
 The package has zero external dependencies required for inclusion in your Lambda function's package.
 
@@ -89,7 +89,7 @@ There are plugins which bundle this package for easy deployment available for th
 
 ## Specifying Chromium Channel
 
-This package will use the latest stable-channel build of Headless Chromium for AWS Lambda. To select a different channel (beta or dev), export either an environment variable `NPM_CONFIG_CHROMIUM_CHANNEL` or add `chromium_channel` to the `config` section of your `package.json`:
+This package will use the latest stable-channel build of Headless Chromium for AWS Lambda. To select a different channel (beta or dev), export either an environment variable `NPM_CONFIG_CHROMIUM_CHANNEL` or add `chromiumChannel` to the `config` section of your `package.json`:
 
 Your `package.json`:
 
@@ -98,13 +98,13 @@ Your `package.json`:
   "name": "my-cool-project",
   "version": "1.0.0",
   "config": {
-    "chromium_channel": "dev"  <-- here
+    "chromiumChannel": "dev"  <-- here
   },
   "scripts": {
-    ...
+
   },
   "description": {
-    ...
+
   }
 }
 ```
@@ -112,3 +112,5 @@ Your `package.json`:
 Note: the `dev` channel is _almost_ `canary`, so use `dev` if you're looking for the Canary channel.
 
 You can skip download entirely with `NPM_CONFIG_SERVERLESS_CHROME_SKIP_DOWNLOAD` or setting `skip_download` in the `config` section of your `package.json`
+
+_Caution_: We test and develop features against the stable channel. Using the beta or dev channel versions of Chromium may lead to unexpected results, especially in relation to the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/Emulation/) (which is used by tools like Chromeless and Puppeteer).
