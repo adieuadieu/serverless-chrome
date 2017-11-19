@@ -16,15 +16,15 @@ set -e
 
 cd "$(dirname "$0")/../"
 
+PROJECT_DIRECTORY=$(pwd)
 PROJECT_VERSION=$(jq -r ".version" package.json)
 VERSION=${1:-"$PROJECT_VERSION"}
 
-cd packages/
+update() {
+  PACKAGE_NAME="$1"
 
-for PACKAGE in */package.json; do
-  PACKAGE_NAME="${PACKAGE%%/*}"
-  cd "$PACKAGE_NAME" || exit 1
-
+  cd "$PROJECT_DIRECTORY/$PACKAGE_NAME" || exit 1
+  
   PACKAGE_VERSION=$(jq -r ".version" package.json)
 
   if [ "$PACKAGE_VERSION" != "$VERSION" ]; then
@@ -47,6 +47,18 @@ for PACKAGE in */package.json; do
       )
     fi
 
+    HAS_SERVERLESS_PLUGIN_DEPENDENCY=$(echo "$JSON" | \
+      jq -r \
+      ".devDependencies | has(\"serverless-plugin-chrome\")"
+    )
+
+    if [ "$HAS_SERVERLESS_PLUGIN_DEPENDENCY" = "true" ]; then
+      JSON=$(echo "$JSON" | \
+        jq -r \
+        ".devDependencies.\"serverless-plugin-chrome\" |= \"$VERSION\""
+      )
+    fi
+
     echo "$JSON" > package.json
 
     # @TODO: run yarn to update lockfile
@@ -57,8 +69,22 @@ for PACKAGE in */package.json; do
   else
     echo "$PACKAGE_NAME version $VERSION is already latest. Skipping.."
   fi
+}
 
-  cd ../
+
+#
+# Synchronize all packages
+#
+cd packages/
+
+for PACKAGE in */package.json; do
+  PACKAGE_NAME="${PACKAGE%%/*}"
+
+  update "packages/$PACKAGE_NAME"
 done
 
-# @TODO: update integration-test and example dependencies, too
+
+#
+# Synchronize examples
+#
+update "examples/serverless-framework/aws"

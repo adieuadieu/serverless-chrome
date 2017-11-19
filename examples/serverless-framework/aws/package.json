@@ -1,7 +1,7 @@
 {
   "name": "@serverless-chrome/example-serverless-framework-aws",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.0-28",
   "description": "Example serverless functions using the Serverless-framework",
   "main": "src/handlers.js",
   "engines": {

@@ -74,7 +74,7 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
 
   cd serverless-chrome || return
 
-  git checkout develop # @ TODO remove this line
+  # git checkout develop # in case you want to build develop branch
 
   ./scripts/docker-build-image.sh "$CHANNEL" "$BROWSER" "$VERSION"
 fi
