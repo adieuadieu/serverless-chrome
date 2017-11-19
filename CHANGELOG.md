@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - serverless-plugin-chrome: support for limiting Chrome to only select service functions with the `custom.chrome.functions` parameter.
 - @serverless-chrome/lambda NPM package
 - serverless-plugin-chrome NPM package for Serverless-framework
+- Lots of new and updated documentation
 - CHANGELOG.md.
 
 ### Changed

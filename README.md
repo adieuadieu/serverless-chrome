@@ -17,8 +17,9 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [Quick Start](#quick-start)
 1. [The Project](#the-project)
 1. [Examples](#examples)
+1. [Documentation & Resources](#documentation--resources)
+    1. [Building Headless Chrome/Chromium](#building-headless-chrome--chromium)
 1. [Testing](#testing)
-1. [Known Issues / Limitations](#known-issues--limitations)
 1. [Roadmap](#roadmap)
 1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
 1. [Change log](#change-log)
@@ -31,7 +32,7 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 
 Using AWS Lambda, the quickest way to get started is with the [Serverless-framework](https://serverless.com/) CLI.
 
-First, install `serverless` globally and then:
+First, install `serverless` globally (`npm install -g serverless`) and then:
 
 ```bash
 serverless create -u https://github.com/adieuadieu/serverless-chrome/tree/master/serverless-chrome/examples/serverless-framework/aws
@@ -89,15 +90,19 @@ A collection of example functions for different providers and frameworks.
   - Page-load Request Logger
 
 
+## Documentation & Resources
+
+### Building Headless Chrome/Chromium
+
+- Automated, regularly prebuilt binaries can be found on the [Releases](https://github.com/adieuadieu/serverless-chrome/releases) page 😎
+- [adieuadieu/headless-chromium-for-aws-lambda](https://hub.docker.com/r/adieuadieu/headless-chromium-for-aws-lambda/) Docker image
+- [Documentation on building your own binaries](/docs/chrome.md)
+- [Medium article on how to do build from scratch](https://medium.com/@marco.luethy/running-headless-chrome-on-aws-lambda-fa82ad33a9eb). This was the origin of this project.
+
+
 ## Testing
 
 Test with `npm test`. Each package also contains it's own integration tests which can be run with `npm run test:integration`.
-
-
-## Known Issues / Limitations
-
-1. Hack to Chrome code to disable `/dev/shm`. Details [here](https://medium.com/@marco.luethy/running-headless-chrome-on-aws-lambda-fa82ad33a9eb).
-1. `/tmp` size on Lambda is only about 500MB.
 
 
 ## Roadmap
