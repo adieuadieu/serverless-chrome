@@ -1,10 +1,5 @@
-// const fs = require('fs')
-// const path = require('path')
 const webpack = require('webpack')
-// const yaml = require('js-yaml')
 const slsw = require('serverless-webpack')
-
-// const { functions: slsFunctions } = yaml.load(fs.readFileSync('./serverless.yml'))
 
 module.exports = {
   devtool: 'source-map',
@@ -39,14 +34,5 @@ module.exports = {
       maxChunks: 1,
     }),
   ],
-  /* entry: Object.keys(slsFunctions)
-    .reduce((functions, key) => [...functions, slsFunctions[key]], [])
-    .reduce((entries, lambdaFunction) => {
-      const handler = lambdaFunction.handler.split('.')[0]
-
-      return Object.assign(entries, {
-        [handler]: path.resolve(`${handler}.js`),
-      })
-    }, {}), */
   entry: slsw.lib.entries,
 }
