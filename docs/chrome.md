@@ -103,7 +103,7 @@ Building on EC2 requires some IAM permissions setup:
 1. Create a new IAM _user_ with access keys and add [this custom inline policy](/aws/iam-serverless-chrome-automation-user-policy.json). The policy allows the minimum IAM permissions required to initiate a build on an EC2 Spot Instance.
 1. Create a new IAM _role_ called "serverless-chrome-automation" with an EC2 trust entity and add [this custom inline policy](/aws/iam-serverless-chrome-automation-role-policy.json). The policy allows the minimum IAM permissions required to retrieve secrets from the Parameter Store, log the instance's stdout/stderr to CloudWatch, and upload binaries to S3. Be sure to update the Resource Arns where appropriate (e.g. for the S3 bucket). Make note of the `Instance Profile ARN` as you'll need to set the `AWS_IAM_INSTANCE_ARN` environment variable to it.
 
-Export the following environment variables in your shell:
+Next, export the following environment variables in your shell:
 
 ```bash
 export AWS_ACCESS_KEY_ID=<your-iam-user-access-key-created-in-step-1>
@@ -113,7 +113,7 @@ export S3_BUCKET=<your-s3-bucket-and-optional-prefix>
 export FORCE_NEW_BUILD=1
 ```
 
-Then to start a new build run replacing the version and/or channel if desired:
+Then to start a new build run the following, replacing the version and/or channel if desired:
 
 ```bash
 ./scripts/ec2-build.sh chromium canary 64.0.3272.0

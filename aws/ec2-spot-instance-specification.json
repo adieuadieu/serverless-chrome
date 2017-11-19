@@ -7,7 +7,7 @@
     "ImageId": "ami-8c1be5f6",
     "InstanceType": "c5.2xlarge",
     "IamInstanceProfile": {
-      "Arn": "arn:aws:iam:::instance-profile/serverless-chrome-automation"
+      "Arn": "this gets updated by the ec2-build.sh script"
     },
     "BlockDeviceMappings": [
       {
