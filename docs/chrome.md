@@ -123,6 +123,7 @@ The version can also be ommitted. This will build the latest version based on th
 
 If successfull, the binary will show up in the S3 bucket. Check the CloudWatch `serverless-chrome-automation` log group [logs](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logStream:group=/serverless-chrome-automation;streamFilter=typeLogStreamPrefix) for errors.
 
+EC2 Spot Instance specifications such as instance type or spot price can be configured via [`/aws/ec2-spot-instance-specification.json`](/aws/ec2-spot-instance-specification.json).
 
 ## Fonts
 
