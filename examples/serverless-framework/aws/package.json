@@ -1,0 +1,90 @@
+{
+  "name": "@serverless-chrome/example-serverless-framework-aws",
+  "private": true,
+  "version": "1.0.0-28",
+  "description": "Example serverless functions using the Serverless-framework",
+  "main": "src/handlers.js",
+  "engines": {
+    "node": ">= 6.10.0"
+  },
+  "config": {
+    "jsSrc": "src/",
+    "chromiumChannel": "dev",
+    "chromium_channel": "dev"
+  },
+  "scripts": {
+    "test": "npm run lint && npm run ava",
+    "watch:test": "ava --watch",
+    "ava": "ava",
+    "lint": "npm run lint:eslint -s",
+    "lint:eslint": "eslint $npm_package_config_jsSrc",
+    "deploy": "serverless deploy -v",
+    "upgrade-dependencies": "yarn upgrade-interactive --latest --exact"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adieuadieu/serverless-chrome.git"
+  },
+  "keywords": [
+    "serverless",
+    "chrome",
+    "chromium",
+    "headless",
+    "aws",
+    "lambda",
+    "serverless-framework",
+    "screenshot",
+    "screen capture",
+    "pdf"
+  ],
+  "author": "Marco Lüthy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adieuadieu/serverless-chrome/issues"
+  },
+  "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws",
+  "dependencies": {
+    "chrome-remote-interface": "0.25.3"
+  },
+  "devDependencies": {
+    "ava": "0.23.0",
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
+    "babel-plugin-transform-object-entries": "1.0.0",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-stage-3": "6.24.1",
+    "babel-register": "6.26.0",
+    "serverless": "1.24.1",
+    "serverless-plugin-chrome": "1.0.0-28",
+    "serverless-webpack": "4.0.0",
+    "webpack": "3.8.1"
+  },
+  "ava": {
+    "require": "babel-register",
+    "babel": "inherits"
+  },
+  "babel": {
+    "sourceMaps": true,
+    "presets": [
+      [
+        "env",
+        {
+          "modules": "commonjs",
+          "targets": {
+            "node": "6.10"
+          },
+          "include": [
+            "es7.object.values",
+            "es7.object.entries"
+          ]
+        }
+      ],
+      "stage-3"
+    ],
+    "plugins": [
+      "transform-object-rest-spread",
+      "transform-object-entries"
+    ]
+  }
+}

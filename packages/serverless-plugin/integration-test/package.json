@@ -1,0 +1,22 @@
+{
+  "name": "serverless-plugin-chrome-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "serverless deploy",
+    "invoke": "serverless invoke --function test"
+  },
+  "author": "Marco Lüthy",
+  "license": "MIT",
+  "dependencies": {
+    "chrome-remote-interface": "0.24.0"
+  },
+  "devDependencies": {
+    "@serverless-chrome/lambda": "1.0.0-6",
+    "serverless": "1.23.0",
+    "serverless-plugin-typescript": "0.5.0"
+  }
+}

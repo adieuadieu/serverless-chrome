@@ -1,0 +1,72 @@
+{
+  "name": "@serverless-chrome/lambda",
+  "version": "1.0.0-28",
+  "description": "Run headless Chrome/Chromium on AWS Lambda",
+  "author": "Marco Lüthy",
+  "keywords": [
+    "serverless",
+    "chrome",
+    "chromium",
+    "headless",
+    "aws",
+    "lambda"
+  ],
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.es.js",
+  "files": [
+    "dist/bundle.cjs.js",
+    "dist/bundle.es.js",
+    "scripts/postinstall.js"
+  ],
+  "repository": "git@github.com:adieuadieu/serverless-chrome.git",
+  "bugs": {
+    "url": "https://github.com/adieuadieu/serverless-chrome/issues"
+  },
+  "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 6.10"
+  },
+  "config": {
+    "jsSrc": "src/"
+  },
+  "scripts": {
+    "clean": "rm -Rf dist/ ./**.zip",
+    "test": "npm run test:integration",
+    "test:integration": "scripts/test-integration.sh",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "prepublishOnly": "npm run clean && npm run build",
+    "postinstall": "node scripts/postinstall.js",
+    "package-binaries": "scripts/package-binaries.sh",
+    "latest-browser-versions": "scripts/latest-versions.sh",
+    "upgrade-dependencies": "yarn upgrade-interactive --latest --exact"
+  },
+  "dependencies": {
+    "extract-zip": "1.6.6"
+  },
+  "devDependencies": {
+    "ava": "0.23.0",
+    "babel-core": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "chrome-launcher": "0.8.1",
+    "rollup": "0.51.7",
+    "rollup-plugin-babel": "3.0.2",
+    "rollup-plugin-node-resolve": "3.0.0"
+  },
+  "babel": {
+    "sourceMaps": true,
+    "presets": [
+      [
+        "env",
+        {
+          "modules": "commonjs",
+          "targets": {
+            "node": "6.10"
+          }
+        }
+      ]
+    ]
+  }
+}

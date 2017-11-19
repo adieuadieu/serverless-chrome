@@ -1,0 +1,30 @@
+service: serverless-chrome-lambda-pkg-test
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: us-east-1
+  environment:
+    DEBUG: "*"
+
+package:
+  exclude:
+    - ./**
+
+  include:
+    - ./dist/**
+    - handler.js
+    - headless_shell
+
+functions:
+  test:
+    description: serverless-chrome/lambda test
+    memorySize: 1536
+    timeout: 30
+    handler: handler.run
+
+    events:
+      - http:
+          path: package/lambda/test
+          method: get

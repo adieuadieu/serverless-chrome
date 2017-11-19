@@ -36,7 +36,12 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
+# package directories
+node_modules
+jspm_packages
 
+# Serverless directories
+.serverless
 
 
 *.log
@@ -55,7 +60,9 @@ npm-debug.log
 awsconfig.json
 npm-debug.log
 dump/
-config.yml
 config.json
 /config.js
 event.json
+.build/
+headless-chromium-amazonlinux-2017-03.zip
+.eslintcache

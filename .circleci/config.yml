@@ -1,0 +1,325 @@
+version: 2
+
+#
+# Jobs
+#
+
+jobs:
+
+  # This job builds the base project directory (e.g. ~/package.json)
+  build:
+    docker:
+      - image: circleci/node:6.10.3
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+  # This job runs the lint tool on the whole repository
+  lint:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
+      # need to set permissions on the npm prefix so that we can npm link packages
+      - run: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+      - run: ./scripts/link-package.sh packages/serverless-plugin lambda               
+      - run: npm run lint
+
+  # This job runs all of the unit tests in the repository
+  unit_test:
+    docker:
+      # Node 8 so we can avoid transpiling our tests
+      - image: circleci/node:8
+      # The unit tests require DevTools on localhost:9222
+      - image: adieuadieu/headless-chromium-for-aws-lambda:stable
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/lambda/package.json" }}     
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
+      - run:
+          name: Install Chromium for local development Launcher test
+          command: sudo apt-get install -y chromium
+      - run: npm run ava
+
+  # This job builds the @serverless-chrome/lambda package
+  build_lambda:
+    # use a machine because we extract binaries from Docker images  
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
+      - run:
+          name: Add chromium binary if missing
+          command: |
+            cd packages/lambda
+            if [ ! -f "dist/headless-chromium" ]; then
+              ./scripts/package-binaries.sh chromium stable
+              cp dist/stable-headless-chromium dist/headless-chromium
+            fi
+      - run: cd packages/lambda && npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
+          paths:
+            - packages/lambda/node_modules
+            - packages/lambda/dist/headless-chromium
+            - packages/lambda/dist/stable-headless-chromium
+      - run: cd packages/lambda && npm run build
+      - save_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
+          paths:
+            - packages/lambda/dist  
+
+  # This job runs the @serverless-chrome/lambda package's integration tests
+  integration_test_lambda:
+    # use a machine because we run the integration tests with Docker (lambci/lambda)
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda               
+      - run:
+          name: Integration test
+          command: cd packages/lambda && npm test
+
+  # This job builds the serverless-plugin package
+  build_serverless_plugin:
+    docker:
+      - image: circleci/node:6.10.3
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
+      # need to set permissions on the npm prefix so that we can npm link packages
+      - run: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+      - run: ./scripts/link-package.sh packages/serverless-plugin lambda
+      - run: cd packages/serverless-plugin && npm install
+      - run: cd packages/serverless-plugin && npm run build
+      - save_cache:
+          key: build-cache-{{ .Revision }}-package-serverless-plugin
+          paths:
+            - packages/serverless-plugin/dist         
+      - run: |
+          [ -z "$CIRCLE_TAG" ] || ./scripts/link-package.sh packages/serverless-plugin/integration-test lambda
+      - run: cd packages/serverless-plugin/integration-test && npm install      
+      - save_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+          paths:
+            - packages/serverless-plugin/node_modules
+            - packages/serverless-plugin/integration-test/node_modules           
+
+  # This job runs the serverless-plugin package's integration tests
+  integration_test_serverless_plugin:
+    # use a machine because we run the integration tests with Docker (lambci/lambda)
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
+      - run:
+          name: Integration test
+          command: cd packages/serverless-plugin && npm test
+
+  # This job builds the serverless-framework AWS example service
+  build_serverless_example:
+    docker:
+      - image: circleci/node:6.10.3
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}      
+      - restore_cache:
+          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-lambda
+      - restore_cache:
+          key: build-cache-{{ .Revision }}-package-serverless-plugin          
+      # need to set permissions on the npm prefix so that we can npm link packages
+      - run: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+      - run: ./scripts/link-package.sh packages/serverless-plugin lambda                
+      - run: ./scripts/link-package.sh examples/serverless-framework/aws serverless-plugin          
+      - run: cd examples/serverless-framework/aws && npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "examples/serverless-framework/aws/package.json" }}
+          paths:
+            - examples/serverless-framework/aws/node_modules      
+
+  # This job checks for new versions of browsers (chromium)
+  # and updates the repository code when new docker images have been built
+  update_browser_versions:
+    docker:
+      - image: circleci/node:6.10.3
+    branch:
+      - master
+    steps:
+      - checkout
+      - run: scripts/update-browser-versions.sh
+
+  # This job handles release automation. Usually run when new binaries of
+  # browsers have been built. Only stable-channel binaries will trigger a git tag
+  # from which we make releases.
+  release:
+    # use a machine because we run Docker containers while preparing the release
+    machine: true
+    branch:
+      - master
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/lambda/package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
+      # we need a newer version of NPM than is available by default, e.g. >=4
+      # because we make use of the "prepublishOnly" package.json script, which was introduces in npm@4
+      - run:
+          name: Update NPM
+          command: npm install -g npm@latest
+      - run: scripts/release.sh
+
+  # This step triggers builds of binaries when new versions are available
+  # The builds happen on AWS Spot Instances created by this step and are not run
+  # on CircleCI due to instance-size/build-time constraints there.
+  # AWS Spot Instances are configured by ~/aws/ec2-spot-instance-specification.json.
+  # On start up, the spot instances run the user-data script in ~/aws/user-data.sh.
+  # Using "amazonlinux:latest" image because it's easy to install aws-cli.
+  build_new_binaries:
+    docker:
+      - image: amazonlinux:latest
+    branch:
+      - master
+    steps:
+      - checkout
+      - run:
+          name: Install AWS CLI & JQ
+          command: yum install -y aws-cli jq
+      - run: 
+          name: Build stable-channel Chromium
+          command: scripts/ci-daily.sh stable chromium
+      - run: 
+          name: Build beta-channel Chromium
+          command: scripts/ci-daily.sh beta chromium
+      - run: 
+          name: Build dev-channel Chromium
+          command: scripts/ci-daily.sh dev chromium
+
+
+#
+# Workflows
+#
+
+workflows:
+  version: 2
+
+  # Runs on every commit. The jobs install and build dependencies
+  # and also setup test environments and prerequisites for integration tests
+  # On tagged commits on master branch, the "release" job automates publishing 
+  # of NPM packages and making a GitHub release. The release and npm packages are published
+  # by a bot account (botsimo).
+  build_test_release:
+    jobs:
+      - build     
+
+      - build_lambda:     
+          requires:
+            - build
+      - build_serverless_plugin:    
+          requires:
+            - build_lambda
+      - build_serverless_example:     
+          requires:
+            - build_serverless_plugin
+      - lint:      
+          requires:
+            - build
+            - build_lambda
+            - build_serverless_plugin
+            - build_serverless_example
+      - unit_test:     
+          requires:
+            - build
+            - build_lambda
+            - build_serverless_plugin
+            - build_serverless_example
+      - integration_test_lambda:      
+          requires:
+            - build_lambda
+      - integration_test_serverless_plugin:    
+          requires:
+            - build_serverless_plugin
+      - release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - lint
+            - unit_test
+            - integration_test_lambda
+            - integration_test_serverless_plugin
+
+  # Runs daily at 08:00 UTC. The job checks for new versions of
+  # headless browsers (chromium) and creates an AWS spot-instance-request
+  # on which to compile/build any new versions.
+  # Takes about 2h10m for Chromium 64+ on c5.2xlarge
+  daily_build:
+    triggers:
+      - schedule:
+          cron: "0 8 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build_new_binaries
+
+  # Runs daily at 11:00 UTC. The job checks if any new versions of
+  # headless browsers (chromium) have been built and updates the repository
+  # code to point at any new versions. A new stable-channel version will
+  # trigger an automated release in the "release" job in the build_test_release workflow
+  daily_version_update:
+    triggers:
+      - schedule:
+          cron: "0 11 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - update_browser_versions

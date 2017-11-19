@@ -1,23 +1,23 @@
 {
   "name": "serverless-chrome",
-  "version": "1.0.0",
+  "version": "1.0.0-28",
   "description": "Run headless Chrome, serverless-ly",
   "main": "handler.js",
   "engines": {
     "node": ">= 6.10.0"
-  },
-  "config": {
-    "jsSrc": "src/"
   },
   "scripts": {
     "test": "npm run lint && nyc ava",
     "watch:test": "ava --watch",
     "ava": "ava",
     "lint": "npm run lint:eslint -s",
-    "lint:eslint": "eslint $npm_package_config_jsSrc",
+    "lint:eslint": "eslint --cache --ext .js .",
     "coverage": "nyc report",
-    "deploy": "serverless deploy -v",
-    "postinstall": "if [ ! -f ./config.js ]; then UUID=$(openssl rand -base64 32 | tr -d \"/=+\"); echo \"export default {uuid: \\\"$UUID\\\"}\" > ./config.js; fi"
+    "upgrade-dependencies": "yarn upgrade-interactive --latest --exact",
+    "precommit": "lint-staged",
+    "prettier": "prettier-eslint --no-semi --single-quote --trailing-comma es5 --write",
+    "release": "scripts/release.sh",
+    "postversion": "scripts/sync-package-versions.sh"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,11 @@
   "keywords": [
     "serverless",
     "chrome",
-    "headless"
+    "chromium",
+    "headless",
+    "aws",
+    "lambda",
+    "serverless-framework"
   ],
   "author": "Marco Lüthy",
   "license": "MIT",
@@ -34,41 +38,33 @@
     "url": "https://github.com/adieuadieu/serverless-chrome/issues"
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome",
-  "dependencies": {
-    "aws-sdk": "^2.49.0",
-    "chrome-remote-interface": "^0.22.0",
-    "got": "^6.7.1",
-    "ps-node": "^0.1.6",
-    "uuid": "^3.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "ava": "^0.19.1",
-    "babel-core": "^6.24.1",
-    "babel-eslint": "^7.2.3",
-    "babel-loader": "^7.0.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.4.0",
-    "babel-preset-stage-3": "^6.24.1",
-    "babel-register": "^6.24.1",
-    "babel-runtime": "^6.23.0",
-    "codacy-coverage": "^2.0.2",
-    "coveralls": "^2.13.1",
-    "decompress": "^4.1.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "^11.1.3",
-    "eslint-plugin-ava": "^4.2.0",
-    "eslint-plugin-import": "2.2.0",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-tap": "^2.0.0",
-    "exports-loader": "^0.6.4",
-    "imports-loader": "^0.7.1",
-    "json-loader": "0.5.4",
-    "nyc": "^10.3.2",
-    "serverless": "^1.12.1",
-    "serverless-webpack": "^1.0.0-rc.4",
-    "tap-xunit": "^1.7.0",
-    "webpack": "1.14.0"
+    "ava": "0.23.0",
+    "babel-core": "6.26.0",
+    "babel-eslint": "8.0.2",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-polyfill": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-stage-3": "6.24.1",
+    "babel-register": "6.26.0",
+    "babel-runtime": "6.26.0",
+    "codacy-coverage": "2.0.3",
+    "coveralls": "3.0.0",
+    "eslint": "4.11.0",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-ava": "4.2.2",
+    "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-node": "5.2.1",
+    "eslint-plugin-promise": "3.6.0",
+    "eslint-tap": "2.0.1",
+    "husky": "0.14.3",
+    "lint-staged": "5.0.0",
+    "nyc": "11.3.0",
+    "prettier": "1.8.2",
+    "prettier-eslint": "8.2.2",
+    "prettier-eslint-cli": "^4.4.0",
+    "tap-xunit": "1.7.0"
   },
   "ava": {
     "require": "babel-register",
@@ -84,7 +80,7 @@
         "env",
         {
           "targets": {
-            "node": 6.1
+            "node": "6.10"
           }
         }
       ],
@@ -126,5 +122,24 @@
         "always"
       ]
     }
+  },
+  "eslintIgnore": [
+    "node_modules",
+    "dist"
+  ],
+  "prettier": {
+    "eslintIntegration": true,
+    "jsonEnable": [],
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "useTabs": false
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "yarn prettier",
+      "yarn lint",
+      "git add"
+    ]
   }
 }
