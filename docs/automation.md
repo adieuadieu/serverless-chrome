@@ -4,6 +4,8 @@ These docs are a work-in-progress (read: incomplete).
 
 Automation of builds.
 
+There is more documentation concerning building Chrome/Chromium [here](/docs/chrome.md)
+
 
 ## Setup
 
