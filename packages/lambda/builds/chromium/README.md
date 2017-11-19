@@ -1,5 +1,7 @@
 # Build Headless Chromium for AWS Lambda
 
+Documentation has moved [here](docs/chrome.md)
+
 If you're looking for instructions on how to compile/build Chromium/Chrome for AWS Lambda have a look at the [build script](packages/lambda/builds/chromium/build/build.sh) or the [Dockerfile](packages/lambda/builds/chromium/build/Dockerfile) or simply use the built [Docker image](https://hub.docker.com/r/adieuadieu/headless-chromium-for-aws-lambda/):
 
 ```bash

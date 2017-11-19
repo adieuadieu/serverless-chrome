@@ -6,14 +6,18 @@
 #
 # Requires Docker, jq, and curl
 #
-# Usage: ./docker-build-image.sh stable|beta|dev [chromium|firefox]
+# Usage: ./docker-build-image.sh stable|beta|dev [chromium|firefox] [version|git-tag]
 #
 
 set -e
 
 cd "$(dirname "$0")/.."
 
-DO_PUSH=1
+CHANNEL=${1:-stable}
+BROWSER=${2:-}
+VERSION=${3:-}
+
+DOCKER_ORG=${DOCKER_ORG:-adieuadieu}
 
 PROJECT_DIRECTORY=$(pwd)
 PACKAGE_DIRECTORY="$PROJECT_DIRECTORY/packages/lambda"
@@ -23,28 +27,28 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-CHANNEL=${1:-stable}
-shift
-
 build() {
   BUILD_NAME=$1
-
-  cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
-  
-  LATEST_VERSION=$(./latest.sh "$CHANNEL")
   DOCKER_IMAGE=headless-$BUILD_NAME-for-aws-lambda
 
-  
-  if "$PROJECT_DIRECTORY/scripts/docker-image-exists.sh" "adieuadieu/$DOCKER_IMAGE" "$LATEST_VERSION"; then
-    echo "$BUILD_NAME version $LATEST_VERSION was previously built. Skipping build."
+  if [ -z "$VERSION" ]; then
+    VERSION=$(./latest.sh "$CHANNEL")
+  fi
+
+  cd "$PACKAGE_DIRECTORY/builds/$BUILD_NAME"
+    
+  if "$PROJECT_DIRECTORY/scripts/docker-image-exists.sh" \
+      "$DOCKER_ORG/$DOCKER_IMAGE" "$VERSION" \
+    && [ -z "$FORCE_NEW_BUILD" ]; then
+    echo "$BUILD_NAME version $VERSION was previously built. Skipping build."
   else
-    echo "Building Docker image $BUILD_NAME version $LATEST_VERSION"
+    echo "Building Docker image $BUILD_NAME version $VERSION"
 
     # Build in Docker
     docker build \
       --compress \
-      -t "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION" \
-      --build-arg VERSION="$LATEST_VERSION" \
+      -t "$DOCKER_ORG/$DOCKER_IMAGE-build:$VERSION" \
+      --build-arg VERSION="$VERSION" \
       "build"
 
     mkdir -p dist/
@@ -53,7 +57,7 @@ build() {
     docker run -dt --rm \
       --name "$DOCKER_IMAGE-build" \
       -p 9222:9222 \
-      "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION"
+      "$DOCKER_ORG/$DOCKER_IMAGE-build:$VERSION"
 
     # Give the container and browser some time to start up
     sleep 10
@@ -69,7 +73,7 @@ build() {
 
       docker run --init --rm \
         --entrypoint="/bin/headless-chromium" \
-        "adieuadieu/$DOCKER_IMAGE-build:$LATEST_VERSION" \
+        "$DOCKER_ORG/$DOCKER_IMAGE-build:$VERSION" \
         --no-sandbox --disable-gpu http://google.com/
       return
     fi
@@ -83,8 +87,8 @@ build() {
     # due to the source code and build dependencies
     docker build \
       --compress \
-      -t "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" \
-      --build-arg VERSION="$LATEST_VERSION" \
+      -t "$DOCKER_ORG/$DOCKER_IMAGE:$VERSION" \
+      --build-arg VERSION="$VERSION" \
       "."
 
     if [ -n "$DO_PUSH" ]; then
@@ -93,15 +97,41 @@ build() {
       # Only tag stable channel as latest
       if [ "$CHANNEL" = "stable" ]; then
         docker tag \
-          "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" \
-          "adieuadieu/$DOCKER_IMAGE:latest"
+          "$DOCKER_ORG/$DOCKER_IMAGE:$VERSION" \
+          "$DOCKER_ORG/$DOCKER_IMAGE:latest"
       fi
 
       docker tag \
-        "adieuadieu/$DOCKER_IMAGE:$LATEST_VERSION" \
-        "adieuadieu/$DOCKER_IMAGE:$CHANNEL"
+        "$DOCKER_ORG/$DOCKER_IMAGE:$VERSION" \
+        "$DOCKER_ORG/$DOCKER_IMAGE:$CHANNEL"
 
-      docker push "adieuadieu/$DOCKER_IMAGE"
+      docker push "$DOCKER_ORG/$DOCKER_IMAGE"
+    fi
+
+    #
+    # Upload a zipped binary to S3 if S3_BUCKET is set
+    # Prints a presigned S3 URL to the zip file
+    #
+    if [ -n "$S3_BUCKET" ]; then
+      ZIPFILE_PATH="$CHANNEL-headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
+
+      (
+        cd dist
+        zip -9 -D "$ZIPFILE_PATH" "headless-$BUILD_NAME"
+      )
+
+      aws s3 \
+        cp "dist/$ZIPFILE_PATH" \
+        "s3://$S3_BUCKET/awslambda/$BUILD_NAME" \
+        --region "$AWS_REGION"
+
+      S3_PRESIGNED_URL=$(aws s3 presign \
+        "s3://$S3_BUCKET/awslambda/$BUILD_NAME" \
+        --region "$AWS_REGION" \
+        --expires-in 86400 \
+      )
+
+      printf "\n\nBinary archive URL: %s\n\n" "$S3_PRESIGNED_URL"
     fi
   fi
 }
@@ -110,11 +140,13 @@ build() {
 
 cd "$PROJECT_DIRECTORY"
 
-# Docker Login
-scripts/docker-login.sh
+# Docker Login & enable docker push on successful login
+if scripts/docker-login.sh; then
+  DO_PUSH=1
+fi
 
-if [ ! -z "$1" ]; then
-  build "$1"
+if [ ! -z "$BROWSER" ]; then
+  build "$BROWSER"
 else
   cd "$PACKAGE_DIRECTORY/builds"
 

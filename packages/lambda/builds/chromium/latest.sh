@@ -6,7 +6,7 @@
 #
 # Requires jq
 #
-# Usage: ./latest.sh
+# Usage: ./latest.sh [stable|beta|dev]
 #
 
 CHANNEL=${1:-stable}

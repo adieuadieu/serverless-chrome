@@ -6,6 +6,11 @@
 #
 # Usage: ./ec2-build.sh chromium|firefox stable|beta|dev version|tag
 #
+#
+# Further documentation: 
+# https://github.com/adieuadieu/serverless-chrome/blob/develop/docs/automation.md
+# https://github.com/adieuadieu/serverless-chrome/blob/develop/docs/chrome.md
+#
 
 set -e
 
@@ -15,8 +20,11 @@ AWS_REGION=${AWS_REGION:-us-east-1}
 
 PROJECT_DIRECTORY=$(pwd)
 BUILD_NAME=${1:-chromium}
-CHANNEL=${2:-dev}
+CHANNEL=${2:-stable}
 VERSION=${3:-master}
+DOCKER_ORG=${DOCKER_ORG:-adieuadieu}
+S3_BUCKET=${S3_BUCKET:-}
+FORCE_NEW_BUILD=${FORCE_NEW_BUILD:-}
 
 #
 # Check for some required env variables
@@ -40,6 +48,9 @@ echo "Launching EC2 spot instance to build $BUILD_NAME version $VERSION ($CHANNE
 USER_DATA=$(sed -e "s/INSERT_CHANNEL_HERE/$CHANNEL/g" "$PROJECT_DIRECTORY/aws/user-data.sh" | \
   sed -e "s/INSERT_BROWSER_HERE/$BUILD_NAME/g" | \
   sed -e "s/INSERT_VERSION_HERE/$VERSION/g" | \
+  sed -e "s/INSERT_DOCKER_ORG_HERE/$DOCKER_ORG/g" | \
+  sed -e "s/INSERT_S3_BUCKET_HERE/$S3_BUCKET/g" | \
+  sed -e "s/INSERT_FORCE_NEW_BUILD_HERE/$FORCE_NEW_BUILD/g" | \  
   base64 \
 )
 

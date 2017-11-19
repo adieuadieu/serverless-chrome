@@ -22,6 +22,16 @@
       "Resource": [
         "arn:aws:logs:*:*:log-group:/serverless-chrome-automation:log-stream:*"
       ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::serverless-chrome-binaries/*"
+      ]
     }
   ]
 }

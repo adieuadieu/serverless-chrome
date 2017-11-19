@@ -7,9 +7,12 @@
 #
 
 # These get replaced with real values in ~/scripts/ec2-build.sh
-CHANNEL=INSERT_CHANNEL_HERE
 BROWSER=INSERT_BROWSER_HERE
+CHANNEL=INSERT_CHANNEL_HERE
 VERSION=INSERT_VERSION_HERE
+DOCKER_ORG=INSERT_DOCKER_ORG_HERE
+S3_BUCKET=INSERT_S3_BUCKET_HERE
+FORCE_NEW_BUILD=INSERT_FORCE_NEW_BUILD_HERE
 
 echo "Starting user-data script. $BROWSER $VERSION ($CHANNEL channel)"
 
@@ -63,14 +66,17 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
   export AWS_REGION
   export DOCKER_USER
   export DOCKER_PASS
-
+  export DOCKER_ORG
+  export S3_BUCKET
+  export FORCE_NEW_BUILD
+  
   git clone "https://github.com/adieuadieu/serverless-chrome.git"
 
   cd serverless-chrome || return
 
   git checkout master
 
-  scripts/docker-build-image.sh "$CHANNEL" "$BROWSER"
+  scripts/docker-build-image.sh "$CHANNEL" "$BROWSER" "$VERSION"
 fi
 
 # 

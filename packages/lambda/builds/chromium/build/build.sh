@@ -3,11 +3,14 @@
 
 #
 # Build Chromium for Amazon Linux.
-# Assumes root privileges. (Or, more likely, Docker)
-#
+# Assumes root privileges. Or, more likely, Docker—take a look at
+# the corresponding Dockerfile in this directory.
+# 
 # Requires 
 #
 # Usage: ./build.sh
+#
+# Further documentation: https://github.com/adieuadieu/serverless-chrome/blob/develop/docs/chrome.md
 #
 
 set -e
