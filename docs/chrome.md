@@ -55,7 +55,7 @@ docker stop headless-chromium
 
 ### Locally
 
-The easiest way to To build headless Chromium locally is with Docker:
+The easiest way to build headless Chromium locally is with Docker:
 
 ```bash
 cd packages/lambda/builds/chromium
@@ -68,7 +68,7 @@ docker build \
   "build"
 ```
 
-`./latest.sh stable` will return the latest "stable" channel version of Chromium, e.g. "62.0.3202.94".
+The script `./packages/lambda/builds/chromium/latest.sh stable` returns the latest "stable" channel version of Chromium, e.g. "62.0.3202.94".
 
 The [Dockerfile](/packages/lambda/builds/chromium/build/Dockerfile) in [`packages/lambda/builds/chromium/build`](/packages/lambda/builds/chromium/build) builds the Chromium version specified by `CHROMIUM_VERSION` with the [`build.sh`](/packages/lambda/builds/chromium/build/build.sh) script.
 
@@ -96,11 +96,33 @@ Install `qemu-img` with `brew install qemu`
 
 How the cool kids build.
 
-Easily build Chromium using an EC2 Spot Instance (spot-block) using the ['ec2-build.sh`](/scripts/ec2-build.sh) script. With a `c5.2xlarge` spot-instance a single build takes rougly 2h15m and usually costs between $0.25 and $0.30 in `us-east-1a`. Or, ~30m on `c5.18xlarge` for about $0.50. To build Chromium, an instance with at least 4GB of memory is required.
+Easily build Chromium using an EC2 Spot Instance (spot-block) using the [`ec2-build.sh`](/scripts/ec2-build.sh) script. With a `c5.2xlarge` spot-instance a single build takes rougly 2h15m and usually costs between $0.25 and $0.30 in `us-east-1a`. Or, ~30m on `c5.18xlarge` for about $0.50. To build Chromium, an instance with at least 4GB of memory is required.
 
-minimum IAM permissions for user that initiates build
+Building on EC2 requires some IAM permissions setup:
 
-and minimum IAM permissions for role assumed by ec2 instance
+1. Create a new IAM _user_ with access keys and add [this custom inline policy](/aws/iam-serverless-chrome-automation-user-policy.json). The policy allows the minimum IAM permissions required to initiate a build on an EC2 Spot Instance.
+1. Create a new IAM _role_ called "serverless-chrome-automation" with an EC2 trust entity and add [this custom inline policy](/aws/iam-serverless-chrome-automation-role-policy.json). The policy allows the minimum IAM permissions required to retrieve secrets from the Parameter Store, log the instance's stdout/stderr to CloudWatch, and upload binaries to S3. Be sure to update the Resource Arns where appropriate (e.g. for the S3 bucket). Make note of the `Instance Profile ARN` as you'll need to set the `AWS_IAM_INSTANCE_ARN` environment variable to it.
+
+Export the following environment variables in your shell:
+
+```bash
+export AWS_ACCESS_KEY_ID=<your-iam-user-access-key-created-in-step-1>
+export AWS_SECRET_ACCESS_KEY=<your-iam-user-secret-created-in-step-1>
+export AWS_IAM_INSTANCE_ARN=<your-iam-role-instance-arn-created-in-step-2>
+export S3_BUCKET=<your-s3-bucket-and-optional-prefix>
+export FORCE_NEW_BUILD=1
+```
+
+Then to start a new build run replacing the version and/or channel if desired:
+
+```bash
+./scripts/ec2-build.sh chromium canary 64.0.3272.0
+```
+
+The version can also be ommitted. This will build the latest version based on the channel (one of `stable`, `beta`, or `dev`). Canary builds require an explicit version to be defined.
+
+If successfull, the binary will show up in the S3 bucket. Check the CloudWatch `serverless-chrome-automation` log group [logs](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logStream:group=/serverless-chrome-automation;streamFilter=typeLogStreamPrefix) for errors.
+
 
 ## Fonts
 

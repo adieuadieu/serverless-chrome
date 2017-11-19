@@ -113,20 +113,21 @@ build() {
     # Prints a presigned S3 URL to the zip file
     #
     if [ -n "$S3_BUCKET" ]; then
-      ZIPFILE_PATH="$CHANNEL-headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
+      ZIPFILE="$CHANNEL-headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
+      S3_OBJECT_URI="s3://$S3_BUCKET/awslambda/$BUILD_NAME/$ZIPFILE"
 
       (
         cd dist
-        zip -9 -D "$ZIPFILE_PATH" "headless-$BUILD_NAME"
+        zip -9 -D "$ZIPFILE" "headless-$BUILD_NAME"
       )
 
       aws s3 \
-        cp "dist/$ZIPFILE_PATH" \
-        "s3://$S3_BUCKET/awslambda/$BUILD_NAME" \
+        cp "dist/$ZIPFILE" \
+        "$S3_OBJECT_URI" \
         --region "$AWS_REGION"
 
       S3_PRESIGNED_URL=$(aws s3 presign \
-        "s3://$S3_BUCKET/awslambda/$BUILD_NAME" \
+        "$S3_OBJECT_URI" \
         --region "$AWS_REGION" \
         --expires-in 86400 \
       )

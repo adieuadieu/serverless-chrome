@@ -20,7 +20,7 @@ echo "Starting user-data script. $BROWSER $VERSION ($CHANNEL channel)"
 # Setup CloudWatch logging
 # ref: http://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/QuickStartEC2Instance.html
 #
-yum install -y awslogs
+yum install -y --quiet awslogs
 
 # config ref: http://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html
 printf "
@@ -37,9 +37,9 @@ service awslogs start
 # Go time (if brower and release channel are set.)
 #
 if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
-  yum update -y
+  yum update -y --quiet
 
-  yum install -y docker jq git
+  yum install -y --quiet docker jq git
 
   service docker start
 
@@ -74,9 +74,9 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
 
   cd serverless-chrome || return
 
-  git checkout master
+  git checkout develop # @ TODO remove this line
 
-  scripts/docker-build-image.sh "$CHANNEL" "$BROWSER" "$VERSION"
+  ./scripts/docker-build-image.sh "$CHANNEL" "$BROWSER" "$VERSION"
 fi
 
 # 

@@ -18,7 +18,7 @@ Why? Because it's neat. It also opens up interesting possibilities for using the
 1. [The Project](#the-project)
 1. [Examples](#examples)
 1. [Documentation & Resources](#documentation--resources)
-    1. [Building Headless Chrome/Chromium](#building-headless-chrome--chromium)
+    1. [Building Headless Chrome/Chromium](#building-headless-chromechromium)
 1. [Testing](#testing)
 1. [Roadmap](#roadmap)
 1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
