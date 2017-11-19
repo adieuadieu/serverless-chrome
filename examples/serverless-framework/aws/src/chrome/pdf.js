@@ -38,7 +38,7 @@ export function makePrintOptions (options = {}) {
   )
 }
 
-export default async function printUrlToPdf (url, printOptions = {}) {
+export default async function printUrlToPdf (url, printOptions = {}, mobile = false) {
   const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 20
   let result
 
@@ -47,10 +47,11 @@ export default async function printUrlToPdf (url, printOptions = {}) {
   const requestQueue = []
 
   const emptyQueue = async () => {
+    await sleep(1000)
+
     log('Request queue size:', requestQueue.length, requestQueue)
 
     if (requestQueue.length > 0) {
-      await sleep(100)
       await emptyQueue()
     }
   }
@@ -58,7 +59,9 @@ export default async function printUrlToPdf (url, printOptions = {}) {
   const tab = await Cdp.New()
   const client = await Cdp({ host: '127.0.0.1', target: tab })
 
-  const { Network, Page } = client
+  const {
+    Network, Page, Runtime, Emulation,
+  } = client
 
   Network.requestWillBeSent((data) => {
     // only add requestIds which aren't already in the queue
@@ -83,9 +86,32 @@ export default async function printUrlToPdf (url, printOptions = {}) {
   try {
     await Promise.all([Network.enable(), Page.enable()])
 
-    const loadEventFired = Page.loadEventFired()
-
     await Page.navigate({ url })
+
+    await Page.loadEventFired()
+
+    const { result: { value: { height } } } = await Runtime.evaluate({
+      expression: `(
+        () => {
+          const height = document.body.scrollHeight
+          window.scrollTo(0, height)
+          return { height }
+        }
+      )();
+      `,
+      returnByValue: true,
+    })
+
+    // setting the viewport to the size of the page will force
+    // any lazy-loaded images to load
+    await Emulation.setDeviceMetricsOverride({
+      mobile: !!mobile,
+      deviceScaleFactor: 0,
+      scale: 1, // mobile ? 2 : 1,
+      fitWindow: false,
+      width: mobile ? 375 : 1280,
+      height,
+    })
 
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(
@@ -94,11 +120,13 @@ export default async function printUrlToPdf (url, printOptions = {}) {
         new Error(`Page load timed out after ${LOAD_TIMEOUT} ms.`)
       )
 
-      loadEventFired.then(async () => {
+      const load = async () => {
         await emptyQueue()
         clearTimeout(timeout)
         resolve()
-      })
+      }
+
+      load()
     })
 
     log('We think the page has finished loading. Printing PDF.')

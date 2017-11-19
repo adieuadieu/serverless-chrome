@@ -113,8 +113,8 @@ build() {
     # Prints a presigned S3 URL to the zip file
     #
     if [ -n "$S3_BUCKET" ]; then
-      ZIPFILE="$CHANNEL-headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
-      S3_OBJECT_URI="s3://$S3_BUCKET/awslambda/$BUILD_NAME/$ZIPFILE"
+      ZIPFILE="headless-$BUILD_NAME-$VERSION-amazonlinux-2017-03.zip"
+      S3_OBJECT_URI="s3://$S3_BUCKET/$BUILD_NAME/$CHANNEL/$ZIPFILE"
 
       (
         cd dist
