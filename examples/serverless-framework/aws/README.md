@@ -10,8 +10,8 @@ A collection of [Serverless-framework](https://github.com/serverless/serverless)
 ## Contents
 1. [Installation](#installation)
 1. [Credentials](#credentials)
+1. [Deployment](#deployment)
 1. [Example Functions](#example-functions)
-1. [Examples](#examples)
 1. [Local Development](#local-development)
 1. [Configuration](#configuration)
 
@@ -27,7 +27,8 @@ npm install serverless -g
 Then pull down the example service:
 
 ```bash
-serverless create -u https://github.com/adieuadieu/serverless-chrome/tree/master/serverless-chrome/examples/serverless-framework/aws
+serverless create -u \
+  https://github.com/adieuadieu/serverless-chrome/tree/master/serverless-chrome/examples/serverless-framework/aws
 ```
 
 
@@ -50,6 +51,13 @@ export AWS_ACCESS_KEY_ID=<your-key-here>
 export AWS_SECRET_ACCESS_KEY=<your-secret-key-here>
 ```
 
+## Deployment
+
+Once Credentials are set up, to deploy the full service run:
+
+```bash
+npm run deploy
+```
 
 ## Example Functions
 
@@ -106,12 +114,12 @@ serverless deploy -f version-info
 
 ## Configuration
 
-These are simple functions and don't offer any configuration options. Take a look at the `serverless-plugins-chrome` plugin's [README](packages/serverless-plugin) for it's configuration options.
+These are simple functions and don't offer any configuration options. Take a look at the `serverless-plugins-chrome` plugin's [README](/packages/serverless-plugin) for it's configuration options.
 
 
 ## Local Development
 
-Go for it. Locally, if installed, Chrome will be launched. More in the plugin's [README](packages/serverless-plugin).
+Go for it. Locally, if installed, Chrome will be launched. More in the plugin's [README](/packages/serverless-plugin).
 
 Invoke a function locally with:
 
