@@ -78,7 +78,7 @@ serverless deploy -f screenshot
 ### Print a given URL to PDF
 The printToPdf handler will create a PDF from a URL it's provided. You can provide this URL to the Lambda function via the AWS API Gateway. After a successful deploy, an API endpoint will be provided. Use this URL to call the Lambda function with a url in the query string. E.g. `https://XXXXXXX.execute-api.us-weeast-2.amazonaws.com/dev/pdf?url=https://github.com/adieuadieu/serverless-chrome`
 
-This handler also supports configuring the "paper" size, orientation, etc. You can pass any of the DevTools Protocol's (Page.printToPdf())[https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF] method's parameters. For example, for landscape oriented PDF add `&landscape=true` to the end of the URL. Be sure to remember to escape the value of `url` if it contains query parameters. E.g. `https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/pdf?url=https://github.com/adieuadieu/serverless-chrome&landscape=true`
+This handler also supports configuring the "paper" size, orientation, etc. You can pass any of the DevTools Protocol's [`Page.printToPdf()`](https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF]) method's parameters. For example, for landscape oriented PDF add `&landscape=true` to the end of the URL. Be sure to remember to escape the value of `url` if it contains query parameters. E.g. `https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/pdf?url=https://github.com/adieuadieu/serverless-chrome&landscape=true`
 
 #### Deploying
 
