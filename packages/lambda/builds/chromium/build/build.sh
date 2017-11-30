@@ -66,7 +66,7 @@ gclient sync --with_branch_heads --jobs 16
 cd src
 
 # tweak to disable use of the tmpfs mounted at /dev/shm
-sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i base/files/file_util_posix.cc
+#sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i base/files/file_util_posix.cc
 
 #
 # tweak to keep Chrome from crashing after 4-5 Lambda invocations
