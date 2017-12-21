@@ -35,7 +35,7 @@ Using AWS Lambda, the quickest way to get started is with the [Serverless-framew
 First, install `serverless` globally (`npm install -g serverless`) and then:
 
 ```bash
-serverless create -u https://github.com/adieuadieu/serverless-chrome/tree/master/serverless-chrome/examples/serverless-framework/aws
+serverless create -u https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws
 ```
 
 Then, you must configure your AWS credentials either by defining `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environmental variables, or using an AWS profile. You can read more about this on the [Serverless Credentials Guide](https://serverless.com/framework/docs/providers/aws/guide/credentials/).
