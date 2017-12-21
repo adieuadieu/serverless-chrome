@@ -130,7 +130,7 @@ export default class ServerlessChrome {
 
       const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
 
-      const customPluginOptions = service.custom.chrome || {}
+      const customPluginOptions = (service.custom && service.custom.chrome) || {}
 
       const launcherOptions = {
         ...customPluginOptions,
