@@ -28,7 +28,7 @@ Then pull down the example service:
 
 ```bash
 serverless create -u \
-  https://github.com/adieuadieu/serverless-chrome/tree/master/serverless-chrome/examples/serverless-framework/aws
+  https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws
 ```
 
 
