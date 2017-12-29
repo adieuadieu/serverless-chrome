@@ -175,7 +175,7 @@ export default class Launcher {
         debug('Killing all Chrome Instances')
 
         try {
-          process.kill(-this.chrome.pid)
+          process.kill(-this.chrome.pid, 'SIGKILL')
         } catch (err) {
           debug(`Chrome could not be killed ${err.message}`)
         }
