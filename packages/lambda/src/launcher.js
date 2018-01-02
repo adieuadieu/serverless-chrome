@@ -11,6 +11,7 @@ import path from 'path'
 import fs from 'fs'
 import { execSync, spawn } from 'child_process'
 import net from 'net'
+import { createServer } from 'http'
 import { delay, debug, makeTempDir, clearConnection } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
 
@@ -110,6 +111,36 @@ export default class Launcher {
     })
   }
 
+  // resolves when chrome is killed, rejects  after 10 polls
+  waitUntilKilled () {
+    return Promise.all([
+      new Promise((resolve, reject) => {
+        let retries = 0
+        const server = createServer()
+        server.listen(this.port)
+        server.once('listening', () => {
+          debug('Chrome killed')
+          server.close(() => resolve())
+        })
+        server.on('error', () => {
+          retries += 1
+          debug('Chrome is still running', retries)
+          if (retries > 10) {
+            reject(new Error('Chrome is still running after 10 retries'))
+          }
+          setTimeout(() => {
+            server.listen(this.port)
+          }, this.pollInterval)
+        })
+      }),
+      new Promise((resolve) => {
+        this.chrome.on('close', () => {
+          resolve()
+        })
+      }),
+    ])
+  }
+
   async spawn () {
     const spawnPromise = new Promise(async (resolve) => {
       if (this.chrome) {
@@ -168,10 +199,6 @@ export default class Launcher {
   kill () {
     return new Promise((resolve) => {
       if (this.chrome) {
-        this.chrome.on('close', () => {
-          this.destroyTemp().then(resolve)
-        })
-
         debug('Killing all Chrome Instances')
 
         try {
@@ -179,7 +206,7 @@ export default class Launcher {
         } catch (err) {
           debug(`Chrome could not be killed ${err.message}`)
         }
-
+        this.waitUntilKilled().then(this.destroyTemp).then(resolve)
         delete this.chrome
       } else {
         // fail silently as we did not start chrome
