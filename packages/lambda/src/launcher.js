@@ -11,9 +11,9 @@ import path from 'path'
 import fs from 'fs'
 import { execSync, spawn } from 'child_process'
 import net from 'net'
+import { createServer } from 'http';
 import { delay, debug, makeTempDir, clearConnection } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
-import {createServer} from 'http';
 
 const CHROME_PATH = path.resolve(__dirname, './headless-chromium')
 
@@ -115,9 +115,9 @@ export default class Launcher {
   waitUntilKilled () {
     return Promise.all([
       new Promise((resolve, reject) => {
-        let retries = 0;
+        let retries = 0
         const server = createServer()
-        server.listen(this.port);
+        server.listen(this.port)
         server.once('listening', () => {
           debug('Chrome killed')
           server.close(() => resolve())
@@ -126,18 +126,18 @@ export default class Launcher {
           retries += 1
           debug('Chrome is still running', retries)
           if (retries > 10) {
-            reject('Chrome is still running after 10 retries')
+            reject(new Error('Chrome is still running after 10 retries'))
           }
           setTimeout(() => {
-            server.listen(this.port);
+            server.listen(this.port)
           }, this.pollInterval)
         })
       }),
-      new Promise(resolve => {
+      new Promise((resolve) => {
         this.chrome.on('close', () => {
           resolve()
         })
-      })
+      }),
     ])
   }
 
