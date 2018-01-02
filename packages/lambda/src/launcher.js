@@ -11,7 +11,7 @@ import path from 'path'
 import fs from 'fs'
 import { execSync, spawn } from 'child_process'
 import net from 'net'
-import { createServer } from 'http';
+import { createServer } from 'http'
 import { delay, debug, makeTempDir, clearConnection } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
 
