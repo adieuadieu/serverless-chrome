@@ -44,9 +44,9 @@
   dependencies:
     arrify "^1.0.1"
 
-"@serverless-chrome/lambda@1.0.0-28":
-  version "1.0.0-28"
-  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-1.0.0-28.tgz#846cb221fc9f2c22bbe6e2f4a51fb6876641a2ca"
+"@serverless-chrome/lambda@1.0.0-32":
+  version "1.0.0-32"
+  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-1.0.0-32.tgz#6638cf36d04d255b89809adfed0c4a8c8725f2ca"
   dependencies:
     extract-zip "1.6.6"
 
@@ -853,7 +853,7 @@ babel-plugin-transform-exponentiation-operator@^6.22.0, babel-plugin-transform-e
     babel-plugin-syntax-exponentiation-operator "^6.8.0"
     babel-runtime "^6.22.0"
 
-babel-plugin-transform-object-entries@^1.0.0:
+babel-plugin-transform-object-entries@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-entries/-/babel-plugin-transform-object-entries-1.0.0.tgz#1a03754b323099f1d5c5c12c9dea70e6b3a1497f"
   dependencies:
@@ -4118,11 +4118,11 @@ semver@~5.0.1:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.0.3.tgz#77466de589cd5d3c95f138aa78bc569a3cb5d27a"
 
-serverless-plugin-chrome@1.0.0-28:
-  version "1.0.0-28"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-28.tgz#46ba3b6917964b9857307ac470a7834a4266eadf"
+serverless-plugin-chrome@1.0.0-32:
+  version "1.0.0-32"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-32.tgz#e210e2953b3ad034862f1da16dc8213c6c170f31"
   dependencies:
-    "@serverless-chrome/lambda" "1.0.0-28"
+    "@serverless-chrome/lambda" "1.0.0-32"
     fs-p "2.0.0"
     globby "6.1.0"
 

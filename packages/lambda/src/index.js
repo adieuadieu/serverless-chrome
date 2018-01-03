@@ -21,7 +21,10 @@ const DEVTOOLS_HOST = 'http://127.0.0.1'
 let chromeInstance
 
 export default async function launch ({
-  flags = [], chromePath, port = DEVTOOLS_PORT, forceLambdaLauncher = false,
+  flags = [],
+  chromePath,
+  port = DEVTOOLS_PORT,
+  forceLambdaLauncher = false,
 } = {}) {
   const chromeFlags = [...DEFAULT_CHROME_FLAGS, ...flags]
 
@@ -38,7 +41,11 @@ export default async function launch ({
       try {
         // eslint-disable-next-line
         const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
-        chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags: flags, port })
+        chromeInstance = new LocalChromeLauncher({
+          chromePath,
+          chromeFlags: flags,
+          port,
+        })
       } catch (error) {
         throw new Error('@serverless-chrome/lambda: Unable to find "chrome-launcher". ' +
             "Make sure it's installed if you wish to develop locally.")
@@ -56,8 +63,14 @@ export default async function launch ({
     debug('Error trying to spawn chrome:', error)
 
     if (process.env.DEBUG) {
-      debug('stdout log:', fs.readFileSync(`${chromeInstance.userDataDir}/chrome-out.log`, 'utf8'))
-      debug('stderr log:', fs.readFileSync(`${chromeInstance.userDataDir}/chrome-err.log`, 'utf8'))
+      debug(
+        'stdout log:',
+        fs.readFileSync(`${chromeInstance.userDataDir}/chrome-out.log`, 'utf8')
+      )
+      debug(
+        'stderr log:',
+        fs.readFileSync(`${chromeInstance.userDataDir}/chrome-err.log`, 'utf8')
+      )
     }
 
     throw new Error('Unable to start Chrome. If you have the DEBUG env variable set,' +
@@ -84,16 +97,16 @@ export default async function launch ({
     pid: chromeInstance.pid,
     port: chromeInstance.port,
     url: `${DEVTOOLS_HOST}:${chromeInstance.port}`,
-    kill: () => {
-      chromeInstance.kill()
-      chromeInstance = undefined
-    },
     log: `${chromeInstance.userDataDir}/chrome-out.log`,
     errorLog: `${chromeInstance.userDataDir}/chrome-err.log`,
     pidFile: `${chromeInstance.userDataDir}/chrome.pid`,
     metaData: {
       launchTime,
       didLaunch: !!chromeInstance.pid,
+    },
+    async kill () {
+      await chromeInstance.kill()
+      chromeInstance = undefined
     },
   }
 }
