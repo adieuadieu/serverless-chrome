@@ -10,7 +10,9 @@ export function clearConnection (client) {
 }
 
 export function debug (...args) {
-  return process.env.DEBUG ? console.log('@serverless-chrome/lambda', ...args) : undefined
+  return process.env.DEBUG
+    ? console.log('@serverless-chrome/lambda:', ...args)
+    : undefined
 }
 
 export async function delay (time) {
@@ -18,5 +20,7 @@ export async function delay (time) {
 }
 
 export function makeTempDir () {
-  return execSync('mktemp -d -t chrome.XXXXXXX').toString().trim()
+  return execSync('mktemp -d -t chrome.XXXXXXX')
+    .toString()
+    .trim()
 }
