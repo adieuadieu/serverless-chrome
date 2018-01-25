@@ -1,6 +1,6 @@
 {
   "name": "serverless-chrome",
-  "version": "1.0.0-34",
+  "version": "1.0.0-35",
   "description": "Run headless Chrome, serverless-ly",
   "main": "handler.js",
   "engines": {
