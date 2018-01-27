@@ -2,6 +2,9 @@
   "name": "serverless-chrome",
   "version": "1.0.0-35",
   "description": "Run headless Chrome, serverless-ly",
+  "author": "Marco Lüthy <marco.luethy@gmail.com (https://github.com/adieuadieu)",
+  "maintainers": [],
+  "contributors":[],
   "main": "handler.js",
   "engines": {
     "node": ">= 6.10.0"
@@ -32,7 +35,6 @@
     "lambda",
     "serverless-framework"
   ],
-  "author": "Marco Lüthy",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/adieuadieu/serverless-chrome/issues"
