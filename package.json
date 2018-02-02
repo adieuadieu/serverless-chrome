@@ -1,10 +1,10 @@
 {
   "name": "serverless-chrome",
-  "version": "1.0.0-35",
+  "version": "1.0.0-36",
   "description": "Run headless Chrome, serverless-ly",
   "author": "Marco Lüthy <marco.luethy@gmail.com (https://github.com/adieuadieu)",
   "maintainers": [],
-  "contributors":[],
+  "contributors": [],
   "main": "handler.js",
   "engines": {
     "node": ">= 6.10.0"
