@@ -34,6 +34,7 @@ architectures and doing testing/CI, web-scraping, pre-rendering, etc.
 1. [Change log](#change-log)
 1. [Contributing](#contributing)
 1. [Prior Art](#prior-art)
+1. [License](#license)
 
 ## Quick Start
 
@@ -166,3 +167,10 @@ This project was inspired in various ways by the following projects:
 * [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf)
 * [node-webkitgtk](https://github.com/kapouer/node-webkitgtk)
 * [electron-pdf](https://github.com/Janpot/electron-pdf)
+
+## License
+
+**serverless-chrome** © [Marco Lüthy](https://github.com/adieuadieu). Released under the [MIT](./LICENSE) license.<br>
+Authored and maintained by Marco Lüthy with help from [contributors](https://github.com/adieuadieu/serverless-chrome/contributors).
+
+> [github.com/adieuadieu](https://github.com/adieuadieu) · GitHub [@adieuadieu](https://github.com/adieuadieu) · Twitter [@adieuadieu](https://twitter.com/adieuadieu) · Medium [@marco.luethy](https://medium.com/@marco.luethy)
