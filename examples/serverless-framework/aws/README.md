@@ -94,7 +94,7 @@ Returns an array of every request which was made loading a given page.
 
 #### Deploying
 
-To deploy the Capture Screenshot function:
+To deploy the Page-load Request Logger function:
 
 ```bash
 serverless deploy -f request-logger
@@ -106,7 +106,7 @@ serverless deploy -f request-logger
 
 #### Deploying
 
-To deploy the Capture Screenshot function:
+To deploy the Chrome Version Info function:
 
 ```bash
 serverless deploy -f version-info
