@@ -1,6 +1,6 @@
 {
   "name": "@quicksprout/serverless-plugin-chrome-puppeteer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Serverless-framework plugin that takes care of running headless Chrome with Puppeteer so that you can move on with getting things done.",
   "keywords": [
     "serverless",
