@@ -27,7 +27,7 @@ if (CHROMIUM_CHANNEL !== 'stable') {
 }
 
 const RELEASE_DOWNLOAD_URL_BASE =
-  'https://github.com/quicksprout/serverless-chrome/releases/download'
+  'https://github.com/adieuadieu/serverless-chrome/releases/download'
 
 function unlink (filePath) {
   return new Promise((resolve, reject) => {
