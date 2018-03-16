@@ -57,7 +57,7 @@ export default class ServerlessChrome {
     const { servicePath } = this.serverless.config
 
     await fs.copy(
-      path.join(servicePath, 'node_modules/@serverless-chrome/lambda/dist/headless-chromium'),
+      path.join(servicePath, 'node_modules/@quicksprout/lambda/dist/headless-chromium'),
       path.resolve(servicePath, '.webpack/service/headless-chromium')
     )
   }

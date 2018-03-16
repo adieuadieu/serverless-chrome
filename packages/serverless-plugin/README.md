@@ -1,6 +1,6 @@
 # Serverless-framework Headless Chrome Plugin
 
-A [Serverless-framework](https://github.com/serverless/serverless) plugin which bundles the [@serverless-chrome/lambda](/packages/lambda) package and ensures that Headless Chrome is running when your function handler is invoked.
+A [Serverless-framework](https://github.com/serverless/serverless) plugin which bundles the [@quicksprout/lambda](/packages/lambda) package and ensures that Headless Chrome is running when your function handler is invoked.
 
 [![npm](https://img.shields.io/npm/v/serverless-plugin-chrome.svg?style=flat-square)](https://www.npmjs.com/package/serverless-plugin-chrome)
 

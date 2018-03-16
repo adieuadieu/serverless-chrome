@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Integration tests and CircleCI setup
 - Complete automation of build/test/release workflows
 - serverless-plugin-chrome: support for limiting Chrome to only select service functions with the `custom.chrome.functions` parameter.
-- @serverless-chrome/lambda NPM package
+- @quicksprout/lambda NPM package
 - serverless-plugin-chrome NPM package for Serverless-framework
 - Lots of new and updated documentation
 - CHANGELOG.md.
