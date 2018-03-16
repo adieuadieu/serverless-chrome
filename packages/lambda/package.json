@@ -1,15 +1,17 @@
 {
-  "name": "@serverless-chrome/lambda",
+  "name": "@quicksprout/lambda",
   "version": "1.0.0",
   "description": "Run headless Chrome/Chromium on AWS Lambda",
   "author": "Marco Lüthy",
+  "contributors": ["Steve Cox @ Quick Sprout"],
   "keywords": [
     "serverless",
     "chrome",
     "chromium",
     "headless",
     "aws",
-    "lambda"
+    "lambda",
+    "puppeteer"
   ],
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.es.js",
@@ -18,11 +20,11 @@
     "dist/bundle.es.js",
     "scripts/postinstall.js"
   ],
-  "repository": "git@github.com:adieuadieu/serverless-chrome.git",
+  "repository": "git@github.com:quicksprout/serverless-chrome.git",
   "bugs": {
-    "url": "https://github.com/adieuadieu/serverless-chrome/issues"
+    "url": "https://github.com/quicksprout/serverless-chrome/issues"
   },
-  "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/lambda",
+  "homepage": "https://github.com/quicksprout/serverless-chrome/tree/master/packages/lambda",
   "license": "MIT",
   "engines": {
     "node": ">= 6.10"

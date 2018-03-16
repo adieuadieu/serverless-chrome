@@ -1,10 +1,10 @@
 {
-  "name": "serverless-chrome",
-  "version": "1.0.0-40",
+  "name": "@quicksprout/serverless-chrome",
+  "version": "1.0.0",
   "description": "Run headless Chrome, serverless-ly",
   "author": "Marco Lüthy <marco.luethy@gmail.com (https://github.com/adieuadieu)",
   "maintainers": [],
-  "contributors": [],
+  "contributors": ["Steve Cox @ Quicksprout"],
   "main": "handler.js",
   "engines": {
     "node": ">= 6.10.0"
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/adieuadieu/serverless-chrome.git"
+    "url": "https://github.com/quicksprout/serverless-chrome.git"
   },
   "keywords": [
     "serverless",
@@ -37,9 +37,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/adieuadieu/serverless-chrome/issues"
+    "url": "https://github.com/quicksprout/serverless-chrome/issues"
   },
-  "homepage": "https://github.com/adieuadieu/serverless-chrome",
+  "homepage": "https://github.com/quicksprout/serverless-chrome",
   "dependencies": {},
   "devDependencies": {
     "ava": "0.23.0",
