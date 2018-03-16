@@ -110,6 +110,11 @@ export default class ServerlessChrome {
 
         const dirname = path.dirname(destFileName)
 
+        // Don't include Puppeteer's locally downloaded Chromium instance
+        if (dirname === '.local-chromium') {
+          return
+        }
+
         if (!fs.existsSync(dirname)) {
           fs.mkdirpSync(dirname)
         }
