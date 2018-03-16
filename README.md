@@ -80,7 +80,7 @@ Further details are available in the
 
 This project contains:
 
-* **[@serverless-chrome/lambda](packages/lambda)** NPM package<br/> A standalone
+* **[@quicksprout/lambda](packages/lambda)** NPM package<br/> A standalone
   module for AWS Lambda which bundles and launches Headless Chrome with support
   for local development. For use with—but not limited to—tools like
   [Apex](https://github.com/apex/apex),

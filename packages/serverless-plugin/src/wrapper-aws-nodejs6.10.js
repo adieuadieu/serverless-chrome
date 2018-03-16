@@ -1,4 +1,4 @@
-const launch = require('@serverless-chrome/lambda')
+const launch = require('lambda')
 
 const handler = 'REPLACE_WITH_HANDLER_REQUIRE'
 const options = 'REPLACE_WITH_OPTIONS'

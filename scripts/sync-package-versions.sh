@@ -37,13 +37,13 @@ update() {
 
     HAS_LAMBDA_DEPENDENCY=$(echo "$JSON" | \
       jq -r \
-      ".dependencies | has(\"@serverless-chrome/lambda\")"
+      ".dependencies | has(\"@quicksprout/lambda\")"
     )
 
     if [ "$HAS_LAMBDA_DEPENDENCY" = "true" ]; then
       JSON=$(echo "$JSON" | \
         jq -r \
-        ".dependencies.\"@serverless-chrome/lambda\" |= \"$VERSION\""
+        ".dependencies.\"@quicksprout/lambda\" |= \"$VERSION\""
       )
     fi
 

@@ -11,7 +11,7 @@ export function clearConnection (client) {
 
 export function debug (...args) {
   return process.env.DEBUG
-    ? console.log('@serverless-chrome/lambda:', ...args)
+    ? console.log('@quicksprout/lambda:', ...args)
     : undefined
 }
 

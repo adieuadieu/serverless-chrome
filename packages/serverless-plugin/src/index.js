@@ -57,7 +57,7 @@ export default class ServerlessChrome {
     const { servicePath } = this.serverless.config
 
     await fs.copy(
-      path.join(servicePath, 'node_modules/@serverless-chrome/lambda/dist/headless-chromium'),
+      path.join(servicePath, 'node_modules/@quicksprout/lambda/dist/headless-chromium'),
       path.resolve(servicePath, '.webpack/service/headless-chromium')
     )
   }
@@ -109,6 +109,11 @@ export default class ServerlessChrome {
         const destFileName = path.resolve(path.join(config.servicePath, filename))
 
         const dirname = path.dirname(destFileName)
+
+        // Don't include Puppeteer's locally downloaded Chromium instance
+        if (dirname === '.local-chromium') {
+          return
+        }
 
         if (!fs.existsSync(dirname)) {
           fs.mkdirpSync(dirname)

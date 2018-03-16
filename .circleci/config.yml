@@ -63,7 +63,7 @@ jobs:
           command: sudo apt-get install -y chromium
       - run: npm run ava
 
-  # This job builds the @serverless-chrome/lambda package
+  # This job builds the @quicksprout/lambda package
   build_lambda:
     # use a machine because we extract binaries from Docker images  
     machine: true
@@ -94,7 +94,7 @@ jobs:
           paths:
             - packages/lambda/dist  
 
-  # This job runs the @serverless-chrome/lambda package's integration tests
+  # This job runs the @quicksprout/lambda package's integration tests
   integration_test_lambda:
     # use a machine because we run the integration tests with Docker (lambci/lambda)
     machine: true
