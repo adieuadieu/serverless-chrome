@@ -1,10 +1,12 @@
 {
   "name": "@quicksprout/serverless-chrome",
-  "version": "1.0.0-40",
+  "version": "1.0.0",
   "description": "Run headless Chrome, serverless-ly",
   "author": "Marco Lüthy <marco.luethy@gmail.com (https://github.com/adieuadieu)",
   "maintainers": [],
-  "contributors": ["Steve Cox @ Quicksprout"],
+  "contributors": [
+    "Steve Cox @ Quicksprout"
+  ],
   "main": "handler.js",
   "engines": {
     "node": ">= 6.10.0"
