@@ -14,7 +14,7 @@
 */
 
 import * as path from 'path'
-import * as fs from 'fs-p' // deprecated. use fs-extra?
+import fs from 'fs-extra' // deprecated. use fs-extra?
 import globby from 'globby'
 
 import { SERVERLESS_FOLDER, BUILD_FOLDER, INCLUDES } from './constants'

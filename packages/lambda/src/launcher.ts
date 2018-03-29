@@ -9,7 +9,7 @@
 
 import path from 'path'
 import fs from 'fs'
-import { execSync, spawn } from 'child_process'
+import { execFile, spawn, ChildProcess } from 'child_process'
 import net from 'net'
 import http from 'http'
 import { delay, debug, makeTempDir, clearConnection } from './utils'
@@ -17,8 +17,30 @@ import DEFAULT_CHROME_FLAGS from './flags'
 
 const CHROME_PATH = path.resolve(__dirname, './headless-chromium')
 
+export interface IOptions {
+  chromePath?: string;
+  chromeFlags?: string[]
+  startingUrl?: string;
+  port?: number;
+  userDataDir?: string;
+}
+
 export default class Launcher {
-  constructor (options = {}) {
+  private pollInterval: number = 500;
+  private pidFile = '';
+  private tmpDirandPidFileReady = false
+  private startingUrl = 'about:blank'
+  private outFile: null | number = null
+  private errFile: null | number = null
+  private chromePath = CHROME_PATH
+  private chromeFlags: string[] = []
+  private requestedPort = 0
+  private userDataDir = ''
+  private port = 9222
+  private chrome: ChildProcess | undefined = undefined
+
+
+  constructor (private options: IOptions = {}) {
     const {
       chromePath = CHROME_PATH,
       chromeFlags = [],
@@ -26,28 +48,13 @@ export default class Launcher {
       port = 0,
     } = options
 
-    this.tmpDirandPidFileReady = false
-    this.pollInterval = 500
-    this.pidFile = ''
-    this.startingUrl = 'about:blank'
-    this.outFile = null
-    this.errFile = null
-    this.chromePath = CHROME_PATH
-    this.chromeFlags = []
-    this.requestedPort = 0
-    this.userDataDir = ''
-    this.port = 9222
-    this.pid = null
-    this.chrome = undefined
-
-    this.options = options
     this.startingUrl = startingUrl
     this.chromeFlags = chromeFlags
     this.chromePath = chromePath
     this.requestedPort = port
   }
 
-  get flags () {
+  private get flags () {
     return [
       ...DEFAULT_CHROME_FLAGS,
       `--remote-debugging-port=${this.port}`,
@@ -58,7 +65,7 @@ export default class Launcher {
     ]
   }
 
-  prepare () {
+  private prepare () {
     this.userDataDir = this.options.userDataDir || makeTempDir()
     this.outFile = fs.openSync(`${this.userDataDir}/chrome-out.log`, 'a')
     this.errFile = fs.openSync(`${this.userDataDir}/chrome-err.log`, 'a')
@@ -67,7 +74,7 @@ export default class Launcher {
   }
 
   // resolves if ready, rejects otherwise
-  isReady () {
+  private isReady () {
     return new Promise((resolve, reject) => {
       const client = net.createConnection(this.port)
 
@@ -84,7 +91,7 @@ export default class Launcher {
   }
 
   // resolves when debugger is ready, rejects after 10 polls
-  waitUntilReady () {
+  private waitUntilReady () {
     const launcher = this
 
     return new Promise((resolve, reject) => {
@@ -112,7 +119,7 @@ export default class Launcher {
   }
 
   // resolves when chrome is killed, rejects  after 10 polls
-  waitUntilKilled () {
+  private waitUntilKilled (chrome: ChildProcess) {
     return Promise.all([
       new Promise((resolve, reject) => {
         let retries = 0
@@ -140,13 +147,13 @@ export default class Launcher {
         server.listen(this.port)
       }),
       new Promise((resolve) => {
-        this.chrome.on('close', resolve)
+        chrome.on('close', resolve)
       }),
     ])
   }
 
-  async spawn () {
-    const spawnPromise = new Promise(async (resolve) => {
+  private async spawn () {
+    const spawnPromise = new Promise<number>(async (resolve) => {
       if (this.chrome) {
         debug(`Chrome already running with pid ${this.chrome.pid}.`)
         return resolve(this.chrome.pid)
@@ -160,8 +167,12 @@ export default class Launcher {
       this.chrome = chrome
 
       // unref the chrome instance, otherwise the lambda process won't end correctly
+      // i'm not sure what is this for, and it makes typescript error
+      // @ts-ignore
       if (chrome.chrome) {
+        // @ts-ignore
         chrome.chrome.removeAllListeners()
+      // @ts-ignore
         chrome.chrome.unref()
       }
 
@@ -180,7 +191,7 @@ export default class Launcher {
     return pid
   }
 
-  async launch () {
+  public async launch () {
     if (this.requestedPort !== 0) {
       this.port = this.requestedPort
 
@@ -201,11 +212,11 @@ export default class Launcher {
       this.prepare()
     }
 
-    this.pid = await this.spawn()
+    await this.spawn()
     return Promise.resolve()
   }
 
-  kill () {
+  public kill () {
     return new Promise(async (resolve, reject) => {
       if (this.chrome) {
         debug('Trying to terminate Chrome instance')
@@ -214,7 +225,7 @@ export default class Launcher {
           process.kill(-this.chrome.pid)
 
           debug('Waiting for Chrome to terminate..')
-          await this.waitUntilKilled()
+          await this.waitUntilKilled(this.chrome)
           debug('Chrome successfully terminated.')
 
           this.destroyTemp()
@@ -232,8 +243,8 @@ export default class Launcher {
     })
   }
 
-  destroyTemp () {
-    return new Promise((resolve) => {
+  private destroyTemp () {
+    return new Promise<void>((resolve) => {
       // Only clean up the tmp dir if we created it.
       if (
         this.userDataDir === undefined ||
@@ -252,7 +263,7 @@ export default class Launcher {
         delete this.errFile
       }
 
-      return execSync(`rm -Rf ${this.userDataDir}`, resolve)
+      return execFile(`rm`,  ["-Rf", `${this.userDataDir}`], {}, () => resolve())
     })
   }
 }

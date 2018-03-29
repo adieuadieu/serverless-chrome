@@ -27,7 +27,8 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "prepublishOnly": "npm run clean && npm run build",
-    "upgrade-dependencies": "yarn upgrade-interactive --latest --exact"
+    "upgrade-dependencies": "yarn upgrade-interactive --latest --exact",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
@@ -41,10 +42,12 @@
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin",
   "dependencies": {
     "@serverless-chrome/lambda": "1.0.0-41",
-    "fs-p": "2.0.0",
+    "fs-extra": "^5.0.0",
     "globby": "6.1.0"
   },
   "devDependencies": {
+    "@types/fs-extra": "^5.0.1",
+    "@types/globby": "^6.1.0",
     "ava": "0.24.0",
     "babel-core": "6.26.0",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
@@ -53,7 +56,8 @@
     "chrome-launcher": "0.10.0",
     "rollup": "0.53.3",
     "rollup-plugin-babel": "3.0.3",
-    "rollup-plugin-node-resolve": "3.0.0"
+    "rollup-plugin-node-resolve": "3.0.0",
+    "typescript": "^2.8.1"
   },
   "babel": {
     "sourceMaps": true,

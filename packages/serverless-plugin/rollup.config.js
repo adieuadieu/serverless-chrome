@@ -1,6 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve'
 // import commonjs from 'rollup-plugin-commonjs'
 import babel from 'rollup-plugin-babel'
+import typescript from 'rollup-plugin-typescript2'
 
 export default {
   input: 'src/index.js',
@@ -11,7 +12,7 @@ export default {
       // module: true, // Default: true
       // jsnext: true, // Default: false
       // main: true, // Default: true
-      extensions: ['.js'], // Default: ['.js']
+      extensions: ['.ts'], // Default: ['.js']
       // Lock the module search in this path (like a chroot). Module defined
       // outside this path will be mark has external
       // jail: './', // Default: '/'
@@ -19,22 +20,24 @@ export default {
       // ES2015 modules
       // modulesOnly: true, // Default: false
     }),
-    // commonjs({}),
-    babel({
-      babelrc: false,
-      plugins: ['transform-object-rest-spread'],
-      presets: [
-        [
-          'env',
-          {
-            modules: false,
-            targets: {
-              node: '6.10',
-            },
-          },
-        ],
-      ],
+    typescript({
     }),
+    // commonjs({}),
+    // babel({
+    //   babelrc: false,
+    //   plugins: ['transform-object-rest-spread'],
+    //   presets: [
+    //     [
+    //       'env',
+    //       {
+    //         modules: false,
+    //         targets: {
+    //           node: '6.10',
+    //         },
+    //       },
+    //     ],
+    //   ],
+    // }),
   ],
   external: ['path', 'globby', 'fs-p'],
 }

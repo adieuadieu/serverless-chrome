@@ -3,6 +3,7 @@ import fs from 'fs'
 import LambdaChromeLauncher from './launcher'
 import { debug } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
+import LocalChromeLauncher from 'chrome-launcher'
 
 const DEVTOOLS_PORT = 9222
 const DEVTOOLS_HOST = 'http://127.0.0.1'
@@ -18,18 +19,26 @@ const DEVTOOLS_HOST = 'http://127.0.0.1'
 
 // persist the instance across invocations
 // when the *lambda* container is reused.
-let chromeInstance
+let chromeInstance: LocalChromeLauncher.Launcher;
+
+export interface IParams {
+  flags?: string[];
+  chromePath?: string;
+  port?: number;
+  forceLambdaLauncher?: boolean;
+}
 
 export default async function launch ({
   flags = [],
   chromePath,
   port = DEVTOOLS_PORT,
   forceLambdaLauncher = false,
-} = {}) {
+}: IParams = {}) {
   const chromeFlags = [...DEFAULT_CHROME_FLAGS, ...flags]
 
   if (!chromeInstance) {
     if (process.env.AWS_EXECUTION_ENV || forceLambdaLauncher) {
+      // @ts-ignore
       chromeInstance = new LambdaChromeLauncher({
         chromePath,
         chromeFlags,
@@ -37,11 +46,9 @@ export default async function launch ({
       })
     } else {
       // This let's us use chrome-launcher in local development,
-      // but omit it from the lambda function's zip artefact
+      // but omit it from the lambda function's zip artifact
       try {
-        // eslint-disable-next-line
-        const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
-        chromeInstance = new LocalChromeLauncher({
+        chromeInstance = new LocalChromeLauncher.Launcher({
           chromePath,
           chromeFlags: flags,
           port,
@@ -106,6 +113,7 @@ export default async function launch ({
     },
     async kill () {
       await chromeInstance.kill()
+      // @ts-ignore
       chromeInstance = undefined
     },
   }
