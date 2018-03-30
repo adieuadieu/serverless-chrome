@@ -19,13 +19,13 @@ const DEVTOOLS_HOST = 'http://127.0.0.1'
 
 // persist the instance across invocations
 // when the *lambda* container is reused.
-let chromeInstance: LocalChromeLauncher.Launcher;
+let chromeInstance: LocalChromeLauncher.Launcher
 
 export interface IParams {
-  flags?: string[];
-  chromePath?: string;
-  port?: number;
-  forceLambdaLauncher?: boolean;
+  flags?: string[]
+  chromePath?: string
+  port?: number
+  forceLambdaLauncher?: boolean
 }
 
 export default async function launch ({

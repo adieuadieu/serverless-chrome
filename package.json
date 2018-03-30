@@ -18,7 +18,7 @@
     "coverage": "nyc report",
     "upgrade-dependencies": "yarn upgrade-interactive --latest --exact",
     "precommit": "lint-staged",
-    "prettier": "prettier-eslint --no-semi --single-quote --trailing-comma es5 --write",
+    "prettier": "prettier-eslint --no-semi --single-quote --trailing-comma es5  **/src/**/*.ts --write",
     "release": "scripts/release.sh",
     "postversion": "scripts/sync-package-versions.sh"
   },
@@ -66,7 +66,9 @@
     "prettier": "1.8.2",
     "prettier-eslint": "8.2.2",
     "prettier-eslint-cli": "^4.4.0",
-    "tap-xunit": "1.7.0"
+    "tap-xunit": "1.7.0",
+    "typescript": "^2.8.1",
+    "typescript-eslint-parser": "^14.0.0"
   },
   "ava": {
     "require": "babel-register",
@@ -90,7 +92,7 @@
     ]
   },
   "eslintConfig": {
-    "parser": "babel-eslint",
+    "parser": "typescript-eslint-parser",
     "plugins": [
       "ava",
       "import"
@@ -100,7 +102,7 @@
       "plugin:ava/recommended"
     ],
     "settings": {
-      "import/parser": "babel-eslint",
+      "import/parser": "typescript-eslint-parser",
       "import/resolve": {
         "moduleDirectory": [
           "node_modules",
@@ -139,7 +141,7 @@
     "useTabs": false
   },
   "lint-staged": {
-    "*.{js,jsx}": [
+    "*.{js,jsx,ts,tsx}": [
       "yarn prettier",
       "yarn lint",
       "git add"

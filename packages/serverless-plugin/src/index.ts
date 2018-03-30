@@ -30,7 +30,10 @@ export default class ServerlessChrome {
     this.serverless = serverless
     this.options = options
 
-    const { provider: { name: providerName, runtime }, plugins } = serverless.service
+    const {
+      provider: { name: providerName, runtime },
+      plugins,
+    } = serverless.service
 
     throwIfUnsupportedProvider(providerName)
     throwIfUnsupportedRuntime(runtime)
@@ -57,7 +60,10 @@ export default class ServerlessChrome {
     const { servicePath } = this.serverless.config
 
     await fs.copy(
-      path.join(servicePath, 'node_modules/@serverless-chrome/lambda/dist/headless-chromium'),
+      path.join(
+        servicePath,
+        'node_modules/@serverless-chrome/lambda/dist/headless-chromium'
+      ),
       path.resolve(servicePath, '.webpack/service/headless-chromium')
     )
   }
@@ -72,7 +78,9 @@ export default class ServerlessChrome {
     } = this.serverless
 
     const functionsToWrap =
-      (service.custom && service.custom.chrome && service.custom.chrome.functions) ||
+      (service.custom &&
+        service.custom.chrome &&
+        service.custom.chrome.functions) ||
       service.getAllFunctions()
 
     service.package.include = service.package.include || []
@@ -92,7 +100,9 @@ export default class ServerlessChrome {
       }
 
       // include node_modules into build
-      if (!fs.existsSync(path.resolve(path.join(BUILD_FOLDER, 'node_modules')))) {
+      if (
+        !fs.existsSync(path.resolve(path.join(BUILD_FOLDER, 'node_modules')))
+      ) {
         fs.symlinkSync(
           path.resolve('node_modules'),
           path.resolve(path.join(BUILD_FOLDER, 'node_modules'))
@@ -100,9 +110,12 @@ export default class ServerlessChrome {
       }
 
       // include any "extras" from the "include" section
-      const files = await globby([...service.package.include, '**', '!node_modules/**'], {
-        cwd: this.originalServicePath,
-      })
+      const files = await globby(
+        [...service.package.include, '**', '!node_modules/**'],
+        {
+          cwd: this.originalServicePath,
+        }
+      )
 
       files.forEach((filename) => {
         const sourceFile = path.resolve(path.join(this.originalServicePath, filename))
@@ -130,7 +143,8 @@ export default class ServerlessChrome {
 
       const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
 
-      const customPluginOptions = (service.custom && service.custom.chrome) || {}
+      const customPluginOptions =
+          (service.custom && service.custom.chrome) || {}
 
       const launcherOptions = {
         ...customPluginOptions,
@@ -139,11 +153,19 @@ export default class ServerlessChrome {
       }
 
       // Read in the wrapper handler code template
-      const wrapperTemplate = await utils.readFile(path.resolve(__dirname, '..', 'src', `wrapper-${providerName}-${runtime}.js`))
+      const wrapperTemplate = await utils.readFile(path.resolve(
+        __dirname,
+        '..',
+        'src',
+        `wrapper-${providerName}-${runtime}.js`
+      ))
 
       // Include the original handler via require
       const wrapperCode = wrapperTemplate
-        .replace("'REPLACE_WITH_HANDLER_REQUIRE'", `require('./${originalFileRenamed}')`)
+        .replace(
+          "'REPLACE_WITH_HANDLER_REQUIRE'",
+          `require('./${originalFileRenamed}')`
+        )
         .replace("'REPLACE_WITH_OPTIONS'", JSON.stringify(launcherOptions))
         .replace(/REPLACE_WITH_EXPORT_NAME/gm, exportName)
 
@@ -154,7 +176,10 @@ export default class ServerlessChrome {
       )
 
       // Write the wrapper code to the function's handler path
-      await utils.writeFile(path.resolve(handlerCodePath, fileName), wrapperCode)
+      await utils.writeFile(
+        path.resolve(handlerCodePath, fileName),
+        wrapperCode
+      )
     }))
   }
 

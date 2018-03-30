@@ -18,16 +18,16 @@ import DEFAULT_CHROME_FLAGS from './flags'
 const CHROME_PATH = path.resolve(__dirname, './headless-chromium')
 
 export interface IOptions {
-  chromePath?: string;
+  chromePath?: string
   chromeFlags?: string[]
-  startingUrl?: string;
-  port?: number;
-  userDataDir?: string;
+  startingUrl?: string
+  port?: number
+  userDataDir?: string
 }
 
 export default class Launcher {
-  private pollInterval: number = 500;
-  private pidFile = '';
+  private pollInterval: number = 500
+  private pidFile = ''
   private tmpDirandPidFileReady = false
   private startingUrl = 'about:blank'
   private outFile: null | number = null
@@ -38,7 +38,6 @@ export default class Launcher {
   private userDataDir = ''
   private port = 9222
   private chrome: ChildProcess | undefined = undefined
-
 
   constructor (private options: IOptions = {}) {
     const {
@@ -172,7 +171,7 @@ export default class Launcher {
       if (chrome.chrome) {
         // @ts-ignore
         chrome.chrome.removeAllListeners()
-      // @ts-ignore
+        // @ts-ignore
         chrome.chrome.unref()
       }
 
@@ -263,7 +262,7 @@ export default class Launcher {
         delete this.errFile
       }
 
-      return execFile(`rm`,  ["-Rf", `${this.userDataDir}`], {}, () => resolve())
+      return execFile('rm', ['-Rf', `${this.userDataDir}`], {}, () => resolve())
     })
   }
 }

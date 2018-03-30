@@ -23,12 +23,16 @@ export function throwIfWrongPluginOrder (plugins) {
 
   plugins.forEach((plugin, index) => {
     if (comesBefore.includes(plugin) && ourIndex < index) {
-      throw new Error(`The plugin "${plugin}" should appear before the "serverless-plugin-chrome"` +
+      throw new Error(`The plugin "${
+        plugin
+      }" should appear before the "serverless-plugin-chrome"` +
           ' plugin in the plugin configuration section of serverless.yml.')
     }
 
     if (comesAfter.includes(plugin) && ourIndex > index) {
-      throw new Error(`The plugin "${plugin}" should appear after the "serverless-plugin-chrome"` +
+      throw new Error(`The plugin "${
+        plugin
+      }" should appear after the "serverless-plugin-chrome"` +
           ' plugin in the plugin configuration section of serverless.yml.')
     }
   })

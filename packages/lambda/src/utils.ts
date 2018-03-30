@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import net from "net"
+import net from 'net'
 
 export function clearConnection (client: net.Socket) {
   if (client) {
