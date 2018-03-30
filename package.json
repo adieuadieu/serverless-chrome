@@ -125,10 +125,10 @@
         "error",
         "always"
       ],
-      "no-undef": false,
-      "import/no-unresolved": false,
-      "import/extensions": false,
-      "import/no-extraneous-dependencies": false
+      "no-undef": 0,
+      "import/no-unresolved": 0,
+      "import/extensions": 0,
+      "import/no-extraneous-dependencies": 0
     }
   },
   "eslintIgnore": [
