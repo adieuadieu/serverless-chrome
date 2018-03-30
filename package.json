@@ -124,12 +124,18 @@
       "space-before-function-paren": [
         "error",
         "always"
-      ]
+      ],
+      "no-undef": false,
+      "import/no-unresolved": false,
+      "import/extensions": false,
+      "import/no-extraneous-dependencies": false
     }
   },
   "eslintIgnore": [
     "node_modules",
-    "dist"
+    "dist",
+    "scripts",
+    "examples"
   ],
   "prettier": {
     "printWidth": 80,
