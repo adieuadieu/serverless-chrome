@@ -135,7 +135,9 @@
     "node_modules",
     "dist",
     "scripts",
-    "examples"
+    "examples",
+    "integration-test",
+    "wrapper-aws-nodejs6.10.js"
   ],
   "prettier": {
     "printWidth": 80,
