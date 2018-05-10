@@ -48,10 +48,12 @@ module.exports.run = function run (event, context, callback) {
 function navigateTest () {
   return new Promise((res, rej) => {
     CDP((client) => {
-      const { Page } = client
+      const { Page, Runtime } = client
 
-      Page.enable()
+      Promise.all([Page.enable(), Runtime.enable()])
         .then(() => Page.navigate({ url: 'https://github.com' }))
+        .then(() => Runtime.evaluate({ expression: 'window.location.href' }))
+        .then((resp) => console.log(resp))
         .catch((err) => {
           client.close()
           rej(err)
