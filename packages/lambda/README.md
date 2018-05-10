@@ -44,7 +44,7 @@ const CDP = require('chrome-remote-interface')
 
 module.exports.handler = function handler (event, context, callback) {
   launchChrome({
-    flags: ['--window-size=1280x1696', '--hide-scrollbars']
+    flags: ['--window-size=1280,1696', '--hide-scrollbars']
   })
   .then((chrome) => {
     // Chrome is now running on localhost:9222

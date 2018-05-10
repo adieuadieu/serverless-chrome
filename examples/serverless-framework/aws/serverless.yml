@@ -17,7 +17,7 @@ plugins:
 custom:
   chrome:
     flags:
-      - --window-size=1280x1696 # Letter size
+      - --window-size=1280,1696 # Letter size
       - --hide-scrollbars
 
 functions:
