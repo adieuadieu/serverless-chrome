@@ -1,15 +1,24 @@
 const path = require('path')
-const chrome = require('./dist/bundle.cjs.js')
+const CDP = require('chrome-remote-interface')
+const launchChrome = require('./dist/bundle.cjs.js')
 
 module.exports.run = function run (event, context, callback) {
   const channel = event.channel || 'stable'
 
   console.log('started. Channel:', channel)
 
-  chrome({ chromePath: path.resolve(__dirname, `./dist/${channel}-headless-chromium`) })
+  launchChrome({
+    chromePath: path.resolve(__dirname, `./dist/${channel}-headless-chromium`),
+  })
     .then((instance) => {
       console.log('we got here. sweet.', instance)
-
+      return instance
+    })
+    .then((instance) => {
+      console.log('gonna run navigateTest')
+      return navigateTest().then(() => instance)
+    })
+    .then((instance) => {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify({
@@ -34,4 +43,22 @@ module.exports.run = function run (event, context, callback) {
         },
       })
     })
+}
+
+function navigateTest () {
+  return new Promise((res, rej) => {
+    CDP((client) => {
+      const { Page } = client
+
+      Page.enable()
+        .then(() => Page.navigate({ url: 'https://github.com' }))
+        .catch((err) => {
+          client.close()
+          rej(err)
+        })
+    }).on('error', (err) => {
+      // cannot connect to the remote endpoint
+      rej(err)
+    })
+  })
 }
