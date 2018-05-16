@@ -3,7 +3,7 @@ const chrome = require('./dist/bundle.cjs.js')
 const cdp = require('chrome-remote-interface')
 
 module.exports.run = async function run (event) {
-  const channel = event.channel || ''
+  const channel = `${event.channel}-` || ''
 
   console.log('started. Channel:', channel)
 
