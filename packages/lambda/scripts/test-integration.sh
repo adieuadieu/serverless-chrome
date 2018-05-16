@@ -20,6 +20,8 @@ if [ ! -d "dist/" ]; then
   npm run build
 fi
 
+(cd integration-test &&  npm install)
+
 docker run \
   -v "$PWD/integration-test":/var/task \
   -v "$PWD/dist":/var/task/dist \
