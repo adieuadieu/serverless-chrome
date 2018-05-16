@@ -4,9 +4,11 @@
   "private": true,
   "description": "",
   "main": "handler.js",
-  "dependencies": {},
+  "dependencies": {
+    "chrome-remote-interface": "0.25.5"
+  },
   "devDependencies": {
-    "serverless": "1.23.0"
+    "serverless": "1.27.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
