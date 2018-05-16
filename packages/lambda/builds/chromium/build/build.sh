@@ -65,22 +65,17 @@ gclient sync --with_branch_heads --jobs 16
 
 cd src
 
+# the following is no longer necessary since. left here for nostalgia or something.
+# ref: https://chromium.googlesource.com/chromium/src/+/1824e5752148268c926f1109ed7e5ef1d937609a%5E%21
 # tweak to disable use of the tmpfs mounted at /dev/shm
-sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i base/files/file_util_posix.cc
+# sed -e '/if (use_dev_shm) {/i use_dev_shm = false;\n' -i base/files/file_util_posix.cc
 
 #
 # tweak to keep Chrome from crashing after 4-5 Lambda invocations
 # see https://github.com/adieuadieu/serverless-chrome/issues/41#issuecomment-340859918
 # Thank you, Geert-Jan Brits (@gebrits)!
 #
-# path of sandbox_ipc_linux.cc differs between chromium 62 and 63+
-# this is a temporary workaround to handle both
 SANDBOX_IPC_SOURCE_PATH="content/browser/sandbox_ipc_linux.cc"
-case "$VERSION" in
-  62.*)
-   SANDBOX_IPC_SOURCE_PATH="content/browser/renderer_host/sandbox_ipc_linux.cc"
-  ;;
-esac
 
 sed -e 's/PLOG(WARNING) << "poll";/PLOG(WARNING) << "poll"; failed_polls = 0;/g' -i "$SANDBOX_IPC_SOURCE_PATH"
 

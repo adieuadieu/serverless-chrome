@@ -21,6 +21,7 @@ EXPOSE 9222
 
 ENTRYPOINT [ \
   "/bin/headless-chromium", \
+  "--disable-dev-shm-usage", \
   "--disable-gpu", \
   "--no-sandbox", \
   "--hide-scrollbars", \
