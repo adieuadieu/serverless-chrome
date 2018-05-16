@@ -10,7 +10,7 @@ export function throwIfUnsupportedProvider (provider) {
 
 export function throwIfUnsupportedRuntime (runtime) {
   if (!SUPPORTED_RUNTIMES.includes(runtime)) {
-    throw new Error('The "serverless-plugin-headless-chrome" plugin only supports the Node.js 6.10 runtime. ' +
+    throw new Error('The "serverless-plugin-headless-chrome" plugin only supports the Node.js 6.10 or 8.10 runtimes. ' +
         `Your service is using the "${runtime}" provider.`)
   }
 }

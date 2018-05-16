@@ -1,12 +1,8 @@
-import * as CDP from 'chrome-remote-interface'
+import * as cdp from 'chrome-remote-interface'
 
 export default async function (event, context, callback, chrome) {
-  CDP.Version()
-    .then((versionInfo) => {
-      callback(null, {
-        versionInfo,
-        chrome,
-      })
-    })
-    .catch(callback)
+  return {
+    versionInfo: await cdp.Version(),
+    chrome,
+  }
 }

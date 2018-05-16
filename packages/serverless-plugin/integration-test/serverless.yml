@@ -2,7 +2,7 @@ service: serverless-chrome-sls-plugin-test
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
   stage: dev
   region: us-east-1
   environment:
@@ -21,17 +21,6 @@ custom:
     functions:
       - test
       - anotherTest
-#
-# package:
-#   # individually: true
-#   exclude:
-#     - ./**
-#   include:
-#     - ./**.js
-#     - node_modules/chrome-remote-interface/**
-#     - node_modules/commander/**
-#     - node_modules/ws/**
-#     - node_modules/ultron/**
 
 functions:
   test:
