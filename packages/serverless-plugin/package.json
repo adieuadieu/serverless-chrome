@@ -45,15 +45,15 @@
     "globby": "6.1.0"
   },
   "devDependencies": {
-    "ava": "0.24.0",
-    "babel-core": "6.26.0",
+    "ava": "0.25.0",
+    "babel-core": "6.26.3",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "babel-preset-env": "1.6.1",
+    "babel-preset-env": "1.7.0",
     "babel-register": "6.26.0",
-    "chrome-launcher": "0.10.0",
-    "rollup": "0.53.3",
-    "rollup-plugin-babel": "3.0.3",
-    "rollup-plugin-node-resolve": "3.0.0"
+    "chrome-launcher": "0.10.2",
+    "rollup": "0.59.1",
+    "rollup-plugin-babel": "3.0.4",
+    "rollup-plugin-node-resolve": "3.3.0"
   },
   "babel": {
     "sourceMaps": true,
