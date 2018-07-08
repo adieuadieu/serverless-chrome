@@ -32,13 +32,20 @@ export function makePrintOptions (options = {}) {
   return Object.entries(options).reduce(
     (printOptions, [option, value]) => ({
       ...printOptions,
-      [option]: cleanPrintOptionValue(typeof defaultPrintOptions[option], value),
+      [option]: cleanPrintOptionValue(
+        typeof defaultPrintOptions[option],
+        value
+      ),
     }),
     defaultPrintOptions
   )
 }
 
-export default async function printUrlToPdf (url, printOptions = {}, mobile = false) {
+export default async function printUrlToPdf (
+  url,
+  printOptions = {},
+  mobile = false
+) {
   const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 20
   let result
 
@@ -79,7 +86,10 @@ export default async function printUrlToPdf (url, printOptions = {}, mobile = fa
     // is there a better way to detect this? see if there's any pending
     // js being executed? paints? something?
     await sleep(100) // wait here, in case this resource has triggered more resources to load.
-    requestQueue.splice(requestQueue.findIndex(item => item === data.requestId), 1)
+    requestQueue.splice(
+      requestQueue.findIndex(item => item === data.requestId),
+      1
+    )
     log('Chrome received response for:', data.requestId, data.response.url)
   })
 
@@ -90,7 +100,11 @@ export default async function printUrlToPdf (url, printOptions = {}, mobile = fa
 
     await Page.loadEventFired()
 
-    const { result: { value: { height } } } = await Runtime.evaluate({
+    const {
+      result: {
+        value: { height },
+      },
+    } = await Runtime.evaluate({
       expression: `(
         () => {
           const height = document.body.scrollHeight
@@ -108,7 +122,6 @@ export default async function printUrlToPdf (url, printOptions = {}, mobile = fa
       mobile: !!mobile,
       deviceScaleFactor: 0,
       scale: 1, // mobile ? 2 : 1,
-      fitWindow: false,
       width: mobile ? 375 : 1280,
       height,
     })
