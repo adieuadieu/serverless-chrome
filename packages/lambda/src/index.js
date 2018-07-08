@@ -105,8 +105,13 @@ export default async function launch ({
       didLaunch: !!chromeInstance.pid,
     },
     async kill () {
-      await chromeInstance.kill()
-      chromeInstance = undefined
+      // Defer killing chrome process to the end of the execution stack
+      // so that the node process doesn't end before chrome exists,
+      // avoiding chrome becoming orphaned.
+      setTimeout(async () => {
+        chromeInstance.kill()
+        chromeInstance = undefined
+      }, 0)
     },
   }
 }
