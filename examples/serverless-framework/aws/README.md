@@ -31,6 +31,11 @@ serverless create -u \
   https://github.com/adieuadieu/serverless-chrome/tree/master/examples/serverless-framework/aws
 ```
 
+And install the dependencies:
+
+```bash
+npm install
+```
 
 ## Credentials
 
