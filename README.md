@@ -29,6 +29,7 @@ architectures and doing testing/CI, web-scraping, pre-rendering, etc.
 1. [Documentation & Resources](#documentation--resources)
    1. [Building Headless Chrome/Chromium](#building-headless-chromechromium)
 1. [Testing](#testing)
+1. [Troubleshooting](#troubleshooting)
 1. [Roadmap](#roadmap)
 1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
 1. [Change log](#change-log)
@@ -128,6 +129,13 @@ A collection of example functions for different providers and frameworks.
 
 Test with `npm test`. Each package also contains it's own integration tests
 which can be run with `npm run test:integration`.
+
+## Troubleshooting
+
+<details id="troubleshooting-1">
+  <summary>Can't get Selenium / ChromeDriver to work</summary>
+  Make sure that the versions of serverless-chrome, chromedriver, and Selenium are compatible. More details in [#133](https://github.com/adieuadieu/serverless-chrome/issues/133#issuecomment-382743975).
+</details>
 
 ## Roadmap
 
