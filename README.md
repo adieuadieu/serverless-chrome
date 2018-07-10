@@ -29,6 +29,7 @@ architectures and doing testing/CI, web-scraping, pre-rendering, etc.
 1. [Documentation & Resources](#documentation--resources)
    1. [Building Headless Chrome/Chromium](#building-headless-chromechromium)
 1. [Testing](#testing)
+1. [Articles & Tutorials](#articles--tutorials)
 1. [Troubleshooting](#troubleshooting)
 1. [Roadmap](#roadmap)
 1. [Projects & Companies using serverless-chrome](#projects--companies-using-serverless-chrome)
@@ -129,6 +130,18 @@ A collection of example functions for different providers and frameworks.
 
 Test with `npm test`. Each package also contains it's own integration tests
 which can be run with `npm run test:integration`.
+
+## Articles & Tutorials
+
+A collection of articles and tutorials written by others on using serverless-chrome
+
+* [AWS DevOps Blog — UI Testing at Scale with AWS Lambda](https://aws.amazon.com/blogs/devops/ui-testing-at-scale-with-aws-lambda/)
+* [Running puppeteer and headless chrome on AWS lambda with Serverless](https://nadeesha.github.io/headless-chrome-puppeteer-lambda-servelerless/)
+* [Will it blend? Or how to run Google Chrome in AWS Lambda](https://medium.freecodecamp.org/will-it-blend-or-how-to-run-google-chrome-in-aws-lambda-2c960fee8b74)
+* [Running Selenium and Headless Chrome on AWS Lambda](https://medium.com/clog/running-selenium-and-headless-chrome-on-aws-lambda-fb350458e4df)
+* [AWS Lambda上のheadless chromeをPythonで動かす](https://qiita.com/nabehide/items/754eb7b7e9fff9a1047d)
+* [AWS Lambda上でpuppeteerを動かして、スクレイピングする](https://qiita.com/chimame/items/04c9b45d8467cf32892f)
+* [serverless-chrome で日本語を表示できるようにする](http://fd0.hatenablog.jp/entry/2017/09/10/223042)
 
 ## Troubleshooting
 
