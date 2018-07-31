@@ -2,12 +2,11 @@ import log from '../utils/log'
 import screenshot from '../chrome/screenshot'
 
 export default async function handler (event, context, callback) {
+  const queryStringParameters = event.queryStringParameters || {}
   const {
-    queryStringParameters: {
-      url = 'https://github.com/adieuadieu/serverless-chrome',
-      mobile = false,
-    },
-  } = event
+    url = 'https://github.com/adieuadieu/serverless-chrome',
+    mobile = false,
+  } = queryStringParameters
 
   let data
 
