@@ -4,9 +4,10 @@ import Cdp from 'chrome-remote-interface'
 const LOAD_TIMEOUT = 1000 * 30
 
 export default async function handler (event, context, callback) {
+  const queryStringParameters = event.queryStringParameters || {}
   const {
-    queryStringParameters: { url = 'https://github.com/adieuadieu/serverless-chrome' },
-  } = event
+    url = 'https://github.com/adieuadieu/serverless-chrome',
+  } = queryStringParameters
   const requestsMade = []
 
   const [tab] = await Cdp.List()
