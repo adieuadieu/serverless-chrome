@@ -24,3 +24,18 @@ export function makeTempDir () {
     .toString()
     .trim()
 }
+
+/**
+ * Checks if a process currently exists by process id.
+ * @param pid number process id to check if exists
+ * @returns boolean true if process exists, false if otherwise
+ */
+export function processExists (pid) {
+  let exists = true
+  try {
+    process.kill(pid, 0)
+  } catch (error) {
+    exists = false
+  }
+  return exists
+}

@@ -1,7 +1,7 @@
 import fs from 'fs'
 // import path from 'path'
 import LambdaChromeLauncher from './launcher'
-import { debug } from './utils'
+import { debug, processExists } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
 
 const DEVTOOLS_PORT = 9222
@@ -28,7 +28,7 @@ export default async function launch ({
 } = {}) {
   const chromeFlags = [...DEFAULT_CHROME_FLAGS, ...flags]
 
-  if (!chromeInstance) {
+  if (!chromeInstance || !processExists(chromeInstance.pid)) {
     if (process.env.AWS_EXECUTION_ENV || forceLambdaLauncher) {
       chromeInstance = new LambdaChromeLauncher({
         chromePath,
