@@ -1,14 +1,16 @@
 # Chrome/Chromium on AWS Lambda
 
 ## Contents
-1. [Prebuilt Binaries](#prebuilt-binaries)
-1. [Docker Image](#docker-image)
-1. [Build Yourself](#build-yourself)
-    1. [Locally](#locally)
-    1. [With AWS EC2](#with-aws-ec2)
-1. [Fonts](#fonts)
-1. [Known Issues / Limitations](#known-issues--limitations)
 
+- [Chrome/Chromium on AWS Lambda](#chromechromium-on-aws-lambda)
+  - [Contents](#contents)
+  - [Prebuilt Binaries](#prebuilt-binaries)
+  - [Docker Image](#docker-image)
+  - [Build Yourself](#build-yourself)
+    - [Locally](#locally)
+    - [With AWS EC2](#with-aws-ec2)
+  - [Fonts](#fonts)
+  - [Known Issues / Limitations](#known-issues--limitations)
 
 ## Prebuilt Binaries
 
@@ -19,7 +21,6 @@ Check this project's released binaries against the latest with:
 ```bash
 ./packages/lambda/scripts/latest-versions.sh
 ```
-
 
 ## Docker Image
 
@@ -49,7 +50,6 @@ docker run -dt --rm --name headless-chromium adieuadieu/headless-chromium-for-aw
 docker cp headless-chromium:/bin/headless-chromium ./
 docker stop headless-chromium
 ```
-
 
 ## Build Yourself
 
@@ -82,7 +82,7 @@ export VERSION=$(./latest.sh stable)
 ./build/build.sh
 ```
 
-**Note:** On MacOS building with Docker, if you're running into a no-more-disk-space-available error, you may need to [increase the size](https://community.hortonworks.com/articles/65901/how-to-increase-the-size-of-the-base-docker-for-ma.html) of the Docker data sparse image. *Warning!:* This will wipe out all of your local images/containers:
+**Note:** On MacOS building with Docker, if you're running into a no-more-disk-space-available error, you may need to [increase the size](https://community.hortonworks.com/articles/65901/how-to-increase-the-size-of-the-base-docker-for-ma.html) of the Docker data sparse image. _Warning!:_ This will wipe out all of your local images/containers:
 
 ```bash
 rm ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2
@@ -91,17 +91,16 @@ qemu-img create -f qcow2 ~/Library/Containers/com.docker.docker/Data/com.docker.
 
 Install `qemu-img` with `brew install qemu`
 
-
 ### With AWS EC2
 
 How the cool kids build.
 
-Easily build Chromium using an EC2 Spot Instance (spot-block) using the [`ec2-build.sh`](/scripts/ec2-build.sh) script. With a `c5.2xlarge` spot-instance a single build takes rougly 2h15m and usually costs between $0.25 and $0.30 in `us-east-1a`. Or, ~30m on `c5.18xlarge` for about $0.50. To build Chromium, an instance with at least 4GB of memory is required.
+Easily build Chromium using an EC2 Spot Instance (spot-block) using the [`ec2-build.sh`](/scripts/ec2-build.sh) script. With a `c5.2xlarge` spot-instance a single build takes roughly 2h15m and usually costs between $0.25 and $0.30 in `us-east-1a`. Or, ~30m on `c5.18xlarge` for about $0.50. To build Chromium, an instance with at least 4GB of memory is required.
 
 Building on EC2 requires some IAM permissions setup:
 
-1. Create a new IAM _user_ with access keys and add [this custom inline policy](/aws/iam-serverless-chrome-automation-user-policy.json). The policy allows the minimum IAM permissions required to initiate a build on an EC2 Spot Instance.
-1. Create a new IAM _role_ called "serverless-chrome-automation" with an EC2 trust entity and add [this custom inline policy](/aws/iam-serverless-chrome-automation-role-policy.json). The policy allows the minimum IAM permissions required to retrieve secrets from the Parameter Store, log the instance's stdout/stderr to CloudWatch, and upload binaries to S3. Be sure to update the Resource Arns where appropriate (e.g. for the S3 bucket). Make note of the `Instance Profile ARN` as you'll need to set the `AWS_IAM_INSTANCE_ARN` environment variable to it.
+1.  Create a new IAM _user_ with access keys and add [this custom inline policy](/aws/iam-serverless-chrome-automation-user-policy.json). The policy allows the minimum IAM permissions required to initiate a build on an EC2 Spot Instance.
+1.  Create a new IAM _role_ called "serverless-chrome-automation" with an EC2 trust entity and add [this custom inline policy](/aws/iam-serverless-chrome-automation-role-policy.json). The policy allows the minimum IAM permissions required to retrieve secrets from the Parameter Store, log the instance's stdout/stderr to CloudWatch, and upload binaries to S3. Be sure to update the Resource Arns where appropriate (e.g. for the S3 bucket). Make note of the `Instance Profile ARN` as you'll need to set the `AWS_IAM_INSTANCE_ARN` environment variable to it.
 
 Next, export the following environment variables in your shell:
 
@@ -119,9 +118,9 @@ Then to start a new build run the following, replacing the version and/or channe
 ./scripts/ec2-build.sh chromium canary 64.0.3272.0
 ```
 
-The version can also be ommitted. This will build the latest version based on the channel (one of `stable`, `beta`, or `dev`). Canary builds require an explicit version to be defined.
+The version can also be omitted. This will build the latest version based on the channel (one of `stable`, `beta`, or `dev`). Canary builds require an explicit version to be defined.
 
-If successfull, the binary will show up in the S3 bucket. Check the CloudWatch `serverless-chrome-automation` log group [logs](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logStream:group=/serverless-chrome-automation;streamFilter=typeLogStreamPrefix) for errors.
+If successful, the binary will show up in the S3 bucket. Check the CloudWatch `serverless-chrome-automation` log group [logs](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logStream:group=/serverless-chrome-automation;streamFilter=typeLogStreamPrefix) for errors.
 
 EC2 Spot Instance specifications such as instance type or spot price can be configured via [`/aws/ec2-spot-instance-specification.json`](/aws/ec2-spot-instance-specification.json).
 
@@ -129,8 +128,7 @@ EC2 Spot Instance specifications such as instance type or spot price can be conf
 
 @TODO: document this.
 
-
 ## Known Issues / Limitations
 
-1. Hack to Chrome code to disable `/dev/shm`. Details [here](https://medium.com/@marco.luethy/running-headless-chrome-on-aws-lambda-fa82ad33a9eb).
-1. [Hack](https://github.com/adieuadieu/serverless-chrome/issues/41#issuecomment-341712878) to disable Sandbox IPC Polling.
+1.  Hack to Chrome code to disable `/dev/shm`. Details [here](https://medium.com/@marco.luethy/running-headless-chrome-on-aws-lambda-fa82ad33a9eb).
+1.  [Hack](https://github.com/adieuadieu/serverless-chrome/issues/41#issuecomment-341712878) to disable Sandbox IPC Polling.

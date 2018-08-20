@@ -75,6 +75,7 @@ if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
   cd serverless-chrome || return
 
   # git checkout develop # in case you want to build develop branch
+  git checkout enable_swiftshader
 
   ./scripts/docker-build-image.sh "$CHANNEL" "$BROWSER" "$VERSION"
 fi

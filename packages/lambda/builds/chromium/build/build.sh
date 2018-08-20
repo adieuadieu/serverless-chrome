@@ -88,10 +88,14 @@ mkdir -p out/Headless && \
   echo 'is_component_build = false' >> out/Headless/args.gn && \
   echo 'remove_webcore_debug_symbols = true' >> out/Headless/args.gn && \
   echo 'enable_nacl = false' >> out/Headless/args.gn && \
+  echo 'enable_swiftshader = true' >> out/Headless/args.gn && \
   gn gen out/Headless
 
 # build chromium headless shell
 ninja -C out/Headless headless_shell
+
+echo "=========================== Build completed ==========================="
+ls -lhtra out/Headless/
 
 cp out/Headless/headless_shell "$BUILD_BASE/bin/headless-chromium-unstripped"
 
