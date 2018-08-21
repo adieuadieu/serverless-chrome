@@ -168,9 +168,9 @@ export default class ServerlessChrome {
           (service.custom && service.custom.chrome) || {}
 
       const launcherOptions = {
+        chromePath: (this.webpack && !process.env.IS_LOCAL) ? '/var/task/headless-chromium' : undefined,
         ...customPluginOptions,
         flags: customPluginOptions.flags || [],
-        chromePath: this.webpack ? '/var/task/headless-chromium' : undefined,
       }
 
       // Read in the wrapper handler code template
