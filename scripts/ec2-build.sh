@@ -69,6 +69,6 @@ JSON=$(jq -c -r \
 # 
 aws ec2 request-spot-instances \
   --region "$AWS_REGION" \
-  --valid-until "$(date -u +%FT%T.000Z -d '48 hours')" \
+  --valid-until "$(date -u +%FT%T.000Z -d '6 hours')" \
   --cli-input-json "$JSON" | \
   jq -r ".SpotInstanceRequests[].Status"
