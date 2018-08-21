@@ -80,6 +80,8 @@ build() {
 
     # Extract the binary produced in the build
     docker cp "$DOCKER_IMAGE-build:/bin/headless-$BUILD_NAME" dist/
+    docker cp "$DOCKER_IMAGE-build:/build/chromium/src/out/Headless/" dist/
+    
     docker stop "$DOCKER_IMAGE-build"
 
     # Create the public Docker image
@@ -118,7 +120,8 @@ build() {
 
       (
         cd dist
-        zip -9 -D "$ZIPFILE" "headless-$BUILD_NAME"
+        # zip -9 -D "$ZIPFILE" "headless-$BUILD_NAME"
+        zip -9 -D "$ZIPFILE" "*"
       )
 
       aws s3 \
