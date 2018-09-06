@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-chrome",
-  "version": "1.0.0-54",
+  "version": "1.0.0-55",
   "description": "A Serverless-framework plugin that takes care of running headless Chrome so that you can move on with getting things done.",
   "keywords": [
     "serverless",
@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin",
   "dependencies": {
-    "@serverless-chrome/lambda": "1.0.0-54",
+    "@serverless-chrome/lambda": "1.0.0-55",
     "fs-p": "2.0.0",
     "globby": "6.1.0"
   },
