@@ -39,9 +39,15 @@ service awslogs start
 if [ -n "$CHANNEL" ] && [ -n "$BROWSER" ]; then
   yum update -y --quiet
 
-  yum install -y --quiet docker jq git
+  yum install -y --quiet jq git
+  
+  wget https://raw.githubusercontent.com/tianon/cgroupfs-mount/master/cgroupfs-mount
+  sh cgroupfs-mount
 
-  service docker start
+  wget https://download.docker.com/linux/static/test/x86_64/docker-18.09.0-ce-tp6.tgz
+  tar xzvf docker-18.09.0-ce-tp6.tgz
+  cp docker/* /usr/bin/
+  dockerd &
 
   # EC2_INSTANCE_ID=$(curl -s http://instance-data/latest/meta-data/instance-id)
 
