@@ -1,5 +1,5 @@
 const LOGGING_FLAGS = process.env.DEBUG
-  ? ['--enable-logging', '--log-level=0', '--v=99']
+  ? ['--enable-logging', '--log-level=0']
   : []
 
 export default [
