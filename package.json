@@ -42,6 +42,7 @@
   "homepage": "https://github.com/adieuadieu/serverless-chrome",
   "dependencies": {},
   "devDependencies": {
+    "@types/node": "^8.10.48",
     "ava": "0.25.0",
     "babel-core": "6.26.3",
     "babel-eslint": "8.2.3",
@@ -66,11 +67,19 @@
     "prettier": "1.12.1",
     "prettier-eslint": "8.8.1",
     "prettier-eslint-cli": "4.7.1",
-    "tap-xunit": "2.3.0"
+    "tap-xunit": "2.3.0",
+    "ts-node": "^8.1.0"
   },
   "ava": {
-    "require": "babel-register",
-    "babel": "inherit"
+    "require": [
+      "ts-node/register",
+      "babel-register"
+    ],
+    "babel": "inherit",
+    "extensions": [
+      "ts",
+      "js"
+    ]
   },
   "babel": {
     "sourceMaps": "inline",

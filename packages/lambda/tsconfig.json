@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "es2015",
+        "target": "es2017",
+        "noImplicitAny": true,
+        "declaration": true,
+        "sourceMap": true,
+        "strictNullChecks": true
+    },
+    "include": [
+        "src/*.ts"
+    ]
+}
