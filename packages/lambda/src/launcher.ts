@@ -7,9 +7,6 @@
   many dependencies which complicates packaging of serverless services.
 */
 
-// Removed chrome process stdout/stderr file logging
-// Remove responsibility of user data directory setup/teardown
-
 import { ChildProcess, spawn } from "child_process";
 import debug from "debug";
 import * as net from "net";
