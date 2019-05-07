@@ -63,7 +63,7 @@ export default class LambdaChromeLauncher {
     this.startingUrl = startingUrl;
     this.chromePath = chromePath;
     this.chromeFlags = new Set([
-      ...this.debug ? ["--enable-logging", "--log-level=0", "--v=99"] : [],
+      ...this.debug ? ["--enable-logging", "--log-level=0"] : [],
       ...DEFAULT_CHROME_FLAGS,
       `--remote-debugging-port=${this.port}`,
       "--disable-setuid-sandbox",
