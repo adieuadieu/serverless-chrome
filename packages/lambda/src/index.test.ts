@@ -16,7 +16,7 @@ async function getLocalChromePath() {
 
 test.serial("Chrome should launch using LocalChromeLauncher", async (t) => {
   const chromePath = await getLocalChromePath();
-  const chrome = launch({
+  const chrome = await launch({
     flags: DEFAULT_TEST_FLAGS,
     chromePath,
     port: 9220,
@@ -30,7 +30,7 @@ test.serial("Chrome should launch using LocalChromeLauncher", async (t) => {
   t.truthy(instance.port, "port should be set");
   t.is(instance.port, 9220, "port should be 9220");
 
-  instance.kill();
+  await instance.kill();
 });
 
 // Covered by the integration-test.

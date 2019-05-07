@@ -7,275 +7,231 @@
   many dependencies which complicates packaging of serverless services.
 */
 
-import { execSync, spawn } from "child_process";
-import * as fs from "fs";
-import * as http from "http";
+// Removed chrome process stdout/stderr file logging
+// Remove responsibility of user data directory setup/teardown
+
+import { ChildProcess, spawn } from "child_process";
+import debug from "debug";
 import * as net from "net";
 import * as path from "path";
-import DEFAULT_CHROME_FLAGS from "./flags";
-import { clearConnection, debug, delay, makeTempDir } from "./utils";
+
+const DEFAULT_CHROME_FLAGS = new Set<string>([
+  "--disable-dev-shm-usage", // disable /dev/shm tmpfs usage on Lambda
+
+  // @TODO: review if these are still relevant:
+  "--disable-gpu",
+  "--single-process", // Currently wont work without this :-(
+
+  // https://groups.google.com/a/chromium.org/d/msg/headless-dev/qqbZVZ2IwEw/Y95wJUh2AAAJ
+  "--no-zygote", // helps avoid zombies
+
+  "--no-sandbox",
+]);
 
 const CHROME_PATH = path.resolve(__dirname, "./headless-chromium");
 
 export interface LauncherOptions {
+  pollInterval?: number;
   chromePath?: string;
   chromeFlags?: string[];
   startingUrl?: string;
-  userDataDir?: string;
   port?: number;
+  debug?: boolean;
 }
 
-export default class Launcher {
-  public tmpDirandPidFileReady: boolean;
-  public pollInterval: number;
-  public pidFile: string;
-  public startingUrl: string;
-  public outFile: number | null;
-  public errFile: number | null;
-  public chromePath: string;
-  public chromeFlags: string[];
-  public requestedPort: number;
-  public userDataDir: string;
-  public port: number;
-  public pid: number | null;
-  public chrome: any;
-  public options: LauncherOptions;
+export default class LambdaChromeLauncher {
+  public chrome?: ChildProcess;
+
+  private readonly requestedPort?: number;
+  private readonly chromePath: string;
+  private readonly chromeFlags: Set<string>;
+  private readonly pollInterval: number;
+  private readonly startingUrl: string;
+  private readonly debug: boolean;
+
+  private readonly log = debug("@serverless-chrome/lambda");
 
   constructor(options: LauncherOptions = {}) {
     const {
+      pollInterval = 500,
       chromePath = CHROME_PATH,
       chromeFlags = [],
       startingUrl = "about:blank",
-      port = 0,
+      port,
     } = options;
 
-    this.tmpDirandPidFileReady = false;
-    this.pollInterval = 500;
-    this.pidFile = "";
-    this.startingUrl = "about:blank";
-    this.outFile = null;
-    this.errFile = null;
-    this.chromePath = CHROME_PATH;
-    this.chromeFlags = [];
-    this.requestedPort = 0;
-    this.userDataDir = "";
-    this.port = 9222;
-    this.pid = null;
-    this.chrome = undefined;
-
-    this.options = options;
-    this.startingUrl = startingUrl;
-    this.chromeFlags = chromeFlags;
-    this.chromePath = chromePath;
+    this.debug = !!options.debug;
+    this.pollInterval = pollInterval;
     this.requestedPort = port;
-  }
-
-  get flags() {
-    return [
+    this.startingUrl = startingUrl;
+    this.chromePath = chromePath;
+    this.chromeFlags = new Set([
+      ...this.debug ? ["--enable-logging", "--log-level=0", "--v=99"] : [],
       ...DEFAULT_CHROME_FLAGS,
       `--remote-debugging-port=${this.port}`,
-      `--user-data-dir=${this.userDataDir}`,
       "--disable-setuid-sandbox",
+      ...chromeFlags,
+    ]);
+  }
+
+  public get port() {
+    return this.requestedPort || 9222;
+  }
+
+  public get flags() {
+    return [
       ...this.chromeFlags,
       this.startingUrl,
     ];
   }
 
-  public prepare() {
-    this.userDataDir = this.options.userDataDir || makeTempDir();
-    this.outFile = fs.openSync(`${this.userDataDir}/chrome-out.log`, "a");
-    this.errFile = fs.openSync(`${this.userDataDir}/chrome-err.log`, "a");
-    this.pidFile = "/tmp/chrome.pid";
-    this.tmpDirandPidFileReady = true;
+  public get pid() {
+    return this.chrome ? this.chrome.pid : null;
+  }
+
+  public async launch(): Promise<void> {
+    if (this.requestedPort) {
+      // If an explicit port is passed first look for an open connection...
+      try {
+        return await this.ensureReady();
+      } catch (e) {
+        this.log("No debugging port found on port %d, launching a new Chrome", this.port);
+      }
+    }
+
+    if (this.chrome) {
+      this.log(`Chrome already running with pid %d.`, this.chrome.pid);
+    } else {
+      this.chrome = await this.spawn();
+      await this.waitUntilReady();
+    }
+  }
+
+  public async kill() {
+    if (this.chrome) {
+      this.log("Trying to terminate Chrome instance");
+      try {
+        process.kill(-this.chrome.pid);
+
+        this.log("Waiting for Chrome to terminate..");
+        await this.waitUntilKilled();
+        this.chrome = undefined;
+        this.log("Chrome successfully terminated.");
+      } catch (e) {
+        this.log("Chrome could not be killed", e);
+        throw e;
+      }
+    }
+  }
+
+  private spawn(): ChildProcess {
+    const proc = spawn(this.chromePath, this.flags, {
+      detached: true,
+      stdio: this.debug ? ["ignore", process.stdout, process.stderr] : "ignore",
+    });
+
+    // unref the chrome instance, otherwise the lambda process won't end correctly
+    proc.unref();
+
+    this.log("Chrome running with pid %d on port %d.", proc.pid, this.port);
+
+    return proc;
   }
 
   // resolves if ready, rejects otherwise
-  public isReady() {
+  private ensureReady(): Promise<void> {
     return new Promise((resolve, reject) => {
-      const client = net.createConnection(this.port);
+      const client = net.createConnection(this.port)
+        .setTimeout(1000) // @todo make it customizable?
+        .once("error", onError)
+        .once("connect", onConnect)
+        .once("timeout", onTimeout);
 
-      client.once("error", (error) => {
-        clearConnection(client);
-        reject(error);
-      });
+      function onError(e: Error) {
+        client
+          .removeListener("connect", onConnect)
+          .removeListener("timeout", onTimeout);
 
-      client.once("connect", () => {
-        clearConnection(client);
+        reject(e);
+      }
+
+      function onConnect() {
+        client
+          .removeListener("error", onError)
+          .removeListener("timeout", onTimeout);
+
+        client.end();
         resolve();
-      });
+      }
+
+      function onTimeout() {
+        client
+          .removeListener("error", onError)
+          .removeListener("connect", onConnect);
+
+        reject(new Error("Connection timed out"));
+      }
     });
   }
 
   // resolves when debugger is ready, rejects after 10 polls
-  public waitUntilReady() {
-    const launcher = this;
+  private async waitUntilReady(): Promise<void> {
+    const MAX_RETRIES = 10;
+    let retries = 0;
 
-    return new Promise((resolve, reject) => {
-      let retries = 0;
-      (function poll() {
-        debug("Waiting for Chrome", retries);
+    while (retries++ < MAX_RETRIES) {
+      log("Waiting for Chrome", retries);
 
-        launcher
-          .isReady()
-          .then(() => {
-            debug("Started Chrome");
-            resolve();
-          })
-          .catch((error) => {
-            retries += 1;
-
-            if (retries > 10) {
-              return reject(error);
-            }
-
-            return delay(launcher.pollInterval).then(poll);
-          });
-      }());
-    });
+      try {
+        await this.ensureReady();
+        this.log("Started Chrome");
+        return;
+      } catch (e) {
+        await this.sleep(this.pollInterval);
+      }
+    }
   }
 
   // resolves when chrome is killed, rejects  after 10 polls
-  public waitUntilKilled() {
-    return Promise.all([
+  private async waitUntilKilled(): Promise<void> {
+    await Promise.all([
       new Promise((resolve, reject) => {
+        const self = this;
+        const MAX_RETRIES = 10;
         let retries = 0;
-        const server = http.createServer();
 
-        server.once("listening", () => {
-          debug("Confirmed Chrome killed");
+        const server = net.createServer()
+          .on("listening", onListen)
+          .on("error", onError);
+
+        function onListen() {
+          self.log("Confirmed Chrome killed");
           server.close(resolve);
-        });
+        }
 
-        server.on("error", () => {
-          retries += 1;
-
-          debug("Waiting for Chrome to terminate..", retries);
-
-          if (retries > 10) {
+        function onError(e: Error) {
+          if (retries++ < MAX_RETRIES) {
+            setTimeout(() => server.listen(self.port), self.pollInterval);
+          } else {
             reject(new Error("Chrome is still running after 10 retries"));
           }
+        }
 
-          setTimeout(() => {
-            server.listen(this.port);
-          }, this.pollInterval);
-        });
+        this.log("Waiting for Chrome to terminate..", retries);
 
         server.listen(this.port);
       }),
       new Promise((resolve) => {
-        this.chrome.on("close", resolve);
+        if (!this.chrome || this.chrome.killed) {
+          return resolve();
+        } else {
+          this.chrome.once("close", resolve);
+        }
       }),
     ]);
   }
 
-  public async spawn() {
-    const spawnPromise = new Promise<number>(async (resolve) => {
-      if (this.chrome) {
-        debug(`Chrome already running with pid ${this.chrome.pid}.`);
-        return resolve(this.chrome.pid);
-      }
-
-      const chrome = spawn(this.chromePath, this.flags, {
-        detached: true,
-        stdio: ["ignore", this.outFile, this.errFile],
-      });
-
-      this.chrome = chrome;
-
-      // unref the chrome instance, otherwise the lambda process won't end correctly
-      if ((chrome as any).chrome) {
-        (chrome as any).chrome.removeAllListeners();
-        (chrome as any).chrome.unref();
-      }
-
-      fs.writeFileSync(this.pidFile, chrome.pid.toString());
-
-      debug(
-        "Launcher",
-        `Chrome running with pid ${chrome.pid} on port ${this.port}.`,
-      );
-
-      return resolve(chrome.pid);
-    });
-
-    const pid = await spawnPromise;
-    await this.waitUntilReady();
-    return pid;
-  }
-
-  public async launch() {
-    if (this.requestedPort !== 0) {
-      this.port = this.requestedPort;
-
-      // If an explict port is passed first look for an open connection...
-      try {
-        return await this.isReady();
-      } catch (err) {
-        debug(
-          "ChromeLauncher",
-          `No debugging port found on port ${
-            this.port
-          }, launching a new Chrome.`,
-        );
-      }
-    }
-
-    if (!this.tmpDirandPidFileReady) {
-      this.prepare();
-    }
-
-    this.pid = await this.spawn();
-    return Promise.resolve();
-  }
-
-  public kill() {
-    return new Promise(async (resolve, reject) => {
-      if (this.chrome) {
-        debug("Trying to terminate Chrome instance");
-
-        try {
-          process.kill(-this.chrome.pid);
-
-          debug("Waiting for Chrome to terminate..");
-          await this.waitUntilKilled();
-          debug("Chrome successfully terminated.");
-
-          this.destroyTemp();
-
-          delete this.chrome;
-          return resolve();
-        } catch (error) {
-          debug("Chrome could not be killed", error);
-          return reject(error);
-        }
-      } else {
-        // fail silently as we did not start chrome
-        return resolve();
-      }
-    });
-  }
-
-  public destroyTemp() {
-    return new Promise((resolve) => {
-      // Only clean up the tmp dir if we created it.
-      if (
-        this.userDataDir === undefined ||
-        this.options.userDataDir !== undefined
-      ) {
-        return resolve();
-      }
-
-      if (this.outFile) {
-        fs.closeSync(this.outFile);
-        delete this.outFile;
-      }
-
-      if (this.errFile) {
-        fs.closeSync(this.errFile);
-        delete this.errFile;
-      }
-
-      return (execSync as any)(`rm -Rf ${this.userDataDir}`, resolve);
-    });
+  private sleep(ms: number) {
+    return new Promise<void>((resolve) => setTimeout(resolve, ms));
   }
 }

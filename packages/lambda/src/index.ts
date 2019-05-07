@@ -1,10 +1,8 @@
-import * as fs from "fs";
-import DEFAULT_CHROME_FLAGS from "./flags";
-// import path from 'path'
+import debug from "debug";
 import LambdaChromeLauncher from "./launcher";
-import { debug, processExists } from "./utils";
 
-const DEVTOOLS_PORT = 9222;
+const log = debug("@serverless-chrome/lambda");
+
 const DEVTOOLS_HOST = "http://127.0.0.1";
 
 // Prepend NSS related libraries and binaries to the library path and path respectively on lambda.
@@ -18,7 +16,7 @@ const DEVTOOLS_HOST = "http://127.0.0.1";
 
 // persist the instance across invocations
 // when the *lambda* container is reused.
-let chromeInstance: any;
+let chromeInstance: LambdaChromeLauncher | undefined;
 
 export interface LaunchOption {
   flags?: string[];
@@ -28,13 +26,11 @@ export interface LaunchOption {
 }
 
 export default async function launch({
-  flags = [],
+  flags: chromeFlags = [],
   chromePath,
-  port = DEVTOOLS_PORT,
+  port,
   forceLambdaLauncher = false,
 }: LaunchOption = {}) {
-  const chromeFlags = [...DEFAULT_CHROME_FLAGS, ...flags];
-
   if (!chromeInstance || !processExists(chromeInstance.pid!)) {
     if (process.env.AWS_EXECUTION_ENV || forceLambdaLauncher) {
       chromeInstance = new LambdaChromeLauncher({
@@ -44,15 +40,14 @@ export default async function launch({
       });
     } else {
       // This let's us use chrome-launcher in local development,
-      // but omit it from the lambda function's zip artefact
+      // but omit it from the lambda function's zip artifact
       try {
-        // eslint-disable-next-line
         const { Launcher: LocalChromeLauncher } = require("chrome-launcher");
-        chromeInstance = new LocalChromeLauncher({
+        chromeInstance = (new LocalChromeLauncher({
           chromePath,
-          chromeFlags: flags,
+          chromeFlags,
           port,
-        });
+        })) as LambdaChromeLauncher;
       } catch (error) {
         throw new Error('@serverless-chrome/lambda: Unable to find "chrome-launcher". ' +
             "Make sure it's installed if you wish to develop locally.");
@@ -60,25 +55,14 @@ export default async function launch({
     }
   }
 
-  debug("Spawning headless shell");
+  log("Spawning headless shell");
 
   const launchStartTime = Date.now();
 
   try {
     await chromeInstance.launch();
   } catch (error) {
-    debug("Error trying to spawn chrome:", error);
-
-    if (process.env.DEBUG) {
-      debug(
-        "stdout log:",
-        fs.readFileSync(`${chromeInstance.userDataDir}/chrome-out.log`, "utf8"),
-      );
-      debug(
-        "stderr log:",
-        fs.readFileSync(`${chromeInstance.userDataDir}/chrome-err.log`, "utf8"),
-      );
-    }
+    log("Error trying to spawn chrome:", error);
 
     throw new Error("Unable to start Chrome. If you have the DEBUG env variable set," +
         "there will be more in the logs.");
@@ -86,7 +70,7 @@ export default async function launch({
 
   const launchTime = Date.now() - launchStartTime;
 
-  debug(`It took ${launchTime}ms to spawn chrome.`);
+  log("It took %dms to spawn chrome.", launchTime);
 
   // unref the chrome instance, otherwise the lambda process won't end correctly
   /* @TODO: make this an option?
@@ -96,7 +80,6 @@ export default async function launch({
     without unreffing chrome.
   */
   if (chromeInstance.chrome) {
-    chromeInstance.chrome.removeAllListeners();
     chromeInstance.chrome.unref();
   }
 
@@ -104,21 +87,24 @@ export default async function launch({
     pid: chromeInstance.pid,
     port: chromeInstance.port,
     url: `${DEVTOOLS_HOST}:${chromeInstance.port}`,
-    log: `${chromeInstance.userDataDir}/chrome-out.log`,
-    errorLog: `${chromeInstance.userDataDir}/chrome-err.log`,
-    pidFile: `${chromeInstance.userDataDir}/chrome.pid`,
     metaData: {
       launchTime,
       didLaunch: !!chromeInstance.pid,
     },
     async kill() {
-      // Defer killing chrome process to the end of the execution stack
-      // so that the node process doesn't end before chrome exists,
-      // avoiding chrome becoming orphaned.
-      setTimeout(async () => {
-        chromeInstance.kill();
+      if (chromeInstance) {
+        await chromeInstance.kill();
         chromeInstance = undefined;
-      }, 0);
+      }
     },
   };
+}
+
+function processExists(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
