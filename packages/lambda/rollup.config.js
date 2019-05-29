@@ -1,8 +1,8 @@
-import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
+import typescript from 'rollup-plugin-typescript2'
 
 export default {
-  input: 'src/index.js',
+  input: 'src/index.ts',
   output: [
     { file: 'dist/bundle.cjs.js', format: 'cjs' },
     { file: 'dist/bundle.es.js', format: 'es' },
@@ -20,20 +20,7 @@ export default {
       // ES2015 modules
       // modulesOnly: true, // Default: false
     }),
-    babel({
-      babelrc: false,
-      presets: [
-        [
-          'env',
-          {
-            modules: false,
-            targets: {
-              node: '6.10',
-            },
-          },
-        ],
-      ],
-    }),
+    typescript(),
   ],
-  external: ['fs', 'child_process', 'net', 'http', 'path', 'chrome-launcher'],
+  external: ['fs', 'child_process', 'net', 'path', 'chrome-launcher', 'debug'],
 }
