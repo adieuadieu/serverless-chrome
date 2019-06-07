@@ -112,7 +112,8 @@ export default class ServerlessChrome {
       ) {
         fs.symlinkSync(
           path.resolve('node_modules'),
-          path.resolve(path.join(BUILD_FOLDER, 'node_modules'))
+          path.resolve(path.join(BUILD_FOLDER, 'node_modules')),
+          'junction'
         )
       }
 
