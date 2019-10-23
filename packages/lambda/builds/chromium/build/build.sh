@@ -21,7 +21,7 @@ VERSION=${VERSION:-master}
 printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
 
 # install dependencies
-yum groupinstall "Development Tools"
+# yum groupinstall "Development Tools"
 yum install epel-release -y
 # yum install -y \
 #   git redhat-lsb python bzip2 tar pkgconfig atk-devel \
