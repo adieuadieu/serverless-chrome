@@ -5,8 +5,8 @@
 # Build Chromium for Amazon Linux.
 # Assumes root privileges. Or, more likely, Docker—take a look at
 # the corresponding Dockerfile in this directory.
-# 
-# Requires 
+#
+# Requires
 #
 # Usage: ./build.sh
 #
@@ -102,7 +102,7 @@ strip -o "$BUILD_BASE/bin/headless-chromium" build/chromium/src/out/Headless/hea
 
 # Use UPX to package headless chromium
 # this adds 1-1.5 seconds of startup time so generally
-# not so great for use in AWS Lambda so we don't actually use it 
+# not so great for use in AWS Lambda so we don't actually use it
 # but left here in case someone finds it useful
 # yum install -y ucl ucl-devel --enablerepo=epel
 # cd build
