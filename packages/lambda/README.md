@@ -44,7 +44,7 @@ const CDP = require('chrome-remote-interface')
 
 module.exports.handler = function handler (event, context, callback) {
   launchChrome({
-    flags: ['--window-size=1280x1696', '--hide-scrollbars']
+    flags: ['--window-size=1280,1696', '--hide-scrollbars']
   })
   .then((chrome) => {
     // Chrome is now running on localhost:9222
@@ -75,7 +75,7 @@ launchChrome({ chromePath: '/my/local/chrome/path' })
 
 **Command line flags (or "switches")**
 
-The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](packages/lambda/src/flags.js) are used, but in development no default flags are used.
+The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](/packages/lambda/src/flags.js) are used, but in development no default flags are used.
 
 The package has zero external dependencies required for inclusion in your Lambda function's package.
 
@@ -84,7 +84,7 @@ The package has zero external dependencies required for inclusion in your Lambda
 
 There are plugins which bundle this package for easy deployment available for the following "serverless" frameworks:
 
-- [serverless-plugin-chrome](packages/serverless-plugin)
+- [serverless-plugin-chrome](/packages/serverless-plugin)
 
 
 ## Specifying Chromium Channel

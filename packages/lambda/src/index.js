@@ -1,7 +1,7 @@
 import fs from 'fs'
 // import path from 'path'
 import LambdaChromeLauncher from './launcher'
-import { debug } from './utils'
+import { debug, processExists } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
 
 const DEVTOOLS_PORT = 9222
@@ -21,11 +21,14 @@ const DEVTOOLS_HOST = 'http://127.0.0.1'
 let chromeInstance
 
 export default async function launch ({
-  flags = [], chromePath, port = DEVTOOLS_PORT, forceLambdaLauncher = false,
+  flags = [],
+  chromePath,
+  port = DEVTOOLS_PORT,
+  forceLambdaLauncher = false,
 } = {}) {
   const chromeFlags = [...DEFAULT_CHROME_FLAGS, ...flags]
 
-  if (!chromeInstance) {
+  if (!chromeInstance || !processExists(chromeInstance.pid)) {
     if (process.env.AWS_EXECUTION_ENV || forceLambdaLauncher) {
       chromeInstance = new LambdaChromeLauncher({
         chromePath,
@@ -38,7 +41,11 @@ export default async function launch ({
       try {
         // eslint-disable-next-line
         const { Launcher: LocalChromeLauncher } = require('chrome-launcher')
-        chromeInstance = new LocalChromeLauncher({ chromePath, chromeFlags: flags, port })
+        chromeInstance = new LocalChromeLauncher({
+          chromePath,
+          chromeFlags: flags,
+          port,
+        })
       } catch (error) {
         throw new Error('@serverless-chrome/lambda: Unable to find "chrome-launcher". ' +
             "Make sure it's installed if you wish to develop locally.")
@@ -56,8 +63,14 @@ export default async function launch ({
     debug('Error trying to spawn chrome:', error)
 
     if (process.env.DEBUG) {
-      debug('stdout log:', fs.readFileSync(`${chromeInstance.userDataDir}/chrome-out.log`, 'utf8'))
-      debug('stderr log:', fs.readFileSync(`${chromeInstance.userDataDir}/chrome-err.log`, 'utf8'))
+      debug(
+        'stdout log:',
+        fs.readFileSync(`${chromeInstance.userDataDir}/chrome-out.log`, 'utf8')
+      )
+      debug(
+        'stderr log:',
+        fs.readFileSync(`${chromeInstance.userDataDir}/chrome-err.log`, 'utf8')
+      )
     }
 
     throw new Error('Unable to start Chrome. If you have the DEBUG env variable set,' +
@@ -84,16 +97,21 @@ export default async function launch ({
     pid: chromeInstance.pid,
     port: chromeInstance.port,
     url: `${DEVTOOLS_HOST}:${chromeInstance.port}`,
-    kill: () => {
-      chromeInstance.kill()
-      chromeInstance = undefined
-    },
     log: `${chromeInstance.userDataDir}/chrome-out.log`,
     errorLog: `${chromeInstance.userDataDir}/chrome-err.log`,
     pidFile: `${chromeInstance.userDataDir}/chrome.pid`,
     metaData: {
       launchTime,
       didLaunch: !!chromeInstance.pid,
+    },
+    async kill () {
+      // Defer killing chrome process to the end of the execution stack
+      // so that the node process doesn't end before chrome exists,
+      // avoiding chrome becoming orphaned.
+      setTimeout(async () => {
+        chromeInstance.kill()
+        chromeInstance = undefined
+      }, 0)
     },
   }
 }

@@ -1,0 +1,4 @@
+.nyc_output/
+dist/
+package.json
+package-lock.json

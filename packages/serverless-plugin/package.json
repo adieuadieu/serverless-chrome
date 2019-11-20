@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-chrome",
-  "version": "1.0.0-28",
+  "version": "1.0.0-55",
   "description": "A Serverless-framework plugin that takes care of running headless Chrome so that you can move on with getting things done.",
   "keywords": [
     "serverless",
@@ -40,20 +40,20 @@
   },
   "homepage": "https://github.com/adieuadieu/serverless-chrome/tree/master/packages/serverless-plugin",
   "dependencies": {
-    "@serverless-chrome/lambda": "1.0.0-28",
+    "@serverless-chrome/lambda": "1.0.0-55",
     "fs-p": "2.0.0",
     "globby": "6.1.0"
   },
   "devDependencies": {
-    "ava": "0.23.0",
-    "babel-core": "6.26.0",
+    "ava": "0.25.0",
+    "babel-core": "6.26.3",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "babel-preset-env": "1.6.1",
+    "babel-preset-env": "1.7.0",
     "babel-register": "6.26.0",
-    "chrome-launcher": "0.8.1",
-    "rollup": "0.50.0",
-    "rollup-plugin-babel": "3.0.2",
-    "rollup-plugin-node-resolve": "3.0.0"
+    "chrome-launcher": "0.10.2",
+    "rollup": "0.59.1",
+    "rollup-plugin-babel": "3.0.4",
+    "rollup-plugin-node-resolve": "3.3.0"
   },
   "babel": {
     "sourceMaps": true,

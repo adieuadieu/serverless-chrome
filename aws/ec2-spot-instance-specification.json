@@ -2,10 +2,9 @@
   "SpotPrice": "0.34",
   "InstanceCount": 1,
   "Type": "one-time",
-  "BlockDurationMinutes": 180,
   "LaunchSpecification": {
     "ImageId": "ami-8c1be5f6",
-    "InstanceType": "c5.2xlarge",
+    "InstanceType": "c4.2xlarge",
     "IamInstanceProfile": {
       "Arn": "this gets updated by the ec2-build.sh script"
     },

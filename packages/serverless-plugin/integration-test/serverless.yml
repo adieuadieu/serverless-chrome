@@ -2,7 +2,7 @@ service: serverless-chrome-sls-plugin-test
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
   stage: dev
   region: us-east-1
   environment:
@@ -15,23 +15,12 @@ plugins:
 custom:
   chrome:
     flags:
-      - --window-size=1280x1696 # Letter size
+      - --window-size=1280,1696 # Letter size
       - --hide-scrollbars
       - --ignore-certificate-errors
     functions:
       - test
       - anotherTest
-#
-# package:
-#   # individually: true
-#   exclude:
-#     - ./**
-#   include:
-#     - ./**.js
-#     - node_modules/chrome-remote-interface/**
-#     - node_modules/commander/**
-#     - node_modules/ws/**
-#     - node_modules/ultron/**
 
 functions:
   test:

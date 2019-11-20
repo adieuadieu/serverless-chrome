@@ -11,6 +11,7 @@ import path from 'path'
 import fs from 'fs'
 import { execSync, spawn } from 'child_process'
 import net from 'net'
+import http from 'http'
 import { delay, debug, makeTempDir, clearConnection } from './utils'
 import DEFAULT_CHROME_FLAGS from './flags'
 
@@ -61,7 +62,7 @@ export default class Launcher {
     this.userDataDir = this.options.userDataDir || makeTempDir()
     this.outFile = fs.openSync(`${this.userDataDir}/chrome-out.log`, 'a')
     this.errFile = fs.openSync(`${this.userDataDir}/chrome-err.log`, 'a')
-    this.pidFile = `${this.userDataDir}/chrome.pid`
+    this.pidFile = '/tmp/chrome.pid'
     this.tmpDirandPidFileReady = true
   }
 
@@ -110,6 +111,40 @@ export default class Launcher {
     })
   }
 
+  // resolves when chrome is killed, rejects  after 10 polls
+  waitUntilKilled () {
+    return Promise.all([
+      new Promise((resolve, reject) => {
+        let retries = 0
+        const server = http.createServer()
+
+        server.once('listening', () => {
+          debug('Confirmed Chrome killed')
+          server.close(resolve)
+        })
+
+        server.on('error', () => {
+          retries += 1
+
+          debug('Waiting for Chrome to terminate..', retries)
+
+          if (retries > 10) {
+            reject(new Error('Chrome is still running after 10 retries'))
+          }
+
+          setTimeout(() => {
+            server.listen(this.port)
+          }, this.pollInterval)
+        })
+
+        server.listen(this.port)
+      }),
+      new Promise((resolve) => {
+        this.chrome.on('close', resolve)
+      }),
+    ])
+  }
+
   async spawn () {
     const spawnPromise = new Promise(async (resolve) => {
       if (this.chrome) {
@@ -132,7 +167,10 @@ export default class Launcher {
 
       fs.writeFileSync(this.pidFile, chrome.pid.toString())
 
-      debug('Launcher', `Chrome running with pid ${chrome.pid} on port ${this.port}.`)
+      debug(
+        'Launcher',
+        `Chrome running with pid ${chrome.pid} on port ${this.port}.`
+      )
 
       return resolve(chrome.pid)
     })
@@ -152,7 +190,9 @@ export default class Launcher {
       } catch (err) {
         debug(
           'ChromeLauncher',
-          `No debugging port found on port ${this.port}, launching a new Chrome.`
+          `No debugging port found on port ${
+            this.port
+          }, launching a new Chrome.`
         )
       }
     }
@@ -166,24 +206,28 @@ export default class Launcher {
   }
 
   kill () {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve, reject) => {
       if (this.chrome) {
-        this.chrome.on('close', () => {
-          this.destroyTemp().then(resolve)
-        })
-
-        debug('Killing all Chrome Instances')
+        debug('Trying to terminate Chrome instance')
 
         try {
           process.kill(-this.chrome.pid)
-        } catch (err) {
-          debug(`Chrome could not be killed ${err.message}`)
-        }
 
-        delete this.chrome
+          debug('Waiting for Chrome to terminate..')
+          await this.waitUntilKilled()
+          debug('Chrome successfully terminated.')
+
+          this.destroyTemp()
+
+          delete this.chrome
+          return resolve()
+        } catch (error) {
+          debug('Chrome could not be killed', error)
+          return reject(error)
+        }
       } else {
         // fail silently as we did not start chrome
-        resolve()
+        return resolve()
       }
     })
   }
@@ -191,7 +235,10 @@ export default class Launcher {
   destroyTemp () {
     return new Promise((resolve) => {
       // Only clean up the tmp dir if we created it.
-      if (this.userDataDir === undefined || this.options.userDataDir !== undefined) {
+      if (
+        this.userDataDir === undefined ||
+        this.options.userDataDir !== undefined
+      ) {
         return resolve()
       }
 

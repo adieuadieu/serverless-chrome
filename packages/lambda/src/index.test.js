@@ -1,5 +1,5 @@
 import test from 'ava'
-import * as chromeFinder from 'chrome-launcher/chrome-finder'
+import * as chromeFinder from 'chrome-launcher/dist/chrome-finder'
 import launch from './index'
 
 const DEFAULT_TEST_FLAGS = ['--headless']
@@ -35,5 +35,6 @@ test.serial('Chrome should launch using LocalChromeLauncher', async (t) => {
 
 // Covered by the integration-test.
 test('Chrome should launch using LambdaChromeLauncher', (t) => {
+  // @TODO: proper test..
   t.pass()
 })

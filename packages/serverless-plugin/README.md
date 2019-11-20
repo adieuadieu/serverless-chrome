@@ -1,6 +1,6 @@
 # Serverless-framework Headless Chrome Plugin
 
-A [Serverless-framework](https://github.com/serverless/serverless) plugin which bundles the [@serverless-chrome/lambda](packages/lambda) package and ensures that Headless Chrome is running when your function handler is invoked.
+A [Serverless-framework](https://github.com/serverless/serverless) plugin which bundles the [@serverless-chrome/lambda](/packages/lambda) package and ensures that Headless Chrome is running when your function handler is invoked.
 
 [![npm](https://img.shields.io/npm/v/serverless-plugin-chrome.svg?style=flat-square)](https://www.npmjs.com/package/serverless-plugin-chrome)
 
@@ -84,7 +84,7 @@ Local development is supported. You must install the `chrome-launcher` package i
 
 **Command line flags (or "switches")**
 
-The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](https://github.com/adieuadieu/serverless-chrome/blob/develop/packages/lambda/src/flags.js) are used, but in development no default flags are used.
+The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](/packages/lambda/src/flags.js) are used, but in development no default flags are used.
 
 ## Configuration
 
@@ -97,7 +97,7 @@ plugins:
 custom:
   chrome:
     flags:
-      - --window-size=1280x1696 # Letter size
+      - --window-size=1280,1696 # Letter size
       - --hide-scrollbars
       - --ignore-certificate-errors
     functions:

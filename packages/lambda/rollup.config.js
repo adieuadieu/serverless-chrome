@@ -35,5 +35,5 @@ export default {
       ],
     }),
   ],
-  external: ['fs', 'child_process', 'net', 'path', 'chrome-launcher'],
+  external: ['fs', 'child_process', 'net', 'http', 'path', 'chrome-launcher'],
 }

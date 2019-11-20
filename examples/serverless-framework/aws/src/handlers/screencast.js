@@ -227,7 +227,8 @@ export async function makeVideo (url, options = {}, invokeid = '') {
 }
 
 export default async function handler (event, { invokeid }, callback) {
-  const { queryStringParameters: { url, ...printParameters } } = event
+  const queryStringParameters = event.queryStringParameters || {}
+  const { url, ...printParameters } = queryStringParameters
   const options = makePrintOptions(printParameters)
   let result = {}
 

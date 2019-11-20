@@ -25,7 +25,7 @@ unzip -o -d "$TEST_DIRECTORY" .serverless/**.zip
 
 CHROMIUM_VERSION=$(docker run \
   -v "$PWD/$TEST_DIRECTORY":/var/task \
-  lambci/lambda:nodejs6.10 \
+  lambci/lambda:nodejs8.10 \
   src/handler.default | \
   jq -re '.versionInfo.Browser')
 

@@ -20,9 +20,11 @@ if [ ! -d "dist/" ]; then
   npm run build
 fi
 
+(cd integration-test &&  npm install)
+
 docker run \
   -v "$PWD/integration-test":/var/task \
   -v "$PWD/dist":/var/task/dist \
-  lambci/lambda:nodejs6.10 \
+  lambci/lambda:nodejs8.10 \
   handler.run \
   "{\"channel\": \"$CHANNEL\"}"
