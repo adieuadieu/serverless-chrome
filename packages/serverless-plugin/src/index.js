@@ -62,15 +62,26 @@ export default class ServerlessChrome {
   }
 
   async webpackPackageBinaries () {
-    const { servicePath } = this.serverless.config
+    const { config: { servicePath }, service } = this.serverless
+    const packagedIdividually = service.package && service.package.individually
 
-    await fs.copy(
-      path.join(
-        servicePath,
-        'node_modules/@serverless-chrome/lambda/dist/headless-chromium'
-      ),
-      path.resolve(servicePath, '.webpack/service/headless-chromium')
-    )
+    if (packagedIdividually) {
+      const functionsToCopyTo =
+        (service.custom && service.custom.chrome && service.custom.chrome.functions) ||
+        service.getAllFunctions()
+
+      await Promise.all(functionsToCopyTo.map(async (functionName) => {
+        await fs.copy(
+          path.join(servicePath, 'node_modules/@serverless-chrome/lambda/dist/headless-chromium'),
+          path.resolve(servicePath, `.webpack/${functionName}/headless-chromium`)
+        )
+      }))
+    } else {
+      await fs.copy(
+        path.join(servicePath, 'node_modules/@serverless-chrome/lambda/dist/headless-chromium'),
+        path.resolve(servicePath, '.webpack/service/headless-chromium')
+      )
+    }
   }
 
   async beforeCreateDeploymentArtifacts () {
