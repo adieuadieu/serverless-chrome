@@ -44,9 +44,9 @@
   dependencies:
     arrify "^1.0.1"
 
-"@serverless-chrome/lambda@1.0.0-32":
-  version "1.0.0-32"
-  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-1.0.0-32.tgz#6638cf36d04d255b89809adfed0c4a8c8725f2ca"
+"@serverless-chrome/lambda@1.0.0-55":
+  version "1.0.0-55"
+  resolved "https://registry.yarnpkg.com/@serverless-chrome/lambda/-/lambda-1.0.0-55.tgz#1b1073632634583b7e156adf56b3ee9c3b62d3fc"
   dependencies:
     extract-zip "1.6.6"
 
@@ -2051,8 +2051,8 @@ expand-range@^1.8.1:
     fill-range "^2.1.0"
 
 extend@3, extend@^3.0.0, extend@~3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
 
 external-editor@^1.1.0:
   version "1.1.1"
@@ -4118,11 +4118,11 @@ semver@~5.0.1:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.0.3.tgz#77466de589cd5d3c95f138aa78bc569a3cb5d27a"
 
-serverless-plugin-chrome@1.0.0-32:
-  version "1.0.0-32"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-32.tgz#e210e2953b3ad034862f1da16dc8213c6c170f31"
+serverless-plugin-chrome@1.0.0-55:
+  version "1.0.0-55"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-55.tgz#7034bb3971c18053298edda7f560168f459d4bc2"
   dependencies:
-    "@serverless-chrome/lambda" "1.0.0-32"
+    "@serverless-chrome/lambda" "1.0.0-55"
     fs-p "2.0.0"
     globby "6.1.0"
 
