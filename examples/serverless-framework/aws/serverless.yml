@@ -2,11 +2,10 @@ service: serverless-chrome-examples
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs12.x
   stage: dev
   region: us-east-1
   environment:
-    DEBUG: "*"
     PAGE_LOAD_TIMEOUT: 20000
     LOGGING: true
 
