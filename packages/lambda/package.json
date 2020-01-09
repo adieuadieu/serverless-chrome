@@ -18,6 +18,7 @@
     "dist/bundle.es.js",
     "scripts/postinstall.js"
   ],
+  "types": "index.d.ts",
   "repository": "git@github.com:adieuadieu/serverless-chrome.git",
   "bugs": {
     "url": "https://github.com/adieuadieu/serverless-chrome/issues"
