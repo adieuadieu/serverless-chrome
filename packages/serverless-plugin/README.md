@@ -5,12 +5,16 @@ A [Serverless-framework](https://github.com/serverless/serverless) plugin which 
 [![npm](https://img.shields.io/npm/v/serverless-plugin-chrome.svg?style=flat-square)](https://www.npmjs.com/package/serverless-plugin-chrome)
 
 ## Contents
-1. [Installation](#installation)
-1. [Setup](#setup)
-1. [Examples](#examples)
-1. [Local Development](#local-development)
-1. [Configuration](#configuration)
 
+- [Serverless-framework Headless Chrome Plugin](#serverless-framework-headless-chrome-plugin)
+  - [Contents](#contents)
+  - [Installation](#installation)
+  - [Setup](#setup)
+  - [Examples](#examples)
+  - [Local Development](#local-development)
+  - [Configuration](#configuration)
+    - [Using with other plugins](#using-with-other-plugins)
+  - [Troubleshooting](#troubleshooting)
 
 ## Installation
 
@@ -26,8 +30,7 @@ Install with npm:
 npm install --save-dev serverless-plugin-chrome
 ```
 
-Requires Node 6.10 runtime.
-
+Requires Node 12 runtime.
 
 ## Setup
 
@@ -47,7 +50,7 @@ module.exports.hello = (event, context, callback, chrome) => {
   // Chrome is already running!
 
   CDP.Version()
-    .then((versionInfo) => {
+    .then(versionInfo => {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify({
@@ -56,7 +59,7 @@ module.exports.hello = (event, context, callback, chrome) => {
         }),
       })
     })
-    .catch((error) => {
+    .catch(error => {
       callback(null, {
         statusCode: 500,
         body: JSON.stringify({
@@ -69,14 +72,12 @@ module.exports.hello = (event, context, callback, chrome) => {
 
 Further details are available in the [Serverless Lambda example](/examples/serverless-framework/aws).
 
-
 ## Examples
 
 Example functions are available [here](/examples/serverless-framework). They include:
 
 - Screenshot capturing handler: takes a picture of a URL
 - print-to-PDF handler: turns a URL into a PDF
-
 
 ## Local Development
 
@@ -120,14 +121,13 @@ You can enable debugging/logging output by specifying the DEBUG env variable in 
 ```yaml
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs12.x
   environment:
-    DEBUG: "*"
+    DEBUG: '*'
 
 plugins:
   - serverless-plugin-chrome
 ```
-
 
 ### Using with other plugins
 
@@ -149,21 +149,22 @@ plugins:
   - serverless-plugin-chrome # 2nd
 ```
 
-
 ## Troubleshooting
 
 <details id="ts-aws-client-timeout">
   <summary>I keep getting a timeout error when deploying and it's really annoying.</summary>
 
-  Indeed, that is annoying. I've had the same problem, and so that's why it's now here in this troubleshooting section. This may be an issue in the underlying AWS SDK when using a slower Internet connection. Try changing the `AWS_CLIENT_TIMEOUT` environment variable to a higher value. For example, in your command prompt enter the following and try deploying again:
+Indeed, that is annoying. I've had the same problem, and so that's why it's now here in this troubleshooting section. This may be an issue in the underlying AWS SDK when using a slower Internet connection. Try changing the `AWS_CLIENT_TIMEOUT` environment variable to a higher value. For example, in your command prompt enter the following and try deploying again:
 
 ```bash
 export AWS_CLIENT_TIMEOUT=3000000
 ```
+
 </details>
 
 <details id="ts-argh">
   <summary>Aaaaaarggghhhhhh!!!</summary>
 
-  Uuurrrggghhhhhh! Have you tried [filing an Issue](https://github.com/adieuadieu/serverless-chrome/issues/new)?
+Uuurrrggghhhhhh! Have you tried [filing an Issue](https://github.com/adieuadieu/serverless-chrome/issues/new)?
+
 </details>
