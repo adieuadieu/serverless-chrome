@@ -21,22 +21,17 @@ VERSION=${VERSION:-master}
 printf "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >> /etc/environment
 
 # install dependencies
-# yum install epel-release -y
-# yum install -y \
-#   git redhat-lsb python bzip2 tar pkgconfig atk-devel \
-#   alsa-lib-devel bison binutils brlapi-devel bluez-libs-devel \
-#   bzip2-devel cairo-devel cups-devel dbus-devel dbus-glib-devel \
-#   expat-devel fontconfig-devel freetype-devel gcc-c++ GConf2-devel \
-#   glib2-devel glibc gperf glib2-devel gtk2-devel gtk3-devel \
-#   java-1.*.0-openjdk-devel libatomic libcap-devel libffi-devel \
-#   libgcc libgnome-keyring-devel libjpeg-devel libstdc++ \
-#   libX11-devel libXScrnSaver-devel libXtst-devel \
-#   libxkbcommon-x11-devel ncurses-compat-libs nspr-devel nss-devel \
-#   pam-devel pango-devel pciutils-devel pulseaudio-libs-devel \
-#   zlib zlib-devel httpd mod_ssl php php-cli python-psutil wdiff --enablerepo=epel
 yum groupinstall -y "Development Tools"
 yum install -y \
-  alsa-lib-devel atk-devel binutils bison bluez-libs-devel brlapi-devel bzip2 bzip2-devel cairo-devel cmake cups-devel dbus-devel dbus-glib-devel expat-devel fontconfig-devel freetype-devel gcc-c++ git glib2-devel glibc gperf gtk3-devel htop httpd java-1.*.0-openjdk-devel libatomic libcap-devel libffi-devel libgcc libgnome-keyring-devel libjpeg-devel libstdc++ libuuid-devel libX11-devel libxkbcommon-x11-devel libXScrnSaver-devel libXtst-devel mercurial mod_ssl ncurses-compat-libs nspr-devel nss-devel pam-devel pango-devel pciutils-devel php php-cli pkgconfig pulseaudio-libs-devel python tar zlib zlib-devel
+  alsa-lib-devel atk-devel binutils bison bluez-libs-devel brlapi-devel \
+  bzip2 bzip2-devel cairo-devel cmake cups-devel dbus-devel dbus-glib-devel \
+  expat-devel fontconfig-devel freetype-devel gcc-c++ git glib2-devel glibc \
+  gperf gtk3-devel htop httpd java-1.*.0-openjdk-devel libatomic libcap-devel \
+  libffi-devel libgcc libgnome-keyring-devel libjpeg-devel libstdc++ libuuid-devel \
+  libX11-devel libxkbcommon-x11-devel libXScrnSaver-devel libXtst-devel mercurial \
+  mod_ssl ncurses-compat-libs nspr-devel nss-devel pam-devel pango-devel \
+  pciutils-devel php php-cli pkgconfig pulseaudio-libs-devel python \
+  tar zlib zlib-devel
 
 mkdir -p build/chromium
 
@@ -54,18 +49,6 @@ cd chromium
 
 echo "trying git shallow clone, much quicker than a full git clone; see https://stackoverflow.com/a/39067940/3145038 for more details"
 git clone --branch "$VERSION" --depth 1 https://chromium.googlesource.com/chromium/src.git
-
-# git clone https://chromium.googlesource.com/chromium/src.git
-
-# (
-#   cd src
-
-#   # Do a pull because there are usually revisions pushed while we're cloning
-#   git pull
-
-#   # checkout the release tag
-#   git checkout -b build "$VERSION"
-# )
 
 # Checkout all the submodules at their branch DEPS revisions
 gclient sync --with_branch_heads --jobs 16
