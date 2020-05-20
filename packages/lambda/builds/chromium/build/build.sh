@@ -47,7 +47,8 @@ cd chromium
 # fetch chromium source code
 # ref: https://www.chromium.org/developers/how-tos/get-the-code/working-with-release-branches
 
-echo "trying git shallow clone, much quicker than a full git clone; see https://stackoverflow.com/a/39067940/3145038 for more details"
+# git shallow clone, much quicker than a full git clone; see https://stackoverflow.com/a/39067940/3145038 for more details
+
 git clone --branch "$VERSION" --depth 1 https://chromium.googlesource.com/chromium/src.git
 
 # Checkout all the submodules at their branch DEPS revisions
