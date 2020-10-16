@@ -145,10 +145,10 @@ for BUILD in */Dockerfile; do
 
       echo "Uploading $ZIPFILE to GitHub"
 
-      upload_release_asset "$ZIPFILE" "$CHANNEL-headless-$BUILD_NAME-amazonlinux-2017-03.zip"
+      upload_release_asset "$ZIPFILE" "$CHANNEL-headless-$BUILD_NAME-amazonlinux-2.zip"
     )
   
-    RELEASE_BODY="$RELEASE_BODY$BUILD_NAME $VERSION ($CHANNEL channel) for amazonlinux:2017.03\n"
+    RELEASE_BODY="$RELEASE_BODY$BUILD_NAME $VERSION ($CHANNEL channel) for Amazon Linux 2\n"
   done << EOL
 $CHANNEL_LIST
 EOL
