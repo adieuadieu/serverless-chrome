@@ -9,7 +9,7 @@ jobs:
   # This job builds the base project directory (e.g. ~/package.json)
   build:
     docker:
-      - image: circleci/node:6.10.3
+      - image: circleci/node:12
     steps:
       - checkout
       - restore_cache:
@@ -23,7 +23,7 @@ jobs:
   # This job runs the lint tool on the whole repository
   lint:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:12
     steps:
       - checkout
       - restore_cache:
@@ -47,7 +47,7 @@ jobs:
   unit_test:
     docker:
       # Node 8 so we can avoid transpiling our tests
-      - image: circleci/node:8
+      - image: circleci/node:12
       # The unit tests require DevTools on localhost:9222
       - image: adieuadieu/headless-chromium-for-aws-lambda:stable
     steps:
@@ -123,7 +123,7 @@ jobs:
   # This job builds the serverless-plugin package
   build_serverless_plugin:
     docker:
-      - image: circleci/node:6.10.3
+      - image: circleci/node:12
     steps:
       - checkout
       - restore_cache:
@@ -169,7 +169,7 @@ jobs:
   # This job builds the serverless-framework AWS example service
   build_serverless_example:
     docker:
-      - image: circleci/node:6.10.3
+      - image: circleci/node:12
     steps:
       - checkout
       - restore_cache:
@@ -194,7 +194,7 @@ jobs:
   # and updates the repository code when new docker images have been built
   update_browser_versions:
     docker:
-      - image: circleci/node:6.10.3
+      - image: circleci/node:12
     branch:
       - master
     steps:
