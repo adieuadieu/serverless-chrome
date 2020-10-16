@@ -206,7 +206,8 @@ jobs:
   # from which we make releases.
   release:
     # use a machine because we run Docker containers while preparing the release
-    machine: true
+    machine:
+      image: ubuntu-2004:202010-01
     branch:
       - master
     steps:
@@ -219,9 +220,9 @@ jobs:
           key: dependency-cache-{{ checksum "packages/serverless-plugin/package.json" }}-{{ checksum "packages/serverless-plugin/integration-test/package.json" }}
       # we need a newer version of NPM than is available by default, e.g. >=4
       # because we make use of the "prepublishOnly" package.json script, which was introduces in npm@4
-      - run:
-          name: Update NPM
-          command: npm install -g npm@latest
+      # - run:
+      #     name: Update NPM
+      #     command: npm install -g npm@latest
       - run: scripts/release.sh
 
   # This step triggers builds of binaries when new versions are available
