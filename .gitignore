@@ -67,3 +67,5 @@ event.json
 headless-chromium-amazonlinux-2017-03.zip
 .eslintcache
 packages/lambda/integration-test/headless-chromium
+
+.env

@@ -27,9 +27,8 @@ if ! npm whoami -s && [ -z "$NPM_TOKEN" ]; then
   exit 1
 fi
 
-ORIGIN_URL=$(git config --get remote.origin.url)
-GITHUB_ORG=$(echo "$ORIGIN_URL" | sed 's|.*:||;s|/.*$||')
-GITHUB_REPO=$(echo "$ORIGIN_URL" | sed 's|.*/||;s|\.[^\.]*$||')
+GITHUB_ORG=adieuadieu
+GITHUB_REPO=serverless-chrome
 export GITHUB_ORG
 export GITHUB_REPO
 
