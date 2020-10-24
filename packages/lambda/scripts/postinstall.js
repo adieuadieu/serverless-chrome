@@ -37,7 +37,11 @@ function unlink (filePath) {
 
 function extractFile (file, destination) {
   return new Promise((resolve, reject) => {
-    extract(file, { dir: destination }, error => (error ? reject(error) : resolve()))
+    extract(
+      file,
+      { dir: destination },
+      error => (error ? reject(error) : resolve())
+    )
   })
 }
 
@@ -70,8 +74,10 @@ function get (url, destination) {
 }
 
 function getChromium () {
-  const ZIP_FILENAME = `${CHROMIUM_CHANNEL}-headless-chromium-amazonlinux-2017-03.zip`
-  const ZIP_URL = `${RELEASE_DOWNLOAD_URL_BASE}/v${process.env.npm_package_version}/${ZIP_FILENAME}`
+  const ZIP_FILENAME = `${CHROMIUM_CHANNEL}-headless-chromium-amazonlinux-2.zip`
+  const ZIP_URL = `${RELEASE_DOWNLOAD_URL_BASE}/v${
+    process.env.npm_package_version
+  }/${ZIP_FILENAME}`
   const DOWNLOAD_PATH = path.resolve(__dirname, '..', ZIP_FILENAME)
   const EXTRACT_PATH = path.resolve(__dirname, '..', 'dist')
 
