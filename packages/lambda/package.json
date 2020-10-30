@@ -16,7 +16,8 @@
   "files": [
     "dist/bundle.cjs.js",
     "dist/bundle.es.js",
-    "scripts/postinstall.js"
+    "scripts/postinstall.js",
+    "index.d.ts"
   ],
   "types": "index.d.ts",
   "repository": "git@github.com:adieuadieu/serverless-chrome.git",
