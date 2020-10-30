@@ -18,5 +18,5 @@ type ServerLessChrome = {
     launchTime: number,
     didLaunch: boolean,
   },
-  kill: () => void,
+  kill: () => Promise<void>,
 };
