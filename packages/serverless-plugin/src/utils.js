@@ -34,14 +34,14 @@ export function throwIfWrongPluginOrder (plugins) {
   })
 }
 
-export function getHandlerFileAndExportName (handler = '') {
+export function getHandlerFileAndExportName (handler = '', extension = 'js') {
   const fileParts = handler.split('.')
   const exportName = fileParts.pop()
   const file = fileParts.join('.')
 
   return {
     filePath: path.dirname(file),
-    fileName: `${path.basename(file)}.js`, // is it OK to assume .js?
+    fileName: `${path.basename(file)}.${extension}`,
     exportName,
   }
 }

@@ -65,3 +65,11 @@ test('getHandlerFileAndExportName()', (t) => {
   t.is(fileName, 'handler.foobar.js')
   t.is(exportName, 'test')
 })
+
+test('getHandlerFileAndExportName() with extension', (t) => {
+  const { filePath, fileName, exportName } = getHandlerFileAndExportName('nested/test/handler.foobar.test', 'ts')
+
+  t.is(filePath, 'nested/test')
+  t.is(fileName, 'handler.foobar.ts')
+  t.is(exportName, 'test')
+})
