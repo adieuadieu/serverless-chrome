@@ -159,7 +159,9 @@ export default class ServerlessChrome {
 
     await Promise.all(functionsToWrap.map(async (functionName) => {
       const { handler } = service.getFunction(functionName)
-      const { filePath, fileName, exportName } = getHandlerFileAndExportName(handler, config.handlerExtension)
+      const {
+        filePath, fileName, exportName
+      } = getHandlerFileAndExportName(handler, config.handlerExtension)
       const handlerCodePath = path.join(config.servicePath, filePath)
 
       const originalFileRenamed = `${utils.generateShortId()}___${fileName}`
