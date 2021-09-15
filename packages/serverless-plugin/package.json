@@ -55,6 +55,9 @@
     "rollup-plugin-babel": "3.0.4",
     "rollup-plugin-node-resolve": "3.3.0"
   },
+  "peerDependences": {
+    "serverless": "^2.32.0"
+  },
   "babel": {
     "sourceMaps": true,
     "presets": [

@@ -102,6 +102,7 @@ export default class ServerlessChrome {
       service.getAllFunctions()
 
     service.package.include = service.package.include || []
+    service.package.patterns = service.package.patterns || []
 
     cli.log('Injecting Headless Chrome...')
 
@@ -130,7 +131,7 @@ export default class ServerlessChrome {
 
       // include any "extras" from the "include" section
       const files = await globby(
-        [...service.package.include, '**', '!node_modules/**'],
+        [...service.package.include, ...service.package.patterns, '**', '!node_modules/**'],
         {
           cwd: this.originalServicePath,
         }
@@ -153,7 +154,7 @@ export default class ServerlessChrome {
     }
 
     // Add our node_modules dependencies to the package includes
-    service.package.include = [...service.package.include, ...INCLUDES]
+    service.package.patterns = [...service.package.patterns, ...INCLUDES]
 
     await Promise.all(functionsToWrap.map(async (functionName) => {
       const { handler } = service.getFunction(functionName)
