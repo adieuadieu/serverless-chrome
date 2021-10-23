@@ -136,7 +136,7 @@ which can be run with `npm run test:integration`.
 A collection of articles and tutorials written by others on using serverless-chrome
 
 * [AWS DevOps Blog — UI Testing at Scale with AWS Lambda](https://aws.amazon.com/blogs/devops/ui-testing-at-scale-with-aws-lambda/)
-* [Running puppeteer and headless chrome on AWS lambda with Serverless](https://nadeesha.github.io/headless-chrome-puppeteer-lambda-servelerless/)
+* [Running puppeteer and headless chrome on AWS lambda with Serverless](https://nadeeshacabral.com/writing/2018/running-puppeteer-and-headless-chrome-on-aws-lambda-with-serverless)
 * [Will it blend? Or how to run Google Chrome in AWS Lambda](https://medium.freecodecamp.org/will-it-blend-or-how-to-run-google-chrome-in-aws-lambda-2c960fee8b74)
 * [Running Selenium and Headless Chrome on AWS Lambda](https://medium.com/clog/running-selenium-and-headless-chrome-on-aws-lambda-fb350458e4df)
 * [AWS Lambda上のheadless chromeをPythonで動かす](https://qiita.com/nabehide/items/754eb7b7e9fff9a1047d)
