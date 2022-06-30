@@ -9,7 +9,7 @@
 # docker run -d --rm --name headless-chromium -p 9222:9222 adieuadieu/headless-chromium-for-aws-lambda
 #
 
-FROM amazonlinux:2.0.20200722.0-with-sources
+FROM amazonlinux:2022.0.20220504.1-with-sources
 
 # ref: https://chromium.googlesource.com/chromium/src.git/+refs
 ARG VERSION
